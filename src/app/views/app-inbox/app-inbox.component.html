@@ -1,0 +1,151 @@
+<mat-sidenav-container class="min-h-screen !bg-card mx-8">
+  <!-- Inbox left side bar -->
+  <mat-sidenav #sidenav [opened]="isSidenavOpen" mode="side" class="inbox-sidenav shadow-md">
+    <!-- Compose button -->
+    <button mat-raised-button class="mat-warn full-width mb-4 rounded-lg shadow-sm transition-all hover:shadow" (click)="openComposeDialog()">
+      <span class="font-medium">Compose</span>
+    </button>
+    <!-- left side buttons -->
+    <mat-nav-list class="inbox-nav-list space-y-1" role="list">
+      <mat-list-item class="primary-imenu-item rounded-md hover:bg-slate-100" role="listitem" routerLinkActive="bg-slate-200">
+        <a class="flex flex-row items-center py-2">
+          <mat-icon class="text-slate-600 mr-3 rtl:ml-3">inbox</mat-icon>
+          <span class="font-medium">Inbox</span>
+        </a>
+      </mat-list-item>
+      <mat-list-item class="primary-imenu-item rounded-md hover:bg-slate-100" role="listitem" routerLinkActive="bg-slate-200">
+        <a class="flex flex-row items-center py-2">
+          <mat-icon class="text-slate-600 mr-3 rtl:ml-3">folder_special</mat-icon>
+          <span class="font-medium">Starred</span>
+        </a>
+      </mat-list-item>
+      <mat-list-item class="primary-imenu-item rounded-md hover:bg-slate-100" role="listitem" routerLinkActive="bg-slate-200">
+        <a class="flex flex-row items-center py-2">
+          <mat-icon class="text-slate-600 mr-3 rtl:ml-3">send</mat-icon>
+          <span class="font-medium">Sent</span>
+        </a>
+      </mat-list-item>
+      <mat-list-item class="primary-imenu-item rounded-md hover:bg-slate-100" role="listitem" routerLinkActive="bg-slate-200">
+        <a class="flex flex-row items-center py-2">
+          <mat-icon class="text-slate-600 mr-3 rtl:ml-3">drafts</mat-icon>
+          <span class="font-medium">Draft</span>
+        </a>
+      </mat-list-item>
+      <mat-list-item class="primary-imenu-item rounded-md hover:bg-slate-100" role="listitem" routerLinkActive="bg-slate-200">
+        <a class="flex flex-row items-center py-2">
+          <mat-icon class="text-slate-600 mr-3 rtl:ml-3">error</mat-icon>
+          <span class="font-medium">Spam</span>
+        </a>
+      </mat-list-item>
+
+      <mat-divider class="!my-3"></mat-divider>
+
+      <h3 class="text-xs font-semibold uppercase text-slate-500 px-4 mb-2">Categories</h3>
+      <mat-list-item class="rounded-md hover:bg-slate-100" role="listitem" routerLinkActive="bg-slate-200">
+        <a class="flex flex-row items-center py-2">
+          <mat-icon color="primary" class="mr-3 rtl:ml-3">people</mat-icon>
+          <span class="font-medium">Social</span>
+        </a>
+      </mat-list-item>
+      <mat-list-item class="rounded-md hover:bg-slate-100" role="listitem" routerLinkActive="bg-slate-200">
+        <a class="flex flex-row items-center py-2">
+          <mat-icon color="warn" class="mr-3 rtl:ml-3">local_offer</mat-icon>
+          <span class="font-medium">Promotions</span>
+        </a>
+      </mat-list-item>
+      <mat-list-item class="rounded-md hover:bg-slate-100" role="listitem" routerLinkActive="bg-slate-200">
+        <a class="flex flex-row items-center py-2">
+          <mat-icon color="accent" class="mr-3 rtl:ml-3">forums</mat-icon>
+          <span class="font-medium">Forums</span>
+        </a>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <div class="messages-wrap egret-card">
+    <mat-toolbar color="primary" class="inbox-toolbar shadow-sm rounded-t-md">
+      <!-- Left sidebar toggle button -->
+      <button class="!block lg:!hidden" mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>short_text</mat-icon>
+      </button>
+      <!-- multiple email select and control -->
+      <mat-checkbox (change)="selectToggleAll()" class="inbox-toggle-all mr-4 rtl:ml-4">
+        <small class="text-white font-medium">All</small>
+      </mat-checkbox>
+      <div class="flex space-x-1">
+        <button mat-icon-button matTooltip="Move to trash" class="hover:bg-opacity-10 hover:bg-slate-200 transition-colors">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Mark as important" class="hover:bg-opacity-20 hover:bg-slate-200 transition-colors">
+          <mat-icon>folder_special</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Move to archive" class="hover:bg-opacity-20 hover:bg-slate-200 transition-colors">
+          <mat-icon>archive</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Report spam" class="hover:bg-opacity-20 hover:bg-slate-200 transition-colors">
+          <mat-icon>error</mat-icon>
+        </button>
+      </div>
+    </mat-toolbar>
+    
+    <div class="overflow-y-auto">
+      <mat-accordion class="">
+        <mat-expansion-panel *ngFor="let message of messages" hideToggle="true" 
+          class="shadow-none border-0 transition-colors">
+          <mat-expansion-panel-header class="px-4 py-3">
+            <mat-panel-title class="items-center">
+              <mat-checkbox 
+                [(ngModel)]="message.selected" 
+                (click)="stopProp($event)" 
+                class="mail-checkbox hide-on-open">
+              </mat-checkbox>
+              <button 
+                mat-icon-button 
+                matTooltip="Mark as important"
+                (click)="stopProp($event)" 
+                class="hide-on-open text-slate-400 hover:text-yellow-500 mr-2 rtl:ml-2">
+                <mat-icon>star_border</mat-icon>
+              </button>
+
+              <span class="hide-on-open font-medium truncate">{{message.sender.name}}</span>
+              <div class="flex items-center show-on-open">
+                <img [src]="message.sender.photo" alt="" 
+                  class="w-10 h-10 rounded-full object-cover mr-4 rtl:ml-4">
+                <div class="flex flex-col">
+                  <span class="font-semibold">{{message.sender.name}}</span>
+                  <small class="text-secondary">{{message.date | date}}</small>
+                </div>
+              </div>
+            </mat-panel-title>
+            <mat-panel-description class="items-center">
+              <span class="mail-subject text-sm text-secondary font-normal truncate mr-2">{{message.subject}}</span>
+              <span class="flex-grow"></span>
+              <span class="text-xs text-slate-500 hidden md:block whitespace-nowrap">{{message.date | relativeTime}}</span>
+              <button mat-icon-button [matMenuTriggerFor]="msgMenu" (click)="$event.stopPropagation()" 
+                class="hidden-on-open text-secondary hover:text-secondary-50 focus:outline-none ml-2">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #msgMenu="matMenu">
+                <button mat-menu-item class="flex items-center">
+                  <mat-icon class="mr-2 text-slate-500">reply</mat-icon> 
+                  <span>Reply</span>
+                </button>
+                <button mat-menu-item class="flex items-center">
+                  <mat-icon class="mr-2 text-slate-500">archive</mat-icon> 
+                  <span>Archive</span>
+                </button>
+                <button mat-menu-item class="flex items-center">
+                  <mat-icon class="mr-2 text-slate-500">delete</mat-icon> 
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+      
+          <div class="message-text p-5 leading-relaxed" [innerHTML]="message.message"></div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+</mat-sidenav-container>

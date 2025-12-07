@@ -1,0 +1,148 @@
+// Inventory Dashboard Styles
+.inventory-dashboard {
+  .metric-card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .mat-card-content {
+      padding: 1.5rem;
+    }
+    
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    
+    .metric-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #6b7280;
+      margin-bottom: 0.5rem;
+    }
+    
+    .metric-trend {
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-top: 0.25rem;
+      
+      &.positive {
+        color: #059669;
+      }
+      
+      &.negative {
+        color: #dc2626;
+      }
+      
+      &.neutral {
+        color: #6b7280;
+      }
+    }
+    
+    .metric-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      mat-icon {
+        font-size: 1.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+    }
+  }
+
+  .chart-container {
+    min-height: 300px;
+  }
+
+  .status-badge {
+    &.low-stock {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    &.out-of-stock {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    &.in-stock {
+      background-color: #d4edda;
+      color: #155724;
+    }
+  }
+
+  .transaction-type {
+    &.sale {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    &.purchase {
+      background-color: #cce5ff;
+      color: #004085;
+    }
+    
+    &.adjustment {
+      background-color: #e2e3e5;
+      color: #383d41;
+    }
+  }
+
+  .metric-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-value {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .metric-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .metric-card {
+      margin-bottom: 1rem;
+    }
+    
+    .chart-container {
+      min-height: 250px;
+    }
+  }
+
+  // Dark theme support
+  .dark-theme {
+    .status-badge {
+      &.low-stock {
+        background-color: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+      }
+      
+      &.out-of-stock {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+      }
+      
+      &.in-stock {
+        background-color: rgba(40, 167, 69, 0.2);
+        color: #28a745;
+      }
+    }
+  }
+}

@@ -1,0 +1,134 @@
+<div class="p-4 sm:mx-8">
+  <!-- Add New User Button -->
+  <div class="mb-6 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-800">Users Management</h1>
+    <button mat-raised-button color="primary" (click)="addNewUser()" class="flex items-center">
+      <mat-icon class="mr-2">person_add</mat-icon>
+      New User
+    </button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="flex justify-center items-center py-12">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && users.length === 0" class="bg-gray-50 rounded-lg p-8 text-center">
+    <mat-icon class="text-gray-400 text-5xl mb-4">group</mat-icon>
+    <p class="text-gray-600 text-lg">No users found</p>
+  </div>
+
+  <!-- Users Grid -->
+  <div class="flex flex-wrap" *ngIf="!loading && users.length > 0">
+    <div
+    *ngFor="let user of users"
+    class="w-full md:w-1/3 sm:w-1/2">
+    <mat-card class="user-card p-0">
+      <mat-card-title class="mb-4">
+        <div class="card-title-text flex items-center py-2 px-4">
+          <a href="" class="toolbar-avatar sm mr-4 rtl:ml-4"><img [src]="user.photo" alt=""></a>
+          <span class="text-16">{{user.name}}</span>
+          <span class="flex-grow"></span>
+          <button mat-icon-button [matMenuTriggerFor]="userMenu" class="" size="small">
+              <mat-icon class="text-secondary">more_vert</mat-icon>
+          </button>
+          <mat-menu #userMenu="matMenu">
+              <button mat-menu-item (click)="viewUser(user)">
+                <mat-icon>visibility</mat-icon>
+                <span>View</span>
+              </button>
+              <button mat-menu-item (click)="editUser(user)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item (click)="toggleUserStatus(user)">
+                <mat-icon>{{user.status === 'active' ? 'person_off' : 'person_add'}}</mat-icon>
+                <span>{{user.status === 'active' ? 'Disactivate' : 'Activate'}}</span>
+              </button>
+          </mat-menu>
+        </div>
+        <mat-divider></mat-divider>
+      </mat-card-title>
+      <mat-card-content class="!pt-4">
+        <!-- user detail lines-->
+        <div class="user-details space-y-2">
+          <!-- Role Badge -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <mat-icon class="!flex items-center text-secondary text-[16px]">admin_panel_settings</mat-icon>
+              <span class="ml-2 text-sm">Role:</span>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                  [ngClass]="{
+                    'bg-red-100 text-red-800': user.roleId === 1,
+                    'bg-blue-100 text-blue-800': user.roleId === 2,
+                    'bg-green-100 text-green-800': user.roleId === 3,
+                    'bg-purple-100 text-purple-800': user.roleId === 4
+                  }">
+              {{user.role}}
+            </span>
+          </div>
+          
+          <!-- Status Badge -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <mat-icon class="!flex items-center text-secondary text-[16px]">verified_user</mat-icon>
+              <span class="ml-2 text-sm">Status:</span>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': user.status === 'active',
+                    'bg-red-100 text-red-800': user.status === 'disactivated'
+                  }">
+              {{getStatusDisplay(user.status)}}
+            </span>
+          </div>
+          
+          <!-- Username -->
+          <p class="flex items-center text-sm">
+            <mat-icon class="!flex items-center text-secondary text-[16px]">account_circle</mat-icon>
+            <span class="ml-2">{{ '@' + user.username }}</span>
+          </p>
+          
+          <!-- Email -->
+          <p class="flex items-center text-sm">
+            <mat-icon class="!flex items-center text-secondary text-[16px]">email</mat-icon>
+            <span class="ml-2 truncate">{{user.email}}</span>
+          </p>
+          
+          <!-- Bio -->
+          <p class="flex items-start text-sm" *ngIf="user.bio">
+            <mat-icon class="!flex items-center text-secondary text-[16px] mt-0.5">description</mat-icon>
+            <span class="ml-2 italic text-gray-600">{{user.bio}}</span>
+          </p>
+          
+          <!-- Phone -->
+          <p class="flex items-center text-sm" *ngIf="user.phone && user.phone !== 'N/A'">
+            <mat-icon class="!flex items-center text-secondary text-[16px]">phone</mat-icon>
+            <span class="ml-2">{{user.phone}}</span>
+          </p>
+          
+          <!-- Address -->
+          <p class="flex items-start text-sm" *ngIf="user.address && user.address !== 'N/A'">
+            <mat-icon class="!flex items-center text-secondary text-[16px] mt-0.5">location_on</mat-icon>
+            <span class="ml-2">{{user.address}}</span>
+          </p>
+          
+          <!-- 2FA Status -->
+          <p class="flex items-center text-sm">
+            <mat-icon class="!flex items-center text-secondary text-[16px]">security</mat-icon>
+            <span class="ml-2">2FA: {{user.two_factor_auth === 'Y' ? 'Enabled' : 'Disabled'}}</span>
+          </p>
+          
+          <!-- Last Login -->
+          <p class="flex items-center text-sm text-gray-600" *ngIf="user.last_login && user.last_login !== 'Never'">
+            <mat-icon class="!flex items-center text-secondary text-[16px]">schedule</mat-icon>
+            <span class="ml-2">{{user.last_login}}</span>
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  </div>
+</div>

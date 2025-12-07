@@ -1,0 +1,94 @@
+@use "variables" as *;
+@use "color-tokens" as colors;
+@use "sass:color";
+@use "sass:meta";
+@use "sass:map";
+
+// ==========================================================================
+// HELPER MIXINS & FUNCTIONS
+// ==========================================================================
+@function get-rgb($color) {
+    @return color.channel($color, "red", $space: rgb),
+    color.channel($color, "green", $space: rgb),
+    color.channel($color, "blue", $space: rgb);
+}
+
+// ==========================================================================
+// CSS CUSTOM PROPERTIES
+// ==========================================================================
+
+// This section is used to define CSS variables from the tokens above
+// These variables will be accessible to both SCSS and JS
+
+
+// Generate variables for root
+:root {
+    // Typography variables
+    --font-family: #{$font-family};
+    --font-family-fallback: #{$font-family-fallback};
+    --font-family-base: #{$font-family}, #{$font-family-fallback};
+    --font-family-mono: #{$font-family-mono};
+
+    // Shadow variables
+    --shadow-1: #{$shadow-1};
+    --shadow-2: #{$shadow-2};
+    --shadow-3: #{$shadow-3};
+    --shadow-4: #{$shadow-4};
+    --shadow-5: #{$shadow-5};
+
+    // Card variables
+    --card-rounded: #{$card-rounded};
+
+    // Light theme neutral colors
+    @each $key, $value in colors.$slate {
+        --slate-#{$key}: #{get-rgb($value)};
+    }
+}
+
+// Generate all color variants for each theme
+// Default Light Theme (Navy)
+.egret-navy {
+
+    // Set semantic colors from light theme
+    @each $key, $value in colors.$light-theme-colors {
+        @if meta.type-of($value)=="color" {
+            --#{$key}: #{get-rgb($value)};
+        }
+
+        @else {
+            --#{$key}: #{$value};
+        }
+    }
+}
+
+// Default Dark Theme (Navy Dark)
+.egret-navy-dark {
+
+    // Dark theme semantic colors
+    @each $key, $value in colors.$dark-theme-colors {
+        @if meta.type-of($value)=="color" {
+            --#{$key}: #{get-rgb($value)};
+        }
+
+        @else {
+            --#{$key}: #{$value};
+        }
+    }
+}
+
+// Sidebar Theme Colors
+.sidebar-dark {
+    --sidebar-text: 255, 255, 255;
+    --sidebar-bg: #{get-rgb(map.get(colors.$slate, 900))};
+    --bg-hover: #{get-rgb(map.get(colors.$slate, 950))};
+    --fg-divider: #{get-rgb(map.get(colors.$slate, 700))};
+    --mat-divider-color: #{map.get(colors.$slate, 700)};
+}
+
+.sidebar-light {
+    --sidebar-text: 0, 0, 0;
+    --sidebar-bg: 255, 255, 255;
+    --bg-hover: #{get-rgb(map.get(colors.$slate, 200))};
+    --fg-divider: #{get-rgb(map.get(colors.$slate, 200))};
+    --mat-divider-color: #{map.get(colors.$slate, 200)};
+}

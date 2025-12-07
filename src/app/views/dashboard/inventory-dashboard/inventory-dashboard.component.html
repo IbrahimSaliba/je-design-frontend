@@ -1,0 +1,286 @@
+<div class="sm:mx-8">
+  <!-- Inventory Overview Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <mat-card class="metric-card shadow-lg hover:shadow-xl transition-all duration-300" [@animate]="{ value: '*', params: { y: '30px', delay: '200ms' } }">
+      <mat-card-content class="p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-1">Total Items</p>
+            <h3 class="text-3xl font-bold text-gray-900">{{totalItems | number}}</h3>
+            <p class="text-xs text-gray-500 mt-1">Tracked products</p>
+          </div>
+          <div class="bg-blue-100 p-3 rounded-full">
+            <mat-icon class="text-blue-600 text-2xl">inventory</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card shadow-lg hover:shadow-xl transition-all duration-300" [@animate]="{ value: '*', params: { y: '30px', delay: '300ms' } }">
+      <mat-card-content class="p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-1">Total Inventory Value</p>
+            <h3 class="text-3xl font-bold text-gray-900">{{totalValue | currency:'USD':'symbol':'1.0-0'}}</h3>
+            <p class="text-xs text-gray-500 mt-1">Real-time valuation</p>
+          </div>
+          <div class="bg-green-100 p-3 rounded-full">
+            <mat-icon class="text-green-600 text-2xl">attach_money</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card shadow-lg hover:shadow-xl transition-all duration-300" [@animate]="{ value: '*', params: { y: '30px', delay: '400ms' } }">
+      <mat-card-content class="p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-1">Low/Out of Stock</p>
+            <h3 class="text-3xl font-bold text-gray-900">{{lowStockItems + outOfStockItems}}</h3>
+            <p class="text-xs text-red-600 mt-1 flex items-center">
+              <mat-icon class="text-xs align-middle mr-1">warning</mat-icon>
+              {{outOfStockItems}} out of stock
+            </p>
+          </div>
+          <div class="bg-orange-100 p-3 rounded-full">
+            <mat-icon class="text-orange-600 text-2xl">warning</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card shadow-lg hover:shadow-xl transition-all duration-300" [@animate]="{ value: '*', params: { y: '30px', delay: '500ms' } }">
+      <mat-card-content class="p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-1">Active Containers</p>
+            <h3 class="text-3xl font-bold text-gray-900">{{totalContainers}}</h3>
+            <p class="text-xs text-blue-600 mt-1 flex items-center">
+              <mat-icon class="text-xs align-middle mr-1">local_shipping</mat-icon>
+              Registered containers
+            </p>
+          </div>
+          <div class="bg-purple-100 p-3 rounded-full">
+            <mat-icon class="text-purple-600 text-2xl">local_shipping</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Secondary Metrics -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    <mat-card class="metric-card shadow-lg hover:shadow-xl transition-all duration-300" [@animate]="{ value: '*', params: { y: '30px', delay: '600ms' } }">
+      <mat-card-content class="p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-1">Active Suppliers</p>
+            <h3 class="text-3xl font-bold text-gray-900">{{activeSuppliers}}</h3>
+            <p class="text-xs text-indigo-600 mt-1 flex items-center">
+              <mat-icon class="text-xs align-middle mr-1">business</mat-icon>
+              Supplier partnerships
+            </p>
+          </div>
+          <div class="bg-indigo-100 p-3 rounded-full">
+            <mat-icon class="text-indigo-600 text-2xl">business</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card shadow-lg hover:shadow-xl transition-all duration-300" [@animate]="{ value: '*', params: { y: '30px', delay: '700ms' } }">
+      <mat-card-content class="p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-1">Total Clients</p>
+            <h3 class="text-3xl font-bold text-gray-900">{{totalClients}}</h3>
+            <p class="text-xs text-teal-600 mt-1 flex items-center">
+              <mat-icon class="text-xs align-middle mr-1">people</mat-icon>
+              Active customers
+            </p>
+          </div>
+          <div class="bg-teal-100 p-3 rounded-full">
+            <mat-icon class="text-teal-600 text-2xl">people</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card shadow-lg hover:shadow-xl transition-all duration-300" [@animate]="{ value: '*', params: { y: '30px', delay: '800ms' } }">
+      <mat-card-content class="p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-1">Monthly Movements</p>
+            <h3 class="text-3xl font-bold text-gray-900">{{movementsThisMonth | number}}</h3>
+            <div class="text-xs mt-1 space-y-1">
+              <div class="text-green-600 flex items-center">
+                <mat-icon class="text-xs align-middle mr-1">arrow_upward</mat-icon>
+                IN: {{stockInThisMonth | number}}
+              </div>
+              <div class="text-red-600 flex items-center">
+                <mat-icon class="text-xs align-middle mr-1">arrow_downward</mat-icon>
+                OUT: {{stockOutThisMonth | number}}
+              </div>
+            </div>
+          </div>
+          <div class="bg-green-100 p-3 rounded-full">
+            <mat-icon class="text-green-600 text-2xl">sync_alt</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="flex flex-wrap mb-6">
+    <div class="w-full xl:w-1/3 p-2" [@animate]="{ value: '*', params: { y: '30px', delay: '900ms' } }">
+      <mat-card class="shadow-md h-full">
+        <mat-card-header>
+          <mat-card-title>Stock Levels</mat-card-title>
+          <mat-card-subtitle>Current inventory status</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div echarts [options]="stockLevelsChart" [autoResize]="true" class="h-64"></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="w-full xl:w-1/3 p-2" [@animate]="{ value: '*', params: { y: '30px', delay: '1000ms' } }">
+      <mat-card class="shadow-md h-full">
+        <mat-card-header>
+          <mat-card-title>Top Valued Items</mat-card-title>
+          <mat-card-subtitle>Highest inventory value</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngIf="topItemsByValue.length > 0; else noTopItems">
+            <div echarts [options]="topProductsChart" [autoResize]="true" class="h-64"></div>
+          </ng-container>
+          <ng-template #noTopItems>
+            <div class="h-64 flex items-center justify-center text-gray-500 text-sm">
+              No inventory data available
+            </div>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="w-full xl:w-1/3 p-2" [@animate]="{ value: '*', params: { y: '30px', delay: '1100ms' } }">
+      <mat-card class="shadow-md h-full">
+        <mat-card-header>
+          <mat-card-title>Stock Movement</mat-card-title>
+          <mat-card-subtitle>This month</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngIf="stockInThisMonth || stockOutThisMonth; else noMovementData">
+            <div echarts [options]="stockMovementChart" [autoResize]="true" class="h-64"></div>
+          </ng-container>
+          <ng-template #noMovementData>
+            <div class="h-64 flex items-center justify-center text-gray-500 text-sm">
+              No stock movements recorded this month
+            </div>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Data Tables Row -->
+  <div class="flex flex-wrap mb-6">
+    <div class="w-full lg:w-1/2 p-2" [@animate]="{ value: '*', params: { y: '30px', delay: '1200ms' } }">
+      <mat-card class="shadow-md h-full">
+        <mat-card-header>
+          <mat-card-title>Low Stock Alert</mat-card-title>
+          <mat-card-subtitle>Items requiring attention</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngIf="lowStockItemsList.length > 0; else noLowStock">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b">
+                    <th class="text-left py-2">Product</th>
+                    <th class="text-left py-2">Code</th>
+                    <th class="text-left py-2">Current</th>
+                    <th class="text-left py-2">Minimum</th>
+                    <th class="text-left py-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of lowStockItemsList" class="border-b">
+                    <td class="py-2 font-medium">{{item.name}}</td>
+                    <td class="py-2 text-gray-600">{{item.code}}</td>
+                    <td class="py-2">{{item.currentStock}}</td>
+                    <td class="py-2">{{item.reorderPoint}}</td>
+                    <td class="py-2">
+                      <span class="px-2 py-1 rounded-full text-xs font-medium"
+                        [ngClass]="{
+                          'bg-yellow-100 text-yellow-800': item.status === 'LOW_STOCK',
+                          'bg-red-100 text-red-800': item.status === 'OUT_OF_STOCK'
+                        }">
+                        {{item.status === 'LOW_STOCK' ? 'Low' : 'Out'}}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+          <ng-template #noLowStock>
+            <div class="py-8 text-center text-gray-500 text-sm">
+              All items are within stock thresholds.
+            </div>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="w-full lg:w-1/2 p-2" [@animate]="{ value: '*', params: { y: '30px', delay: '1300ms' } }">
+      <mat-card class="shadow-md h-full">
+        <mat-card-header>
+          <mat-card-title>Recent Transactions</mat-card-title>
+          <mat-card-subtitle>Latest inventory movements</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngIf="recentTransactions.length > 0; else noTransactions">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b">
+                    <th class="text-left py-2">ID</th>
+                    <th class="text-left py-2">Type</th>
+                    <th class="text-left py-2">Item</th>
+                    <th class="text-left py-2">Qty</th>
+                    <th class="text-left py-2">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let transaction of recentTransactions" class="border-b">
+                    <td class="py-2 font-mono text-xs">{{transaction.id}}</td>
+                    <td class="py-2">
+                      <span class="px-2 py-1 rounded-full text-xs font-medium"
+                        [ngClass]="{
+                          'bg-green-100 text-green-800': transaction.type === 'IN',
+                          'bg-red-100 text-red-800': transaction.type === 'OUT',
+                          'bg-gray-100 text-gray-800': transaction.type === 'ADJUSTMENT'
+                        }">
+                        {{transaction.typeLabel}}
+                      </span>
+                    </td>
+                    <td class="py-2">{{transaction.item || '—'}}</td>
+                    <td class="py-2">{{transaction.quantity}}</td>
+                    <td class="py-2 text-gray-600">{{transaction.date}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+          <ng-template #noTransactions>
+            <div class="py-8 text-center text-gray-500 text-sm">
+              No inventory movements recorded yet.
+            </div>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

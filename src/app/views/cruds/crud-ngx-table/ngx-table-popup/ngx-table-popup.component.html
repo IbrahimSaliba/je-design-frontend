@@ -1,0 +1,846 @@
+        <div class="p-4 max-h-full overflow-y-auto modal-content" [ngClass]="{'suppliers-modal': currentRoute === 'suppliers'}">
+          <div class="flex items-center justify-between mb-4">
+            <h1 class="text-xl font-bold text-gray-800">{{data.title}}</h1>
+            <button mat-icon-button (click)="dialogRef.close(false)" class="text-gray-500 hover:text-gray-700">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+  
+  <form [formGroup]="itemForm" (ngSubmit)="submit()">
+    <div class="w-full">
+      
+      <!-- Container-specific fields -->
+      <ng-container *ngIf="currentRoute === 'containers'">
+        <!-- Basic Information Section -->
+        <div class="w-full mb-6">
+          <h3 class="section-header">Basic Information</h3>
+          <div class="form-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Container Code *</mat-label>
+              <input matInput name="code" [formControl]="itemForm.controls['code']">
+              <mat-error *ngIf="itemForm.controls['code'].invalid && itemForm.controls['code'].touched">
+                Container code is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Container Name *</mat-label>
+              <input matInput name="name" [formControl]="itemForm.controls['name']">
+              <mat-error *ngIf="itemForm.controls['name'].invalid && itemForm.controls['name'].touched">
+                Container name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Container Type *</mat-label>
+              <mat-select name="type" [formControl]="itemForm.controls['type']">
+                <mat-option value="FULL_CONTAINER">Full Container</mat-option>
+                <mat-option value="LCL">LCL (Less than Container Load)</mat-option>
+                <mat-option value="FCL">FCL (Full Container Load)</mat-option>
+              </mat-select>
+              <mat-error *ngIf="itemForm.controls['type'].invalid && itemForm.controls['type'].touched">
+                Container type is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Container Size *</mat-label>
+              <mat-select name="size" [formControl]="itemForm.controls['size']">
+                <mat-option [value]="20">20 ft</mat-option>
+                <mat-option [value]="40">40 ft</mat-option>
+                <mat-option [value]="45">45 ft</mat-option>
+              </mat-select>
+              <mat-error *ngIf="itemForm.controls['size'].invalid && itemForm.controls['size'].touched">
+                Container size is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>CBM (Cubic Meters) *</mat-label>
+              <input matInput type="number" name="cbm" [formControl]="itemForm.controls['cbm']" step="0.01">
+              <span matSuffix>m³</span>
+              <mat-error *ngIf="itemForm.controls['cbm'].invalid && itemForm.controls['cbm'].touched">
+                CBM is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Current Status *</mat-label>
+              <mat-select name="status" [formControl]="itemForm.controls['status']">
+                <mat-option value="PENDING">Pending</mat-option>
+                <mat-option value="IN_TRANSIT">In Transit</mat-option>
+                <mat-option value="DELIVERED">Delivered</mat-option>
+                <mat-option value="CANCELLED">Cancelled</mat-option>
+              </mat-select>
+              <mat-error *ngIf="itemForm.controls['status'].invalid && itemForm.controls['status'].touched">
+                Status is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Shipping Information Section -->
+        <div class="w-full mb-6">
+          <h3 class="section-header">Shipping Information</h3>
+          <div class="form-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Shipping Agency *</mat-label>
+              <input matInput name="shippingAgency" [formControl]="itemForm.controls['shippingAgency']">
+              <mat-error *ngIf="itemForm.controls['shippingAgency'].invalid && itemForm.controls['shippingAgency'].touched">
+                Shipping agency is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Container Price *</mat-label>
+              <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+              <input matInput type="number" name="containerPrice" [formControl]="itemForm.controls['containerPrice']" data-placeholder="e.g., 5000.00" step="0.01">
+              <mat-error *ngIf="itemForm.controls['containerPrice'].invalid && itemForm.controls['containerPrice'].touched">
+                Container price is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Shipping Price *</mat-label>
+              <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+              <input matInput type="number" name="shippingPrice" [formControl]="itemForm.controls['shippingPrice']" data-placeholder="e.g., 3000.00" step="0.01">
+              <mat-error *ngIf="itemForm.controls['shippingPrice'].invalid && itemForm.controls['shippingPrice'].touched">
+                Shipping price is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Price per CBM *</mat-label>
+              <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+              <input matInput type="number" name="pricePerCbm" [formControl]="itemForm.controls['pricePerCbm']" data-placeholder="e.g., 100.00" step="0.01">
+              <span matSuffix>/m³</span>
+              <mat-error *ngIf="itemForm.controls['pricePerCbm'].invalid && itemForm.controls['pricePerCbm'].touched">
+                Price per CBM is required
+              </mat-error>
+        </mat-form-field>
+      </div>
+        </div>
+
+        <!-- Customs Information Section -->
+        <div class="w-full mb-6">
+          <h3 class="section-header">Customs Information</h3>
+          <div class="form-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Customs Broker Name *</mat-label>
+              <input matInput name="customsBrokerName" [formControl]="itemForm.controls['customsBrokerName']" data-placeholder="e.g., ABC Customs">
+              <mat-error *ngIf="itemForm.controls['customsBrokerName'].invalid && itemForm.controls['customsBrokerName'].touched">
+                Customs broker name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Customs Price *</mat-label>
+              <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+              <input matInput type="number" name="customsPrice" [formControl]="itemForm.controls['customsPrice']" data-placeholder="e.g., 500.00" step="0.01">
+              <mat-error *ngIf="itemForm.controls['customsPrice'].invalid && itemForm.controls['customsPrice'].touched">
+                Customs price is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Lebanese Agency *</mat-label>
+              <input matInput name="lebaneseAgency" [formControl]="itemForm.controls['lebaneseAgency']" data-placeholder="e.g., XYZ Agency">
+              <mat-error *ngIf="itemForm.controls['lebaneseAgency'].invalid && itemForm.controls['lebaneseAgency'].touched">
+                Lebanese agency is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Lebanese Clearing Price *</mat-label>
+              <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+              <input matInput type="number" name="lebaneseClearingPrice" [formControl]="itemForm.controls['lebaneseClearingPrice']" data-placeholder="e.g., 2000.00" step="0.01">
+              <mat-error *ngIf="itemForm.controls['lebaneseClearingPrice'].invalid && itemForm.controls['lebaneseClearingPrice'].touched">
+                Lebanese clearing price is required
+              </mat-error>
+        </mat-form-field>
+      </div>
+        </div>
+
+        <!-- China Operations Section -->
+        <div class="w-full mb-6">
+          <h3 class="section-header">China Operations</h3>
+          <div class="form-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>China Clearing Price *</mat-label>
+              <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+              <input matInput type="number" name="chinaClearingPrice" [formControl]="itemForm.controls['chinaClearingPrice']" data-placeholder="e.g., 1500.00" step="0.01">
+              <mat-error *ngIf="itemForm.controls['chinaClearingPrice'].invalid && itemForm.controls['chinaClearingPrice'].touched">
+                China clearing price is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>China Freight Fees *</mat-label>
+              <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+              <input matInput type="number" name="chinaFreightFees" [formControl]="itemForm.controls['chinaFreightFees']" data-placeholder="e.g., 800.00" step="0.01">
+              <mat-error *ngIf="itemForm.controls['chinaFreightFees'].invalid && itemForm.controls['chinaFreightFees'].touched">
+                China freight fees is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Additional Fees *</mat-label>
+              <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+              <input matInput type="number" name="additionalFees" [formControl]="itemForm.controls['additionalFees']" data-placeholder="e.g., 200.00" step="0.01">
+              <mat-error *ngIf="itemForm.controls['additionalFees'].invalid && itemForm.controls['additionalFees'].touched">
+                Additional fees is required
+              </mat-error>
+        </mat-form-field>
+      </div>
+        </div>
+
+        <!-- Important Dates Section -->
+        <div class="w-full mb-6">
+          <h3 class="section-header">Important Dates</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Date of Loading *</mat-label>
+              <input matInput [matDatepicker]="loadingPicker" name="dateOfLoading" [formControl]="itemForm.controls['dateOfLoading']" data-placeholder="Select date">
+              <mat-datepicker-toggle matSuffix [for]="loadingPicker"></mat-datepicker-toggle>
+              <mat-datepicker #loadingPicker></mat-datepicker>
+              <mat-error *ngIf="itemForm.controls['dateOfLoading'].invalid && itemForm.controls['dateOfLoading'].touched">
+                Date of loading is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Date of Departure *</mat-label>
+              <input matInput [matDatepicker]="departurePicker" name="dateOfDeparture" [formControl]="itemForm.controls['dateOfDeparture']" data-placeholder="Select date">
+              <mat-datepicker-toggle matSuffix [for]="departurePicker"></mat-datepicker-toggle>
+              <mat-datepicker #departurePicker></mat-datepicker>
+              <mat-error *ngIf="itemForm.controls['dateOfDeparture'].invalid && itemForm.controls['dateOfDeparture'].touched">
+                Date of departure is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Date of Arrival *</mat-label>
+              <input matInput [matDatepicker]="arrivalPicker" name="dateOfArrival" [formControl]="itemForm.controls['dateOfArrival']" data-placeholder="Select date">
+              <mat-datepicker-toggle matSuffix [for]="arrivalPicker"></mat-datepicker-toggle>
+              <mat-datepicker #arrivalPicker></mat-datepicker>
+              <mat-error *ngIf="itemForm.controls['dateOfArrival'].invalid && itemForm.controls['dateOfArrival'].touched">
+                Date of arrival is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full modal-form-field">
+              <mat-label>Date of Arrival to Warehouse *</mat-label>
+              <input matInput [matDatepicker]="warehousePicker" name="dateOfArrivalToWarehouse" [formControl]="itemForm.controls['dateOfArrivalToWarehouse']" data-placeholder="Select date">
+              <mat-datepicker-toggle matSuffix [for]="warehousePicker"></mat-datepicker-toggle>
+              <mat-datepicker #warehousePicker></mat-datepicker>
+              <mat-error *ngIf="itemForm.controls['dateOfArrivalToWarehouse'].invalid && itemForm.controls['dateOfArrivalToWarehouse'].touched">
+                Date of arrival to warehouse is required
+              </mat-error>
+        </mat-form-field>
+      </div>
+        </div>
+      </ng-container>
+
+              <!-- Items fields -->
+              <ng-container *ngIf="currentRoute === 'items'">
+                <div class="w-full mb-4">
+                  <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Basic Information</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Item Code *</mat-label>
+                      <input matInput name="code" [formControl]="itemForm.controls['code']" data-placeholder="e.g., FLOWER002">
+                      <mat-error *ngIf="itemForm.controls['code'].invalid && itemForm.controls['code'].touched">
+                        Item code is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Item Name *</mat-label>
+                      <input matInput name="name" [formControl]="itemForm.controls['name']" data-placeholder="e.g., Flower 123">
+                      <mat-error *ngIf="itemForm.controls['name'].invalid && itemForm.controls['name'].touched">
+                        Item name is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Item Type *</mat-label>
+                      <mat-select name="type" [formControl]="itemForm.controls['type']">
+                        <mat-option value="Flower">Flower</mat-option>
+                        <mat-option value="Electronics">Electronics</mat-option>
+                        <mat-option value="Books">Books</mat-option>
+                        <mat-option value="Clothing">Clothing</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="itemForm.controls['type'].invalid && itemForm.controls['type'].touched">
+                        Item type is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Item Size</mat-label>
+                      <mat-select name="size" [formControl]="itemForm.controls['size']">
+                        <mat-option value="">None</mat-option>
+                        <mat-option value="XXS">XXS</mat-option>
+                        <mat-option value="XS">XS</mat-option>
+                        <mat-option value="S">S</mat-option>
+                        <mat-option value="M">M</mat-option>
+                        <mat-option value="L">L</mat-option>
+                        <mat-option value="XL">XL</mat-option>
+                        <mat-option value="XXL">XXL</mat-option>
+                        <mat-option value="XXXL">XXXL</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field md:col-span-2 lg:col-span-3">
+                      <mat-label>Description</mat-label>
+                      <textarea matInput name="description" [formControl]="itemForm.controls['description']" rows="3"></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Final Price *</mat-label>
+                      <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+                      <input matInput type="number" name="finalPrice" [formControl]="itemForm.controls['finalPrice']" data-placeholder="e.g., 6.00" step="0.01">
+                      <mat-error *ngIf="itemForm.controls['finalPrice'].invalid && itemForm.controls['finalPrice'].touched">
+                        Final price is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field" [class.readonly-field]="data.payload?.id">
+                      <mat-label>Total Quantity *</mat-label>
+                      <input matInput type="number" name="totalQuantity" [formControl]="itemForm.controls['totalQuantity']" data-placeholder="e.g., 150" min="0"
+                             [readonly]="data.payload?.id">
+                      <mat-icon matSuffix *ngIf="data.payload?.id" class="text-orange-600" matTooltip="Quantity can only be changed via Stock Adjustment">lock</mat-icon>
+                      <mat-hint *ngIf="data.payload?.id" class="text-orange-600">
+                        To change quantity, use "Adjust Stock" button in item actions
+                      </mat-hint>
+                      <mat-error *ngIf="itemForm.controls['totalQuantity'].invalid && itemForm.controls['totalQuantity'].touched">
+                        Total quantity is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Min Stock *</mat-label>
+                      <input matInput type="number" name="minStock" [formControl]="itemForm.controls['minStock']" data-placeholder="e.g., 1" min="0">
+                      <mat-error *ngIf="itemForm.controls['minStock'].invalid && itemForm.controls['minStock'].touched">
+                        Min stock is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Pieces per Box</mat-label>
+                      <input matInput type="number" name="piecesPerBox" [formControl]="itemForm.controls['piecesPerBox']" data-placeholder="e.g., 15" min="0">
+                    </mat-form-field>
+
+                    <!-- Status field removed - auto-determined based on quantity vs min_stock -->
+                    <div class="w-full modal-form-field p-3 bg-blue-50 rounded border border-blue-200">
+                      <p class="text-sm text-blue-800">
+                        <mat-icon class="text-blue-600 text-sm align-middle mr-1">info</mat-icon>
+                        <strong>Status Auto-Determined:</strong> Item status will be automatically set based on stock levels
+                        (OUT_OF_STOCK if qty=0, LOW_STOCK if qty≤min, IN_STOCK if qty>min)
+                      </p>
+                    </div>
+      </div>
+                </div>
+
+                <!-- Container Selection Section -->
+                <div class="w-full mb-4">
+                  <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Container Assignment</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Container *</mat-label>
+                      <input
+                        matInput
+                        type="text"
+                        [formControl]="containerSearchCtrl"
+                        [matAutocomplete]="containerAuto"
+                      />
+                      <button
+                        mat-icon-button
+                        matSuffix
+                        *ngIf="containerSearchCtrl.value"
+                        type="button"
+                        (click)="clearContainerSelection()"
+                        aria-label="Clear container selection"
+                      >
+                        <mat-icon>close</mat-icon>
+                      </button>
+                      <mat-progress-spinner
+                        *ngIf="isLoadingContainers"
+                        matSuffix
+                        diameter="20"
+                        mode="indeterminate"
+                      ></mat-progress-spinner>
+                      <mat-autocomplete
+                        #containerAuto="matAutocomplete"
+                        [displayWith]="displayContainerFn"
+                        (optionSelected)="onContainerSelected($event)"
+                      >
+                        <mat-option *ngFor="let container of filteredContainers" [value]="container">
+                          {{displayContainer(container)}}
+                        </mat-option>
+                        <mat-option *ngIf="!isLoadingContainers && filteredContainers.length === 0" [disabled]="true">
+                          No containers found
+                        </mat-option>
+                      </mat-autocomplete>
+                      <mat-error *ngIf="itemForm.controls['containerId'].invalid && itemForm.controls['containerId'].touched">
+                        Container selection is required
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <!-- Additional Information Section -->
+                <div class="w-full mb-4">
+                  <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Additional Information</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Initial Price (Guest Currency)</mat-label>
+                      <input matInput type="number" name="initialPriceGuestCurrency" [formControl]="itemForm.controls['initialPriceGuestCurrency']" data-placeholder="e.g., 150.00" step="0.01">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Initial Price (USD)</mat-label>
+                      <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+                      <input matInput type="number" name="initialPriceUsd" [formControl]="itemForm.controls['initialPriceUsd']" data-placeholder="e.g., 5.00" step="0.01">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field color-field">
+                      <mat-label>Color</mat-label>
+                      <input matInput type="text" name="color" [formControl]="itemForm.controls['color']" placeholder="e.g., #FF5733">
+                      <span matSuffix class="color-preview" [style.background-color]="itemForm.controls['color']?.value || '#000000'"></span>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Expiry Date</mat-label>
+                      <input matInput [matDatepicker]="expiryPicker" name="expiryDate" [formControl]="itemForm.controls['expiryDate']">
+                      <mat-datepicker-toggle matSuffix [for]="expiryPicker"></mat-datepicker-toggle>
+                      <mat-datepicker #expiryPicker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <!-- Pictures Section -->
+                <div class="w-full mb-4">
+                  <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Item Pictures</h3>
+                  
+                  <!-- File Upload -->
+                  <div class="mb-3">
+                    <input 
+                      type="file" 
+                      multiple 
+                      accept="image/*" 
+                      (change)="onFileSelected($event)"
+                      class="hidden"
+                      #fileInput
+                    />
+                    <button 
+                      type="button" 
+                      mat-raised-button 
+                      color="primary" 
+                      (click)="fileInput.click()"
+                      class="mb-2"
+                    >
+                      <mat-icon class="mr-2">add_photo_alternate</mat-icon>
+                      Select Pictures
+                    </button>
+                    <p class="text-sm text-gray-600">You can select multiple images (JPG, PNG, GIF)</p>
+                    <p class="text-xs text-blue-600">Images will be automatically compressed to fit database limits</p>
+                    
+                    <!-- Compression Status -->
+                    <div *ngIf="isCompressing" class="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
+                      <div class="flex items-center">
+                        <mat-icon class="animate-spin mr-2 text-blue-600">refresh</mat-icon>
+                        <span class="text-sm text-blue-700">Compressing images...</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Existing Pictures -->
+                  <div *ngIf="getExistingPictures().length > 0" class="mb-3">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Current Pictures:</h4>
+                    <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                      <div *ngFor="let picture of getExistingPictures(); let i = index" class="relative">
+                        <img 
+                          [src]="picture" 
+                          [alt]="'Current picture ' + (i + 1)"
+                          class="w-full h-20 object-cover rounded border border-gray-200"
+                        />
+                        <button 
+                          type="button"
+                          mat-icon-button 
+                          color="warn" 
+                          class="absolute -top-1 -right-1 bg-white rounded-full shadow-md w-6 h-6"
+                          (click)="removeExistingImage(i)"
+                          matTooltip="Remove picture"
+                        >
+                          <mat-icon class="text-xs">close</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- New Picture Previews -->
+                  <div *ngIf="previewUrls.length > 0" class="mb-3">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">New Pictures:</h4>
+                    <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                      <div *ngFor="let url of previewUrls; let i = index" class="relative">
+                        <img 
+                          [src]="url" 
+                          [alt]="'New picture ' + (i + 1)"
+                          class="w-full h-20 object-cover rounded border border-gray-200"
+                        />
+                        <button 
+                          type="button"
+                          mat-icon-button 
+                          color="warn" 
+                          class="absolute -top-1 -right-1 bg-white rounded-full shadow-md w-6 h-6"
+                          (click)="removeImage(i)"
+                          matTooltip="Remove picture"
+                        >
+                          <mat-icon class="text-xs">close</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- No Pictures Message -->
+                  <div *ngIf="getExistingPictures().length === 0 && previewUrls.length === 0" class="text-center py-4 text-gray-500">
+                    <mat-icon class="text-3xl mb-2">image</mat-icon>
+                    <p class="text-sm">No pictures uploaded yet</p>
+                    <p class="text-xs">Click "Select Pictures" to add images</p>
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- Clients fields -->
+              <ng-container *ngIf="currentRoute === 'clients'">
+                <div class="w-full mb-6">
+                  <h3 class="section-header">Client Information</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Client Name *</mat-label>
+                      <input matInput name="name" [formControl]="itemForm.controls['name']" data-placeholder="e.g., John Doe">
+                      <mat-error *ngIf="itemForm.controls['name'].invalid && itemForm.controls['name'].touched">
+                        Client name is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Email *</mat-label>
+                      <input matInput type="email" name="email" [formControl]="itemForm.controls['email']" data-placeholder="e.g., johndoe@example.com">
+                      <mat-error *ngIf="itemForm.controls['email'].invalid && itemForm.controls['email'].touched">
+                        Valid email is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <!-- Phone Numbers (up to 3) -->
+                    <div class="w-full space-y-3">
+                      <mat-form-field appearance="fill" class="w-full modal-form-field">
+                        <mat-label>Phone 1 *</mat-label>
+                        <input matInput name="phone1" [formControl]="itemForm.controls['phone1']" data-placeholder="e.g., +96171123456">
+                        <mat-icon matSuffix class="text-gray-500">phone</mat-icon>
+                        <mat-error *ngIf="itemForm.controls['phone1'].invalid && itemForm.controls['phone1'].touched">
+                          Phone 1 is required
+                        </mat-error>
+                      </mat-form-field>
+                      
+                      <mat-form-field appearance="fill" class="w-full modal-form-field">
+                        <mat-label>Phone 2 (Optional)</mat-label>
+                        <input matInput name="phone2" [formControl]="itemForm.controls['phone2']" data-placeholder="e.g., +96171123457">
+                        <mat-icon matSuffix class="text-gray-500">phone</mat-icon>
+                      </mat-form-field>
+                      
+                      <mat-form-field appearance="fill" class="w-full modal-form-field">
+                        <mat-label>Phone 3 (Optional)</mat-label>
+                        <input matInput name="phone3" [formControl]="itemForm.controls['phone3']" data-placeholder="e.g., +96171123458">
+                        <mat-icon matSuffix class="text-gray-500">phone</mat-icon>
+                      </mat-form-field>
+                    </div>
+
+                    <!-- Lebanese Address System Section -->
+                    <div class="w-full my-5">
+                      <div class="flex items-center mb-4">
+                        <mat-icon class="mr-2 text-indigo-600">location_on</mat-icon>
+                        <h3 class="text-base font-bold text-gray-700">Address Information</h3>
+                      </div>
+                      
+                      <!-- Governorate Dropdown with Search -->
+                      <mat-form-field appearance="fill" class="w-full modal-form-field">
+                        <mat-label>Governorate (المحافظة)</mat-label>
+                        <mat-select [formControl]="itemForm.controls['governorate']"
+                                    (selectionChange)="onGovernorateChange($event.value)">
+                          <!-- Search Input -->
+                          <mat-option>
+                            <ngx-mat-select-search 
+                              [formControl]="governorateSearchCtrl"
+                              placeholderLabel="Search governorate..."
+                              noEntriesFoundLabel="No governorate found">
+                            </ngx-mat-select-search>
+                          </mat-option>
+                          
+                          <mat-option [value]="''">
+                            <span class="text-gray-400 italic">-- None --</span>
+                          </mat-option>
+                          <mat-option *ngFor="let gov of filteredGovernorates | async" [value]="gov.governorate">
+                            <div class="flex items-center justify-between">
+                              <span class="font-medium">{{gov.governorate}}</span>
+                              <span class="text-xs text-gray-500 ml-2">{{gov.governorateAr}}</span>
+                            </div>
+                          </mat-option>
+                        </mat-select>
+                        <mat-icon matSuffix class="text-indigo-600">public</mat-icon>
+                      </mat-form-field>
+                      
+                      <!-- District Dropdown with Search -->
+                      <mat-form-field appearance="fill" class="w-full modal-form-field">
+                        <mat-label>District (القضاء)</mat-label>
+                        <mat-select [formControl]="itemForm.controls['district']"
+                                    [disabled]="!selectedGovernorate"
+                                    (selectionChange)="onDistrictChange($event.value)">
+                          <!-- Search Input -->
+                          <mat-option>
+                            <ngx-mat-select-search 
+                              [formControl]="districtSearchCtrl"
+                              placeholderLabel="Search district..."
+                              noEntriesFoundLabel="No district found">
+                            </ngx-mat-select-search>
+                          </mat-option>
+                          
+                          <mat-option [value]="''">
+                            <span class="text-gray-400 italic">-- None --</span>
+                          </mat-option>
+                          <mat-option *ngFor="let dist of filteredDistricts | async" [value]="dist.district">
+                            <div class="flex items-center justify-between">
+                              <span class="font-medium">{{dist.district}}</span>
+                              <span class="text-xs text-gray-500 ml-2">{{dist.districtAr}}</span>
+                            </div>
+                          </mat-option>
+                        </mat-select>
+                        <mat-icon matSuffix class="text-indigo-600">location_city</mat-icon>
+                        <mat-hint *ngIf="!selectedGovernorate" class="text-gray-500 text-xs">
+                          Select a governorate first
+                        </mat-hint>
+                      </mat-form-field>
+                      
+                      <!-- Municipality Dropdown with Search -->
+                      <mat-form-field appearance="fill" class="w-full modal-form-field">
+                        <mat-label>Municipality (البلدية)</mat-label>
+                        <mat-select [formControl]="itemForm.controls['municipalityId']"
+                                    [disabled]="!selectedDistrict">
+                          <!-- Search Input -->
+                          <mat-option>
+                            <ngx-mat-select-search 
+                              [formControl]="municipalitySearchCtrl"
+                              placeholderLabel="Search municipality..."
+                              noEntriesFoundLabel="No municipality found">
+                            </ngx-mat-select-search>
+                          </mat-option>
+                          
+                          <mat-option [value]="''">
+                            <span class="text-gray-400 italic">-- None --</span>
+                          </mat-option>
+                          <mat-option *ngFor="let mun of filteredMunicipalities | async" [value]="mun.id">
+                            <div class="flex items-center justify-between">
+                              <span class="font-medium">{{mun.municipalityName}}</span>
+                              <span class="text-xs text-gray-500 ml-2">{{mun.municipalityNameAr}}</span>
+                            </div>
+                          </mat-option>
+                        </mat-select>
+                        <mat-icon matSuffix class="text-indigo-600">apartment</mat-icon>
+                        <mat-hint *ngIf="!selectedDistrict" class="text-gray-500 text-xs">
+                          Select a district first
+                        </mat-hint>
+                      </mat-form-field>
+                    </div>
+
+                    <!-- Address (Street/Building Details) -->
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Address (Street, Building, Floor) *</mat-label>
+                      <textarea matInput name="address" [formControl]="itemForm.controls['address']" 
+                                rows="2" data-placeholder="e.g., Main Street, Building 123, Floor 4"></textarea>
+                      <mat-icon matSuffix class="text-gray-500">home</mat-icon>
+                      <mat-error *ngIf="itemForm.controls['address'].invalid && itemForm.controls['address'].touched">
+                        Address details are required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Client Type *</mat-label>
+                      <mat-select name="clientType" [formControl]="itemForm.controls['clientType']">
+                        <mat-option value="RETAIL">Retail</mat-option>
+                        <mat-option value="WHOLESALE">Wholesale</mat-option>
+                        <mat-option value="CORPORATE">Corporate</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="itemForm.controls['clientType'].invalid && itemForm.controls['clientType'].touched">
+                        Client type is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full md:col-span-2">
+                      <mat-label>Preferences</mat-label>
+                      <input matInput name="preferences" [formControl]="itemForm.controls['preferences']" data-placeholder="e.g., Prefers email communication">
+        </mat-form-field>
+      </div>
+                </div>
+              </ng-container>
+
+              <!-- Suppliers fields -->
+              <ng-container *ngIf="currentRoute === 'suppliers'">
+                <div class="w-full mb-6">
+                  <h3 class="section-header">Supplier Information</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Supplier Code *</mat-label>
+                      <input matInput name="code" [formControl]="itemForm.controls['code']" data-placeholder="e.g., SUP-001">
+                      <mat-error *ngIf="itemForm.controls['code'].invalid && itemForm.controls['code'].touched">
+                        Supplier code is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Supplier Name *</mat-label>
+                      <input matInput name="name" [formControl]="itemForm.controls['name']" data-placeholder="e.g., Global Trade Ltd.">
+                      <mat-error *ngIf="itemForm.controls['name'].invalid && itemForm.controls['name'].touched">
+                        Supplier name is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Contact Name *</mat-label>
+                      <input matInput name="contactName" [formControl]="itemForm.controls['contactName']" data-placeholder="e.g., John Doe">
+                      <mat-error *ngIf="itemForm.controls['contactName'].invalid && itemForm.controls['contactName'].touched">
+                        Contact name is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Email *</mat-label>
+                      <input matInput type="email" name="email" [formControl]="itemForm.controls['email']" data-placeholder="e.g., contact@globaltrade.com">
+                      <mat-error *ngIf="itemForm.controls['email'].invalid && itemForm.controls['email'].touched">
+                        Valid email is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Phone *</mat-label>
+                      <input matInput name="phone" [formControl]="itemForm.controls['phone']" data-placeholder="e.g., +1234567890">
+                      <mat-error *ngIf="itemForm.controls['phone'].invalid && itemForm.controls['phone'].touched">
+                        Phone is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Status *</mat-label>
+                      <mat-select name="status" [formControl]="itemForm.controls['status']">
+                        <mat-option value="ACTIVE">Active</mat-option>
+                        <mat-option value="INACTIVE">Inactive</mat-option>
+                      </mat-select>
+                      <mat-error *ngIf="itemForm.controls['status'].invalid && itemForm.controls['status'].touched">
+                        Status is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Address *</mat-label>
+                      <input matInput name="address" [formControl]="itemForm.controls['address']" data-placeholder="e.g., 123 Business Street">
+                      <mat-error *ngIf="itemForm.controls['address'].invalid && itemForm.controls['address'].touched">
+                        Address is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>City *</mat-label>
+                      <input matInput name="city" [formControl]="itemForm.controls['city']" data-placeholder="e.g., New York">
+                      <mat-error *ngIf="itemForm.controls['city'].invalid && itemForm.controls['city'].touched">
+                        City is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Country *</mat-label>
+                      <input matInput name="country" [formControl]="itemForm.controls['country']" data-placeholder="e.g., USA">
+                      <mat-error *ngIf="itemForm.controls['country'].invalid && itemForm.controls['country'].touched">
+                        Country is required
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Tax Number</mat-label>
+                      <input matInput name="taxNumber" [formControl]="itemForm.controls['taxNumber']" data-placeholder="e.g., TX123456">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full modal-form-field">
+                      <mat-label>Website</mat-label>
+                      <input matInput name="website" [formControl]="itemForm.controls['website']" data-placeholder="e.g., https://globaltrade.com">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="w-full md:col-span-2">
+                      <mat-label>Notes</mat-label>
+                      <input matInput name="notes" [formControl]="itemForm.controls['notes']" data-placeholder="e.g., Preferred electronics supplier">
+        </mat-form-field>
+      </div>
+                </div>
+              </ng-container>
+
+              <!-- Default fields for other entities -->
+              <ng-container *ngIf="currentRoute !== 'containers' && currentRoute !== 'items' && currentRoute !== 'clients' && currentRoute !== 'suppliers'">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <mat-form-field appearance="fill" class="w-full modal-form-field">
+                    <mat-label>Name *</mat-label>
+                    <input matInput name="name" [formControl]="itemForm.controls['name']" data-placeholder="e.g., John Doe">
+                    <mat-error *ngIf="itemForm.controls['name'].invalid && itemForm.controls['name'].touched">
+                      Name is required
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="fill" class="w-full modal-form-field">
+                    <mat-label>Age</mat-label>
+                    <input matInput type="number" name="age" [formControl]="itemForm.controls['age']" data-placeholder="e.g., 25" min="0" max="120">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="fill" class="w-full modal-form-field">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" name="email" [formControl]="itemForm.controls['email']" data-placeholder="e.g., john@example.com">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="fill" class="w-full modal-form-field">
+                    <mat-label>Company</mat-label>
+                    <input matInput name="company" [formControl]="itemForm.controls['company']" data-placeholder="e.g., ABC Corp">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="fill" class="w-full modal-form-field">
+                    <mat-label>Phone</mat-label>
+                    <input matInput name="phone" [formControl]="itemForm.controls['phone']" data-placeholder="e.g., +1 234 567 8900">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="fill" class="w-full modal-form-field">
+                    <mat-label>Address</mat-label>
+                    <input matInput name="address" [formControl]="itemForm.controls['address']" data-placeholder="e.g., 123 Main St, City">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="fill" class="w-full modal-form-field">
+                    <mat-label>Balance</mat-label>
+                    <span matPrefix style="display: flex; align-items: center; padding-right: 8px;">$</span>
+                    <input matInput type="number" name="balance" [formControl]="itemForm.controls['balance']" data-placeholder="e.g., 1000.00" step="0.01">
+                  </mat-form-field>
+
+                  <div class="flex items-center pt-4">
+                    <mat-slide-toggle name="isActive" [formControl]="itemForm.controls['isActive']">
+                      Active Customer
+                    </mat-slide-toggle>
+                  </div>
+      </div>
+              </ng-container>
+
+      <!-- Action Buttons -->
+      <div class="modal-actions flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+        <button mat-stroked-button type="button" (click)="dialogRef.close(false)">
+          Cancel
+        </button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="itemForm.invalid">
+          <mat-icon class="mr-2">save</mat-icon>
+          {{"SAVE" | translate }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

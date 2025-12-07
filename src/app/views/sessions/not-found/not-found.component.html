@@ -1,0 +1,31 @@
+<div class="flex min-h-screen bg-card relative overflow-hidden screen-bottom-left-gradient screen-bottom-right-gradient">
+  <!-- Container with gradient effects applied via SCSS -->
+  <div class="container flex min-h-screen mx-auto relative z-10" [@animate]="{value:'*',params:{y:'40px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+    <div class="flex-1 flex flex-col items-center justify-center p-8">
+      
+      <div class="w-full max-w-md">
+        <div class="flex flex-col items-center mb-4">
+          <img src="assets/images/illustrations/404.svg" alt="404 Error Illustration" class="mb-8">
+          <h1 class="text-2xl font-semibold mb-2">Page Not Found!</h1>
+          <p class="text-secondary text-center mb-6">The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <button 
+            mat-flat-button 
+            color="primary" 
+            class="py-2" 
+            [routerLink]="['/']">
+            Back to Dashboard
+          </button>
+          
+          <button 
+            mat-stroked-button
+            class="py-2">
+            Report this Problem
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

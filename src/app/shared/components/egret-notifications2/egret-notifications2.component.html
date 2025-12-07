@@ -1,0 +1,93 @@
+<!-- Header -->
+<div class="notification-header px-4 py-3 border-b border-gray-200 bg-white sticky top-0 z-10">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+        <mat-icon class="mr-2 text-blue-600">notifications</mat-icon>
+        Notifications
+        <span class="ml-2 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full" 
+              *ngIf="(unreadCount$ | async) as count">
+          {{count}}
+        </span>
+      </h2>
+      <div class="flex items-center space-x-1">
+        <!-- Mark all as read button -->
+        <button mat-icon-button 
+                matTooltip="Mark all as read"
+                (click)="markAllAsRead()"
+                *ngIf="(unreadCount$ | async) && (unreadCount$ | async)! > 0">
+          <mat-icon class="text-gray-600">done_all</mat-icon>
+        </button>
+        <!-- Close button for mobile -->
+        <button mat-icon-button 
+                matTooltip="Close"
+                (click)="closePanel()">
+          <mat-icon class="text-gray-600">close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications List -->
+  <div class="notification-list">
+    <!-- Show notifications if available -->
+    <div *ngIf="(notifications$ | async) as notifications">
+      <div *ngIf="notifications.length > 0; else noNotifications">
+        <div *ngFor="let notification of notifications" 
+             class="notification-item px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+             [class.unread]="!notification.read"
+             (click)="markAsRead(notification)">
+          <div class="flex items-start">
+            <!-- Icon -->
+            <div class="flex-shrink-0 mt-1">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center"
+                   [ngClass]="{
+                     'bg-orange-100': getNotificationIcon(notification.message) === 'warning',
+                     'bg-green-100': getNotificationIcon(notification.message) === 'receipt',
+                     'bg-blue-100': getNotificationIcon(notification.message) === 'payment',
+                     'bg-purple-100': getNotificationIcon(notification.message) === 'shopping_cart',
+                     'bg-gray-100': getNotificationIcon(notification.message) === 'notifications'
+                   }">
+                <mat-icon [ngClass]="getNotificationColor(notification.message)" class="text-xl">
+                  {{getNotificationIcon(notification.message)}}
+                </mat-icon>
+              </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="ml-3 flex-1">
+              <p class="text-sm text-gray-900" [class.font-semibold]="!notification.read">
+                {{notification.message}}
+              </p>
+              <p class="text-xs text-gray-500 mt-1">
+                {{getTimeAgo(notification.createdAt)}}
+              </p>
+            </div>
+            
+            <!-- Unread indicator -->
+            <div class="flex-shrink-0 ml-2" *ngIf="!notification.read">
+              <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No notifications message -->
+      <ng-template #noNotifications>
+        <div class="text-center py-12 px-4">
+          <mat-icon class="text-gray-300 mb-4" style="font-size: 64px; width: 64px; height: 64px;">
+            notifications_none
+          </mat-icon>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">No notifications</h3>
+          <p class="text-sm text-gray-500">You're all caught up! Check back later for new notifications.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+<!-- Footer (optional) -->
+<div class="notification-footer px-4 py-3 border-t border-gray-200 bg-gray-50">
+  <button mat-stroked-button class="w-full" (click)="notificationService.refreshNotifications()">
+    <mat-icon>refresh</mat-icon>
+    <span class="ml-2">Refresh</span>
+  </button>
+</div>

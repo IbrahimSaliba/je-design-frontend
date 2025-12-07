@@ -1,0 +1,61 @@
+// Component root styles (mat-sidenav with .notification-panel class is in parent layout)
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.notification-list {
+  flex: 1;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  
+  /* Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+.notification-item {
+  position: relative;
+  
+  &.unread {
+    background-color: #f0f9ff; // Light blue background for unread
+    
+    &:hover {
+      background-color: #e0f2fe;
+    }
+  }
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+/* Animation for notification count badge */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.notification-number {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+

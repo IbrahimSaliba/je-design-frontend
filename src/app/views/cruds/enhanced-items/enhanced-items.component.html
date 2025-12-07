@@ -1,0 +1,689 @@
+<div class="inventory-movements-container p-6">
+  <!-- Header Section -->
+  <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Inventory Movements Management</h1>
+      <p class="text-gray-600">Track and manage stock movements, inventory levels, and item history</p>
+    </div>
+    <div class="flex flex-wrap gap-2 mt-4 lg:mt-0">
+      <button mat-stroked-button (click)="exportReport()" matTooltip="Export movements to CSV (Ctrl+E)">
+        <mat-icon>download</mat-icon>
+        Export Report
+      </button>
+      <button mat-stroked-button (click)="refreshData()" [disabled]="loading" matTooltip="Refresh data (Ctrl+R)">
+        <mat-icon [class.animate-spin]="loading">refresh</mat-icon>
+        <span *ngIf="!loading">Refresh</span>
+        <span *ngIf="loading">Refreshing...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="hasError" class="mb-6">
+    <mat-card class="bg-red-50 border border-red-200">
+      <mat-card-content class="p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <mat-icon class="text-red-600 mr-3">error</mat-icon>
+            <div>
+              <h4 class="text-red-800 font-medium">Failed to Load Data</h4>
+              <p class="text-red-700 text-sm">{{error}}</p>
+            </div>
+          </div>
+          <div class="flex space-x-2">
+            <button mat-button color="warn" (click)="retryLoad()">
+              <mat-icon>refresh</mat-icon>
+              Retry
+            </button>
+            <button mat-icon-button (click)="clearError()" matTooltip="Dismiss">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- KPI Cards Dashboard -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <!-- Total Stock Value -->
+    <mat-card class="kpi-card">
+      <mat-card-content class="p-4">
+        <div class="flex items-center justify-between" *ngIf="!loading; else loadingKPI">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total Stock Value</p>
+            <h3 class="text-2xl font-bold text-gray-900">${{totalStockValue | number:'1.2-2'}}</h3>
+            <p class="text-xs text-green-600">Current inventory value</p>
+          </div>
+          <div class="bg-blue-100 p-3 rounded-full">
+            <mat-icon class="text-blue-600">account_balance_wallet</mat-icon>
+          </div>
+        </div>
+        <ng-template #loadingKPI>
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <div class="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
+              <div class="h-8 bg-gray-200 rounded mb-2 animate-pulse"></div>
+              <div class="h-3 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+            </div>
+            <div class="bg-gray-200 p-3 rounded-full animate-pulse">
+              <mat-icon class="text-gray-400">account_balance_wallet</mat-icon>
+            </div>
+          </div>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Total Items -->
+    <mat-card class="kpi-card">
+      <mat-card-content class="p-4">
+        <div class="flex items-center justify-between" *ngIf="!loading; else loadingKPI">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total Items</p>
+            <h3 class="text-2xl font-bold text-gray-900">{{totalItems}}</h3>
+            <p class="text-xs text-blue-600">Active items tracked</p>
+          </div>
+          <div class="bg-green-100 p-3 rounded-full">
+            <mat-icon class="text-green-600">inventory</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Low Stock Alert -->
+    <mat-card class="kpi-card" [class.border-orange-300]="lowStockItems > 0">
+      <mat-card-content class="p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Low Stock Items</p>
+            <h3 class="text-2xl font-bold text-orange-600">{{lowStockItems}}</h3>
+            <p class="text-xs text-orange-600" *ngIf="lowStockItems === 0">All items well stocked</p>
+            <p class="text-xs text-orange-600" *ngIf="lowStockItems > 0">Need reorder attention</p>
+          </div>
+          <div class="bg-orange-100 p-3 rounded-full">
+            <mat-icon class="text-orange-600">warning</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Monthly Movements -->
+    <mat-card class="kpi-card">
+      <mat-card-content class="p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Movements This Month</p>
+            <h3 class="text-2xl font-bold text-purple-600">{{monthlyMovements}}</h3>
+            <p class="text-xs text-purple-600">IN: {{monthlyIn}} | OUT: {{monthlyOut}}</p>
+          </div>
+          <div class="bg-purple-100 p-3 rounded-full">
+            <mat-icon class="text-purple-600">inventory_2</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Charts and Analytics Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Stock Movement Chart -->
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>
+          <div class="flex items-center">
+            <mat-icon class="text-blue-600 mr-2">timeline</mat-icon>
+            Stock Movement Trends
+          </div>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="p-4" *ngIf="!loading; else loadingChart">
+        <!-- Chart Header -->
+        <div class="flex justify-between items-center mb-6">
+          <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-2">
+              <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span class="text-sm font-medium text-gray-700">Stock In</span>
+              <span class="text-xs text-blue-600 font-medium">({{getTotalStockIn()}} units)</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+              <span class="text-sm font-medium text-gray-700">Stock Out</span>
+              <span class="text-xs text-red-600 font-medium">({{getTotalStockOut()}} units)</span>
+            </div>
+          </div>
+          <div class="text-sm text-gray-500">
+            <span class="inline-flex items-center">
+              <mat-icon class="text-sm mr-1">schedule</mat-icon>
+              Last 7 days
+            </span>
+          </div>
+        </div>
+        
+        <!-- Chart Area -->
+        <div class="relative h-40 bg-gradient-to-b from-gray-50 to-white border border-gray-200 rounded-lg overflow-hidden">
+          <svg class="absolute inset-0 w-full h-full" viewBox="0 0 400 160">
+            <!-- Grid Lines -->
+            <defs>
+              <pattern id="grid" width="40" height="32" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 32" fill="none" stroke="#e5e7eb" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+            
+            <!-- Stock In Line Chart (Dynamic) -->
+            <polyline 
+              [attr.points]="getChartPath('IN')"
+              fill="none"
+              stroke="#3b82f6"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+            
+            <!-- Stock In Data Points (Dynamic) -->
+            <circle 
+              *ngFor="let point of getChartDataPoints('IN')"
+              [attr.cx]="point.x" 
+              [attr.cy]="point.y" 
+              r="4" 
+              fill="#3b82f6" 
+              stroke="white" 
+              stroke-width="2"
+              [attr.title]="'Stock In: ' + point.value + ' units'"/>
+            
+            <!-- Stock Out Line Chart (Dynamic) -->
+            <polyline 
+              [attr.points]="getChartPath('OUT')"
+              fill="none"
+              stroke="#ef4444"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="6,6"/>
+            
+            <!-- Stock Out Data Points (Dynamic) -->
+            <circle 
+              *ngFor="let point of getChartDataPoints('OUT')"
+              [attr.cx]="point.x" 
+              [attr.cy]="point.y" 
+              r="4" 
+              fill="#ef4444" 
+              stroke="white" 
+              stroke-width="2"
+              [attr.title]="'Stock Out: ' + point.value + ' units'"/>
+          </svg>
+          
+          <!-- Y-Axis Labels (Left side) -->
+          <div class="absolute left-2 top-3 bottom-3 flex flex-col justify-between text-xs text-gray-500">
+            <span class="bg-white px-1 rounded">High</span>
+            <span class="bg-white px-1 rounded">Medium</span>
+            <span class="bg-white px-1 rounded">Low</span>
+          </div>
+          
+          <!-- No Data Message -->
+          <div *ngIf="allMovements.length === 0" class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center text-gray-400">
+              <mat-icon class="text-4xl mb-2">show_chart</mat-icon>
+              <p class="text-sm">No movement data available</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- X-Axis Labels (Dynamic) -->
+        <div class="flex justify-between text-xs text-gray-500 mt-2 px-4">
+          <span *ngFor="let label of getDateLabels()" [class.invisible]="!label">{{label}}</span>
+        </div>
+        
+        <!-- Chart Stats (Dynamic) -->
+        <div class="grid grid-cols-4 gap-4 mt-6 p-4 bg-gray-50 rounded-lg">
+          <div class="text-center">
+            <div class="text-xl font-bold text-blue-600">{{getTrendStats().today}}</div>
+            <div class="text-xs text-gray-500">Today</div>
+            <div class="text-xs text-green-600 font-medium" *ngIf="getTrendStats().today > 0">↗ Active</div>
+            <div class="text-xs text-gray-400 font-medium" *ngIf="getTrendStats().today === 0">— No activity</div>
+          </div>
+          <div class="text-center">
+            <div class="text-xl font-bold text-gray-700">{{getTrendStats().thisWeek}}</div>
+            <div class="text-xs text-gray-500">This Week</div>
+            <div class="text-xs text-blue-600 font-medium" *ngIf="getTrendStats().thisWeek > 0">↗ Active</div>
+            <div class="text-xs text-gray-400 font-medium" *ngIf="getTrendStats().thisWeek === 0">— No activity</div>
+          </div>
+          <div class="text-center">
+            <div class="text-xl font-bold text-green-600">{{getTrendStats().thisMonth}}</div>
+            <div class="text-xs text-gray-500">This Month</div>
+            <div class="text-xs text-green-600 font-medium" *ngIf="getTrendStats().thisMonth > 0">↗ Active</div>
+            <div class="text-xs text-gray-400 font-medium" *ngIf="getTrendStats().thisMonth === 0">— No activity</div>
+          </div>
+          <div class="text-center">
+            <div class="text-xl font-bold text-purple-600">{{getTrendStats().growthRate}}%</div>
+            <div class="text-xs text-gray-500">Growth Rate</div>
+            <div class="text-xs text-purple-600 font-medium" *ngIf="getTrendStats().growthRate > 0">↗ +{{getTrendStats().growthRate}}%</div>
+            <div class="text-xs text-gray-400 font-medium" *ngIf="getTrendStats().growthRate === 0">— Stable</div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Top Items by Value -->
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>
+          <div class="flex items-center">
+            <mat-icon class="text-green-600 mr-2">trending_up</mat-icon>
+            Top Items by Stock Value
+          </div>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="p-4">
+        <div class="space-y-3" *ngIf="topItemsByValue && topItemsByValue.length > 0">
+          <div *ngFor="let item of topItemsByValue; let i = index" 
+               class="flex items-center justify-between p-3 rounded-lg border-l-4"
+               [ngClass]="getTopItemCardClass(i)">
+            <div class="flex items-center">
+              <div>
+                <p class="font-semibold text-gray-900">{{ item.name }}</p>
+                <p class="text-sm text-gray-600">{{ item.code }}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-lg font-bold text-green-600">${{ item.totalValue | number:'1.2-2' }}</p>
+              <p class="text-sm text-gray-500">{{ item.currentStock }} units</p>
+              <p class="text-xs text-gray-400">${{ (item.totalValue / item.currentStock) | number:'1.2-2' }}/unit</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- No data message -->
+        <div *ngIf="!topItemsByValue || topItemsByValue.length === 0" class="text-center py-8">
+          <mat-icon class="text-gray-400 text-6xl mb-4">inventory</mat-icon>
+          <p class="text-gray-500 text-lg">No items available</p>
+          <p class="text-gray-400 text-sm">Top items will appear here once data is loaded</p>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-gray-200" *ngIf="topItemsByValue && topItemsByValue.length > 0">
+          <div class="flex justify-between items-center">
+            <div class="text-sm text-gray-600">
+              <span class="font-medium">Total Top {{ topItemsByValue.length }} Value:</span>
+              <span class="text-lg font-bold text-green-600 ml-2">${{ getTotalTopItemsValue() | number:'1.2-2' }}</span>
+            </div>
+            <div class="text-sm text-gray-500">
+              Represents {{ getTopItemsPercentage() | number:'1.1-1' }}% of total stock
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Filters and Search Section -->
+  <mat-card class="filters-card mb-6">
+    <mat-card-header>
+      <mat-card-title>
+        <div class="flex items-center">
+          <mat-icon class="text-gray-600 mr-2">filter_list</mat-icon>
+        Filters & Search
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="p-4">
+      <form [formGroup]="searchForm" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Item Search -->
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Search Items</mat-label>
+            <input matInput formControlName="searchQuery">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+
+          <!-- Movement Type Filter -->
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Movement Type</mat-label>
+            <mat-select formControlName="movementType">
+              <mat-option value="">All Types</mat-option>
+              <mat-option value="IN">Stock In</mat-option>
+              <mat-option value="OUT">Stock Out</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>From Date</mat-label>
+            <input matInput [matDatepicker]="fromPicker" formControlName="fromDate">
+            <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+            <mat-datepicker #fromPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="w-full">
+            <mat-label>To Date</mat-label>
+            <input matInput [matDatepicker]="toPicker" formControlName="toDate">
+            <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+            <mat-datepicker #toPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!-- Quick Filters -->
+        <div class="flex flex-wrap gap-4">
+          <mat-checkbox formControlName="showLowStockOnly">Low Stock Only</mat-checkbox>
+          <mat-checkbox formControlName="hideZeroStock">Hide Zero Stock</mat-checkbox>
+          <mat-checkbox formControlName="showValueOnly">High Value Items Only</mat-checkbox>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- View Mode Toggle -->
+  <div class="flex justify-between items-center mb-4">
+    <div class="flex space-x-2">
+      <button mat-icon-button 
+              [class.bg-blue-100]="viewMode === 'table'"
+              (click)="onViewModeChange('table')"
+              matTooltip="Table View">
+        <mat-icon>table_view</mat-icon>
+      </button>
+      <button mat-icon-button 
+              [class.bg-blue-100]="viewMode === 'timeline'"
+              (click)="onViewModeChange('timeline')"
+              matTooltip="Timeline View">
+        <mat-icon>timeline</mat-icon>
+      </button>
+    </div>
+    
+    <div class="text-sm text-gray-600">
+      Showing {{itemPageRange.start}}–{{itemPageRange.end}} of {{filteredItems.length}} items
+    </div>
+  </div>
+
+  <!-- Table View - Current Stock Status -->
+  <mat-card *ngIf="viewMode === 'table'" class="movements-table-card">
+    <mat-card-header>
+      <mat-card-title>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <mat-icon class="text-gray-600 mr-2">inventory</mat-icon>
+            Current Stock Status
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-sm text-gray-500">Last updated: {{lastUpdateTime | date:'short'}}</span>
+            <button mat-icon-button (click)="refreshData()" matTooltip="Refresh Data">
+              <mat-icon>refresh</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="p-0">
+      <!-- Desktop Table View -->
+      <div class="hidden md:block overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Stock</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Value</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let item of paginatedItems" class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <!-- Item Image -->
+                  <div class="w-12 h-12 rounded-lg overflow-hidden mr-4 bg-gray-100 flex items-center justify-center">
+                    <img *ngIf="item.picture && item.picture.length > 0" 
+                         [src]="item.picture" 
+                         alt="{{item.name}}"
+                         class="w-full h-full object-cover"
+                         (error)="$event.target.src='assets/images/products/speaker-1.jpg'">
+                    <mat-icon *ngIf="!item.picture || item.picture.length === 0" 
+                              class="text-gray-400 text-3xl">inventory_2</mat-icon>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">{{item.name}}</div>
+                    <div class="text-xs text-gray-500">{{item.type || 'Product'}}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-700 font-mono">{{item.code}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div [class]="getStockClass(item.currentStock, item.minStock)" class="text-sm font-semibold">
+                  {{item.currentStock}} units
+                </div>
+                <div class="text-xs text-gray-500" *ngIf="item.minStock">Min: {{item.minStock}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
+                ${{getUnitPrice(item) | number:'1.2-2'}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600">
+                ${{item.totalValue | number:'1.2-2'}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span [class]="getStatusBadgeClass(item)" class="px-3 py-1 text-xs font-semibold rounded-full">
+                  {{getStockStatus(item)}}
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="items.length === 0">
+              <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                <mat-icon class="text-6xl text-gray-300 mb-2">inventory</mat-icon>
+                <p class="text-lg">No items found</p>
+                <p class="text-sm">Items will appear here once they are added to inventory</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Card View -->
+      <div class="md:hidden space-y-3 p-4">
+        <div *ngFor="let item of paginatedItems" class="movement-card">
+          <div class="movement-header">
+            <div class="item-info">
+              <div class="item-icon">
+                <mat-icon>warehouse</mat-icon>
+              </div>
+              <div class="item-details">
+                <div class="item-name">{{item.name}}</div>
+                <div class="item-code">{{item.code}}</div>
+              </div>
+            </div>
+            <span class="px-2 py-1 text-xs font-medium rounded-full" [class]="getStatusBadgeClass(item)">
+              {{getStockStatus(item)}}
+            </span>
+          </div>
+          
+          <div class="movement-details">
+            <div class="detail-item">
+              <div class="label">Current Stock</div>
+              <div class="value" [class]="getStockClass(item.currentStock, item.minStock)">
+                {{item.currentStock}}
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Min Stock</div>
+              <div class="value">{{item.minStock}}</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Unit Price</div>
+              <div class="value text-green-600 font-medium">
+                ${{getUnitPrice(item) | number:'1.2-2'}}
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Total Value</div>
+              <div class="value text-green-600 font-medium">
+                ${{item.totalValue | number:'1.2-2'}}
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Last Movement</div>
+              <div class="date">
+                {{item.lastMovementDate ? (item.lastMovementDate | date:'MMM d, h:mm a') : '—'}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-4 md:px-6 py-4 border-t bg-gray-50">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+          <div class="text-sm text-gray-700 order-2 md:order-1">
+            Showing {{itemPageRange.start}}–{{itemPageRange.end}} of {{filteredItems.length}} items
+          </div>
+          <div class="order-1 md:order-2 w-full md:w-auto" *ngIf="filteredItems.length > itemPageSize">
+            <mat-paginator
+              [length]="filteredItems.length"
+              [pageSize]="itemPageSize"
+              [pageSizeOptions]="[5, 10, 25, 50]"
+              (page)="onItemPageChange($event)"
+              class="w-full">
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Timeline View -->
+  <mat-card *ngIf="viewMode === 'timeline'" class="timeline-card">
+    <mat-card-header>
+      <mat-card-title>
+        <div class="flex items-center">
+          <mat-icon class="text-gray-600 mr-2">timeline</mat-icon>
+          Recent Stock Movements Timeline
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="p-4">
+      <div class="flow-root">
+        <ul class="-mb-8" *ngIf="paginatedMovements.length > 0; else noMovementsTimeline">
+          <li *ngFor="let movement of paginatedMovements" class="relative pb-8">
+            <div class="relative flex space-x-3">
+              <div>
+                <span 
+                  [class]="movement.type === 'IN' ? 'bg-green-400' : 'bg-red-400'"
+                  class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white">
+                  <mat-icon 
+                    [class]="movement.type === 'IN' ? 'text-white' : 'text-white'" 
+                    class="text-sm">
+                    {{movement.type === 'IN' ? 'arrow_downward' : 'arrow_upward'}}
+                  </mat-icon>
+                </span>
+              </div>
+              <div class="min-w-0 flex-1 pt-1.5">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <p class="text-sm font-medium text-gray-900">
+                      {{movement.type === 'IN' ? 'Stock Received' : 'Stock Issued'}}
+                      <span class="text-gray-600">- {{movement.item?.name}}</span>
+                    </p>
+                  </div>
+                  <p class="text-sm text-gray-500 mt-1">
+                    Quantity: <span class="font-medium">{{movement.quantity}}</span> 
+                    | Unit Price: <span class="font-medium">${{movement.unitPrice | number:'1.2-2'}}</span>
+                    | Total: <span class="font-medium text-green-600">${{movement.totalPrice | number:'1.2-2'}}</span>
+                  </p>
+                  <p class="text-xs text-gray-400 mt-1">
+                    {{movement.movementDate | date:'full'}}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+        
+        <!-- No Movements Template -->
+        <ng-template #noMovementsTimeline>
+          <div class="text-center py-12">
+            <mat-icon class="text-gray-400 text-6xl mb-4">timeline</mat-icon>
+            <p class="text-gray-500 text-lg mb-2">No movements to display</p>
+            <p class="text-gray-400 text-sm">Movement history will appear here once data is available</p>
+          </div>
+        </ng-template>
+      </div>
+      
+      <!-- Timeline Pagination -->
+      <div class="px-4 py-4 border-t bg-gray-50" *ngIf="paginatedMovements.length > 0">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+          <div class="text-sm text-gray-700 order-2 md:order-1">
+            Showing {{paginatedMovements.length}} of {{filteredMovements.length}} movements
+          </div>
+          <div class="order-1 md:order-2 w-full md:w-auto">
+            <mat-paginator 
+              [length]="filteredMovements.length" 
+              [pageSize]="movementPageSize" 
+              [pageSizeOptions]="[10, 25, 50, 100]"
+              (page)="onPageChange($event)"
+              class="w-full">
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Bulk Operations Bar -->
+  <div *ngIf="selectedItems.length > 0" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 fixed bottom-4 left-8 right-8 z-50 shadow-lg">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <span class="text-blue-800 font-medium">{{selectedItems.length}} items selected</span>
+        <button mat-button (click)="selectedItems = []">
+          <mat-icon>clear</mat-icon>
+          Clear Selection
+        </button>
+      </div>
+      <div class="flex space-x-2">
+        <button mat-stroked-button (click)="bulkStockIn()" class="border-green-500 text-green-700">
+          <mat-icon>inventory</mat-icon>
+          Bulk Stock In
+        </button>
+        <button mat-stroked-button (click)="bulkStockOut()" class="border-red-500 text-red-700">
+          <mat-icon>remove_shopping_cart</mat-icon>
+          Bulk Stock Out
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Templates -->
+  <ng-template #loadingChart>
+    <div class="p-4">
+      <div class="h-40 bg-gray-100 rounded-lg animate-pulse mb-4"></div>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="text-center">
+          <div class="h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div class="h-3 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div class="text-center">
+          <div class="h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div class="h-3 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div class="text-center">
+          <div class="h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div class="h-3 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div class="text-center">
+          <div class="h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
+          <div class="h-3 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #loadingTable>
+    <div class="p-4">
+      <div class="space-y-4">
+        <div *ngFor="let i of [1,2,3,4,5]" class="flex items-center space-x-4">
+          <div class="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+          <div class="flex-1 space-y-2">
+            <div class="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+            <div class="h-3 bg-gray-200 rounded animate-pulse w-1/2"></div>
+          </div>
+          <div class="w-16 h-6 bg-gray-200 rounded animate-pulse"></div>
+          <div class="w-12 h-4 bg-gray-200 rounded animate-pulse"></div>
+          <div class="w-16 h-4 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,9 @@
+.header-topnav, .topnav ul ul {
+  background-color: rgb(var(--bg-card));
+}
+.topnav ul li ul li:hover, .topnav ul li ul li.open {
+  background: rgb(var(--bg-base));
+}
+.header-topnav a {
+  color: rgba(var(--fg-base));
+}

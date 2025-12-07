@@ -1,0 +1,122 @@
+<mat-card class="p-0 shadow-md">
+  <mat-card-content class="px-6 pt-6 pb-4">
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="flex justify-center items-center py-8">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+      
+      <form [formGroup]="profileForm" (ngSubmit)="saveChanges()" *ngIf="!loading">
+        <!-- Photo Upload Section -->
+        <div class="mb-6">
+          <h5 class="text-lg font-semibold mb-4">Profile Photo</h5>
+          <div class="flex items-center space-x-4">
+            <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
+              <img *ngIf="profilePhoto" [src]="profilePhoto" alt="Profile Photo" class="w-full h-full object-cover">
+              <mat-icon *ngIf="!profilePhoto" class="text-gray-400 text-3xl">person</mat-icon>
+            </div>
+            <div class="flex-1">
+              <input type="file" #fileInput (change)="onPhotoSelected($event)" accept="image/*" class="hidden">
+              <button type="button" mat-raised-button color="primary" (click)="fileInput.click()" class="mb-2">
+                <mat-icon class="mr-2">upload</mat-icon>
+                Upload Photo
+              </button>
+              <p class="text-sm text-gray-600">JPG, PNG or GIF. Max size 2MB.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="profileForm.get('email')?.hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="profileForm.get('email')?.hasError('email')">Invalid email format</mat-error>
+          </mat-form-field>
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username">
+            <mat-icon matSuffix>account_circle</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName">
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName">
+            <mat-icon matSuffix>person</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="grid grid-cols-1 gap-4">
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>Bio / Description</mat-label>
+            <textarea matInput formControlName="bio" rows="3"></textarea>
+            <mat-icon matSuffix>description</mat-icon>
+            <mat-hint>Brief description about yourself (e.g., Big Data Expert, Software Developer)</mat-hint>
+          </mat-form-field>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>Phone Number</mat-label>
+            <input matInput formControlName="phone" type="tel">
+            <mat-icon matSuffix>phone</mat-icon>
+          </mat-form-field>
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>Address</mat-label>
+            <input matInput formControlName="address">
+            <mat-icon matSuffix>location_on</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>Language</mat-label>
+            <mat-select formControlName="language">
+              <mat-option value="ENGLISH">English</mat-option>
+              <mat-option value="SPANISH">Spanish</mat-option>
+              <mat-option value="FRENCH">French</mat-option>
+              <mat-option value="GERMAN">German</mat-option>
+              <mat-option value="ARABIC">Arabic</mat-option>
+            </mat-select>
+            <mat-icon matSuffix>language</mat-icon>
+          </mat-form-field>
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>Role</mat-label>
+            <input matInput formControlName="role">
+            <mat-icon matSuffix>admin_panel_settings</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>User Status</mat-label>
+            <input matInput formControlName="userStatus">
+            <mat-icon matSuffix>verified_user</mat-icon>
+          </mat-form-field>
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>Two-Factor Authentication</mat-label>
+            <mat-select formControlName="twoFactorAuth">
+              <mat-option value="Y">Yes</mat-option>
+              <mat-option value="N">No</mat-option>
+            </mat-select>
+            <mat-icon matSuffix>security</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <mat-form-field class="w-full" appearance="fill">
+            <mat-label>Last Login</mat-label>
+            <input matInput formControlName="lastLogin">
+            <mat-icon matSuffix>schedule</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="flex justify-end mt-6">
+          <button mat-raised-button color="primary" type="submit" [disabled]="saving || profileForm.invalid" class="px-6">
+            <mat-icon *ngIf="saving" class="mr-2 animate-spin">refresh</mat-icon>
+            {{ saving ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </form>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,33 @@
+.screen-bottom-left-gradient {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: -10%;
+    bottom: -10%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(16, 185, 129, 0.2) 25%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    filter: blur(50px);
+    z-index: 0;
+  }
+}
+
+.screen-bottom-right-gradient {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    right: -5%;
+    bottom: -5%;
+    width: 40%;
+    height: 40%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(147, 197, 253, 0.15) 50%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    filter: blur(40px);
+    z-index: 0;
+  }
+} 

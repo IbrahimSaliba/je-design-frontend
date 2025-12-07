@@ -1,0 +1,856 @@
+// Stock Adjustment Dialog - Professional & Responsive
+.stock-adjustment-dialog {
+  width: 100%;
+  max-width: 650px;
+  padding: 0;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 20px 24px;
+  border-bottom: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin: -24px -24px 24px -24px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  
+  .flex {
+    align-items: center;
+  }
+  
+  mat-icon:first-child {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #ffffff !important;
+  }
+  
+  h2 {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+  
+  p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    margin: 4px 0 0 0;
+    font-weight: 500;
+  }
+  
+  button {
+    mat-icon {
+      color: #ffffff !important;
+    }
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+    }
+  }
+}
+
+// Enhanced form fields with professional styling
+mat-form-field {
+  width: 100%;
+  
+  .mat-mdc-text-field-wrapper {
+    background: #ffffff !important;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+    
+    &:hover {
+      border-color: #667eea !important;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.12) !important;
+      transform: translateY(-1px);
+    }
+    
+    &.mdc-text-field--focused {
+      border-color: #667eea !important;
+      background: #ffffff !important;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1) !important;
+      transform: translateY(-1px);
+    }
+  }
+  
+  .mat-mdc-form-field-focus-overlay {
+    background-color: transparent !important;
+  }
+  
+  mat-label {
+    font-weight: 600 !important;
+    color: #374151 !important;
+  }
+  
+  mat-icon[matSuffix] {
+    color: #9ca3af !important;
+  }
+  
+  mat-select {
+    .mat-mdc-select-value {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+    }
+  }
+  
+  textarea {
+    resize: vertical !important;
+    min-height: 60px !important;
+  }
+}
+
+// Current stock card - Beautiful gradient
+.current-stock-card {
+  animation: slideInFromTop 0.4s ease-out;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%) !important;
+  border: 2px solid #c7d2fe !important;
+  
+  .text-2xl {
+    color: #4338ca !important;
+  }
+  
+  mat-chip {
+    font-weight: 700 !important;
+    padding: 8px 16px !important;
+  }
+}
+
+// Change indicator - Eye-catching
+.change-indicator {
+  animation: pulseIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+  
+  .text-xl {
+    font-size: 28px !important;
+  }
+}
+
+// Impact summary - Clean icon grid with enhanced styling
+.impact-summary {
+  animation: fadeIn 0.5s ease-out;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  border: 2px solid #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  
+  > p {
+    color: #475569 !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.8px;
+  }
+  
+  .grid > div {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
+    }
+    
+    mat-icon {
+      font-size: 32px !important;
+      width: 32px !important;
+      height: 32px !important;
+      margin-bottom: 8px !important;
+    }
+    
+    p:first-of-type {
+      color: #1f2937 !important;
+      font-weight: 700 !important;
+      font-size: 11px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px !important;
+    }
+    
+    p:last-of-type {
+      font-weight: 700 !important;
+      font-size: 13px !important;
+    }
+  }
+}
+
+// Button enhancements - Professional & Modern
+button[mat-flat-button] {
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  padding: 0 28px !important;
+  height: 48px !important;
+  font-size: 15px !important;
+  letter-spacing: 0.3px !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+    background: linear-gradient(135deg, #5a67d8 0%, #6b3fa0 100%) !important;
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+button[mat-stroked-button] {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  border-width: 2px !important;
+  border-color: #d1d5db !important;
+  height: 48px !important;
+  font-size: 15px !important;
+  color: #374151 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  
+  &:hover:not(:disabled) {
+    background-color: #f9fafb !important;
+    border-color: #9ca3af !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  }
+}
+
+// Color-specific styling for change indicator
+.bg-green-50 {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%) !important;
+  border-color: #10b981 !important;
+  border-width: 3px !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2) !important;
+  
+  mat-icon {
+    color: #059669 !important;
+    filter: drop-shadow(0 2px 4px rgba(5, 150, 105, 0.3));
+  }
+  
+  .text-xl {
+    color: #047857 !important;
+    text-shadow: 0 2px 4px rgba(4, 120, 87, 0.1);
+  }
+  
+  p {
+    color: #065f46 !important;
+    font-weight: 700 !important;
+  }
+}
+
+.bg-red-50 {
+  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%) !important;
+  border-color: #ef4444 !important;
+  border-width: 3px !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2) !important;
+  
+  mat-icon {
+    color: #dc2626 !important;
+    filter: drop-shadow(0 2px 4px rgba(220, 38, 38, 0.3));
+  }
+  
+  .text-xl {
+    color: #b91c1c !important;
+    text-shadow: 0 2px 4px rgba(185, 28, 28, 0.1);
+  }
+  
+  p {
+    color: #991b1b !important;
+    font-weight: 700 !important;
+  }
+}
+
+.bg-gray-50 {
+  background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%) !important;
+  border-color: #9ca3af !important;
+  border-width: 2px !important;
+  box-shadow: 0 2px 6px rgba(107, 114, 128, 0.15) !important;
+  
+  mat-icon {
+    color: #6b7280 !important;
+  }
+  
+  .text-xl {
+    color: #4b5563 !important;
+  }
+  
+  p {
+    color: #6b7280 !important;
+    font-weight: 600 !important;
+  }
+}
+
+// Form container spacing and polish
+form {
+  padding: 0 4px; // Subtle padding for better alignment
+  
+  .mb-4 {
+    margin-bottom: 18px;
+  }
+  
+  .mb-5 {
+    margin-bottom: 20px;
+  }
+}
+
+// Grid enhancements
+.grid {
+  &.gap-3 {
+    gap: 14px;
+  }
+  
+  &.gap-4 {
+    gap: 16px;
+  }
+}
+
+// Reason selection dropdown enhancement
+mat-select {
+  .mat-mdc-select-trigger {
+    padding: 8px 0 !important;
+  }
+}
+
+// Main dialog wrapper for mobile
+.stock-adjustment-dialog {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .stock-adjustment-dialog {
+    max-width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .dialog-header {
+    padding: 16px;
+    margin: -16px -16px 16px -16px;
+    position: sticky;
+    top: -16px;
+    z-index: 10;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    mat-icon:first-child {
+      font-size: 28px !important;
+      width: 28px !important;
+      height: 28px !important;
+      margin-right: 10px !important;
+    }
+    
+    h2 {
+      font-size: 19px;
+      letter-spacing: -0.3px;
+    }
+    
+    p {
+      font-size: 13px;
+      margin-top: 2px;
+    }
+  }
+  
+  .current-stock-card {
+    padding: 14px !important;
+    margin-bottom: 18px !important;
+    
+    .text-xs {
+      font-size: 10px !important;
+    }
+    
+    .text-2xl {
+      font-size: 22px !important;
+    }
+    
+    mat-chip {
+      padding: 6px 12px !important;
+      font-size: 10px !important;
+    }
+  }
+  
+  .change-indicator {
+    min-height: 75px;
+    padding: 12px !important;
+    
+    mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+    }
+    
+    .text-xl {
+      font-size: 26px !important;
+    }
+    
+    .text-xs {
+      font-size: 10px !important;
+    }
+  }
+  
+  .impact-summary {
+    padding: 14px !important;
+    margin-bottom: 18px !important;
+    
+    > p {
+      font-size: 11px !important;
+      margin-bottom: 12px !important;
+    }
+    
+    .grid > div {
+      padding: 10px 6px !important;
+      
+      mat-icon {
+        font-size: 28px !important;
+        width: 28px !important;
+        height: 28px !important;
+        margin-bottom: 6px !important;
+      }
+      
+      p:first-of-type {
+        font-size: 10px !important;
+      }
+      
+      p:last-of-type {
+        font-size: 12px !important;
+      }
+    }
+  }
+  
+  mat-form-field {
+    font-size: 14px;
+    margin-bottom: 14px;
+    
+    .mat-mdc-text-field-wrapper {
+      border-radius: 10px !important;
+    }
+  }
+  
+  button {
+    height: 48px !important;
+    font-size: 15px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+  }
+  
+  .grid-cols-2,
+  .md\\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  // Action buttons - sticky at bottom on mobile
+  form > div:last-child {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 12px 0;
+    margin: 16px -16px -16px -16px;
+    padding: 16px;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+  
+  form {
+    padding: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+    .mb-4 {
+      margin-bottom: 12px !important;
+    }
+    
+    .mb-5 {
+      margin-bottom: 16px !important;
+    }
+  }
+  
+  .gap-3 {
+    gap: 10px !important;
+  }
+  
+  .gap-4 {
+    gap: 12px !important;
+  }
+  
+  // Stock alert cards mobile
+  .stock-alert-card {
+    padding: 10px !important;
+    
+    mat-icon {
+      font-size: 24px !important;
+      width: 24px !important;
+      height: 24px !important;
+      margin-right: 10px !important;
+    }
+    
+    h3 {
+      font-size: 11px !important;
+    }
+    
+    p {
+      font-size: 12px !important;
+    }
+    
+    .bg-white {
+      padding: 10px !important;
+    }
+    
+    mat-chip {
+      font-size: 10px !important;
+      padding: 4px 8px !important;
+    }
+  }
+}
+
+// Animations
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Global dialog container styling
+::ng-deep .stock-adjustment-dialog-container {
+  &.desktop-dialog {
+    .mat-mdc-dialog-container {
+      padding: 0 !important;
+      border-radius: 20px !important;
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: 95vh;
+      background: #ffffff;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+      animation: modalZoomIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .mat-mdc-dialog-surface {
+      padding: 32px !important;
+    }
+  }
+  
+  &.mobile-dialog {
+    .mat-mdc-dialog-container {
+      padding: 0 !important;
+      border-radius: 0 !important;
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: 100vh;
+      height: 100vh;
+      background: #ffffff;
+      animation: slideUpMobile 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .mat-mdc-dialog-surface {
+      padding: 16px !important;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  
+  // Backdrop enhancement
+  .cdk-overlay-backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+  
+  // Ensure content doesn't overflow
+  .mat-mdc-dialog-content {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+// Modal zoom in animation (Desktop)
+@keyframes modalZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Slide up animation (Mobile)
+@keyframes slideUpMobile {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Hover card effect for impact summary items
+.hover-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: default;
+  
+  &:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.2) !important;
+    border-color: #667eea !important;
+  }
+}
+
+// Ensure icons in select options align properly
+::ng-deep mat-option {
+  padding: 12px 16px !important;
+  transition: all 0.2s ease !important;
+  
+  mat-icon {
+    vertical-align: middle;
+    margin-right: 12px;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+    color: #667eea !important;
+  }
+  
+  &:hover {
+    background-color: #f3f4f6 !important;
+    
+    mat-icon {
+      color: #5a67d8 !important;
+    }
+  }
+  
+  &.mdc-list-item--selected {
+    background-color: #eef2ff !important;
+    
+    mat-icon {
+      color: #4338ca !important;
+    }
+  }
+}
+
+// Chip styling
+mat-chip {
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  
+  &.bg-green-100 {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+    border: 2px solid #10b981;
+  }
+  
+  &.bg-orange-100 {
+    background-color: #fed7aa !important;
+    color: #9a3412 !important;
+    border: 2px solid #f97316;
+  }
+  
+  &.bg-red-100 {
+    background-color: #fecaca !important;
+    color: #991b1b !important;
+    border: 2px solid #ef4444;
+  }
+}
+
+// Desktop specific styling (larger screens)
+@media (min-width: 769px) {
+  .stock-adjustment-dialog {
+    max-width: 700px;
+    margin: auto;
+  }
+  
+  .dialog-header {
+    border-radius: 20px 20px 0 0;
+    margin-bottom: 24px;
+  }
+  
+  form {
+    padding: 0 4px;
+  }
+  
+  .current-stock-card {
+    margin-bottom: 24px;
+  }
+  
+  .stock-alert-card {
+    margin-bottom: 20px;
+  }
+  
+  .impact-summary {
+    margin-bottom: 24px;
+  }
+  
+  // Smooth transitions for interactions
+  .current-stock-card,
+  .stock-alert-card,
+  .change-indicator,
+  .impact-summary {
+    transition: all 0.3s ease;
+  }
+  
+  // Better spacing for form fields
+  mat-form-field {
+    margin-bottom: 20px;
+  }
+  
+  // Action buttons with better spacing
+  form > div:last-child {
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+}
+
+// Typography improvements
+.text-xs {
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.text-sm {
+  font-size: 13px !important;
+}
+
+.text-2xl {
+  font-size: 26px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
+
+.text-xl {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
+
+// Grid improvements
+.grid {
+  gap: 16px;
+  
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+}
+
+// Section separators
+.border-t-2 {
+  border-top: 2px solid #e5e7eb !important;
+  padding-top: 20px !important;
+  margin-top: 8px !important;
+}
+
+// Stock Alert Cards - Professional styling
+.stock-alert-card {
+  animation: slideInFromTop 0.4s ease-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  mat-icon {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+  
+  h3 {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  // Pulse animation for critical alerts
+  &.animate-pulse {
+    animation: pulseCritical 2s ease-in-out infinite;
+  }
+}
+
+// Critical alert pulse animation
+@keyframes pulseCritical {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+  }
+}
+
+// Alert card backgrounds
+.stock-alert-card {
+  // Red alert (OUT OF STOCK)
+  &:has(.text-red-600) {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%) !important;
+    border-color: #f87171 !important;
+  }
+  
+  // Orange alert (LOW STOCK)
+  &:has(.text-orange-600) {
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%) !important;
+    border-color: #fb923c !important;
+  }
+  
+  // Blue info (STATUS CHANGE)
+  &:has(.text-blue-600) {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+    border-color: #60a5fa !important;
+  }
+}
+
+

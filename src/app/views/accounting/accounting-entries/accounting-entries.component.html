@@ -1,0 +1,213 @@
+<div class="accounting-entries p-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Expenses</h1>
+      <!-- Overdue Expenses Alert -->
+      <div *ngIf="overdueCount > 0" class="mt-2 bg-orange-50 border-l-4 border-orange-400 p-3 rounded">
+        <div class="flex items-center">
+          <mat-icon class="text-orange-500 mr-2 text-xl">warning</mat-icon>
+          <div>
+            <p class="text-sm font-medium text-orange-800">
+              {{overdueCount}} pending expense{{overdueCount > 1 ? 's' : ''}} past settlement date
+            </p>
+            <p class="text-xs text-orange-600">
+              Review and settle overdue payments by clicking the payment icon
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+           <button mat-raised-button color="primary" (click)="createEntry()" class="flex items-center">
+             <mat-icon class="mr-2">add</mat-icon>
+             {{'New Entry' | translate}}
+           </button>
+  </div>
+
+  <!-- Filters -->
+  <mat-card class="mb-6">
+    <mat-card-content class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Search -->
+               <mat-form-field appearance="outline" class="w-full">
+                 <mat-label>{{'Search' | translate}}</mat-label>
+                 <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" placeholder="Entry number, description...">
+                 <mat-icon matSuffix>search</mat-icon>
+               </mat-form-field>
+
+               <!-- Status Filter -->
+               <mat-form-field appearance="outline" class="w-full">
+                 <mat-label>{{'Status' | translate}}</mat-label>
+                 <mat-select [(value)]="statusFilter" (selectionChange)="onStatusFilterChange()">
+                   <mat-option value="ALL">{{'All Status' | translate}}</mat-option>
+                   <mat-option value="PENDING">{{'Pending' | translate}}</mat-option>
+                   <mat-option value="SETTLED">{{'Settled' | translate}}</mat-option>
+                 </mat-select>
+               </mat-form-field>
+
+               <!-- Date Range Start -->
+               <mat-form-field appearance="outline" class="w-full">
+                 <mat-label>{{'Start Date' | translate}}</mat-label>
+                 <input matInput [matDatepicker]="startPicker" [(ngModel)]="dateRange.start" (ngModelChange)="onDateRangeChange()">
+                 <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                 <mat-datepicker #startPicker></mat-datepicker>
+               </mat-form-field>
+
+               <!-- Date Range End -->
+               <mat-form-field appearance="outline" class="w-full">
+                 <mat-label>{{'End Date' | translate}}</mat-label>
+                 <input matInput [matDatepicker]="endPicker" [(ngModel)]="dateRange.end" (ngModelChange)="onDateRangeChange()">
+                 <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                 <mat-datepicker #endPicker></mat-datepicker>
+               </mat-form-field>
+      </div>
+
+      <!-- Clear Filters -->
+      <div class="mt-4 flex justify-end">
+               <button mat-button (click)="clearFilters()" class="text-gray-600">
+                 <mat-icon class="mr-2">clear</mat-icon>
+                 {{'Clear Filters' | translate}}
+               </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Entries Table -->
+  <mat-card>
+    <mat-card-content class="p-0">
+      <div class="overflow-x-auto">
+        <table mat-table [dataSource]="paginatedEntries" class="w-full">
+                 <!-- Entry Number Column -->
+                 <ng-container matColumnDef="entryNumber">
+                   <th mat-header-cell *matHeaderCellDef>{{'Entry Number' | translate}}</th>
+                   <td mat-cell *matCellDef="let entry">
+                     <div class="font-medium text-blue-600 cursor-pointer hover:underline" (click)="viewEntry(entry)">
+                       {{entry.entryNumber}}
+                     </div>
+                   </td>
+                 </ng-container>
+
+                 <!-- Date Column -->
+                 <ng-container matColumnDef="date">
+                   <th mat-header-cell *matHeaderCellDef>{{'Date' | translate}}</th>
+                   <td mat-cell *matCellDef="let entry">{{formatDate(entry.date)}}</td>
+                 </ng-container>
+
+                 <!-- Description Column -->
+                 <ng-container matColumnDef="description">
+                   <th mat-header-cell *matHeaderCellDef>{{'Description' | translate}}</th>
+                   <td mat-cell *matCellDef="let entry">
+                     <div class="max-w-xs truncate" [title]="entry.description">
+                       {{entry.description}}
+                     </div>
+                   </td>
+                 </ng-container>
+
+                 <!-- Reference Column -->
+                 <ng-container matColumnDef="reference">
+                   <th mat-header-cell *matHeaderCellDef>{{'Reference' | translate}}</th>
+                   <td mat-cell *matCellDef="let entry">
+                     <div class="max-w-xs truncate" [title]="entry.reference">
+                       {{entry.reference}}
+                     </div>
+                   </td>
+                 </ng-container>
+
+                 <!-- Total Debit Column -->
+                 <ng-container matColumnDef="totalDebit">
+                   <th mat-header-cell *matHeaderCellDef class="text-right">{{'Total Debit' | translate}}</th>
+                   <td mat-cell *matCellDef="let entry" class="text-right">
+                     <span [class]="getBalanceStatus(entry)">
+                       {{formatCurrency(entry.totalDebit)}}
+                     </span>
+                   </td>
+                 </ng-container>
+
+                 <!-- Total Credit Column -->
+                 <ng-container matColumnDef="totalCredit">
+                   <th mat-header-cell *matHeaderCellDef class="text-right">{{'Total Credit' | translate}}</th>
+                   <td mat-cell *matCellDef="let entry" class="text-right">
+                     <span [class]="getBalanceStatus(entry)">
+                       {{formatCurrency(entry.totalCredit)}}
+                     </span>
+                   </td>
+                 </ng-container>
+
+                 <!-- Status Column -->
+                 <ng-container matColumnDef="status">
+                   <th mat-header-cell *matHeaderCellDef>{{'Status' | translate}}</th>
+                   <td mat-cell *matCellDef="let entry">
+                     <span class="px-2 py-1 rounded-full text-xs font-medium" [class]="getStatusBadgeColor(entry.status)">
+                       {{getStatusText(entry)}}
+                     </span>
+                   </td>
+                 </ng-container>
+
+                 <!-- Actions Column -->
+                 <ng-container matColumnDef="actions">
+                   <th mat-header-cell *matHeaderCellDef class="text-right">{{'Actions' | translate}}</th>
+            <td mat-cell *matCellDef="let entry" class="text-right">
+              <div class="flex justify-end space-x-2">
+                <!-- View Button -->
+                <button mat-icon-button (click)="viewEntry(entry)" matTooltip="View Entry" class="text-blue-600">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+
+                <!-- Settle Button (only for pending entries) -->
+                <button mat-icon-button (click)="settleEntry(entry)" matTooltip="Settle Payment" 
+                        class="text-purple-600" *ngIf="entry.status === 'PENDING'">
+                  <mat-icon>payment</mat-icon>
+                </button>
+
+                <!-- Edit Button (only for pending entries) -->
+                <button mat-icon-button (click)="editEntry(entry)" matTooltip="Edit Entry" 
+                        [disabled]="entry.status === 'SETTLED'" class="text-green-600" *ngIf="entry.status === 'PENDING'">
+                  <mat-icon>edit</mat-icon>
+                </button>
+
+                <!-- Delete Button (for both pending and settled entries) -->
+                <button mat-icon-button (click)="deleteEntry(entry)" matTooltip="Delete Entry" 
+                        class="text-red-600">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50"></tr>
+        </table>
+      </div>
+
+      <!-- No Data Message -->
+      <div *ngIf="filteredEntries.length === 0 && !loading" class="text-center py-8 text-gray-500">
+        <mat-icon class="text-6xl mb-4 text-gray-300">receipt_long</mat-icon>
+        <h3 class="text-lg font-medium mb-2">No entries found</h3>
+        <p class="text-gray-600">Create your first journal entry to get started</p>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="text-center py-8">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p class="mt-4 text-gray-600">Loading entries...</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+         <!-- Pagination -->
+         <div class="mt-6 flex justify-between items-center" *ngIf="totalItems > 0">
+           <div class="text-sm text-gray-600">
+             {{'Showing' | translate}} {{(currentPage - 1) * itemsPerPage + 1}} {{'to' | translate}} {{Math.min(currentPage * itemsPerPage, totalItems)}} {{'of' | translate}} {{totalItems}} {{'entries' | translate}}
+           </div>
+    
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="itemsPerPage"
+      [pageIndex]="currentPage - 1"
+      (page)="onPageChange($event)"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
+

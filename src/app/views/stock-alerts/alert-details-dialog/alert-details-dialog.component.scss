@@ -1,0 +1,93 @@
+// Alert Details Dialog Styles
+.alert-details-dialog {
+  .alert-header {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+  }
+
+  .stock-info-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .reorder-info-card {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+  }
+
+  .timeline-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+  }
+
+  .status-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+  }
+
+  .priority-badge {
+    &.high {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+    
+    &.medium {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+    
+    &.low {
+      background-color: #d1fae5;
+      color: #059669;
+    }
+  }
+
+  .type-badge {
+    &.out-of-stock {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+    
+    &.low-stock {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+    
+    &.reorder-required {
+      background-color: #dbeafe;
+      color: #2563eb;
+    }
+  }
+
+  .status-badge {
+    &.acknowledged {
+      background-color: #d1fae5;
+      color: #059669;
+    }
+    
+    &.pending {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 600px) {
+    .dialog-content {
+      padding: 1rem;
+    }
+    
+    .grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+    
+    .grid-cols-3 {
+      grid-template-columns: 1fr;
+    }
+  }
+}

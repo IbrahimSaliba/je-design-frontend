@@ -1,0 +1,99 @@
+<div class="p-6">
+  <h2 mat-dialog-title class="text-xl font-bold mb-4">Alert Details</h2>
+  
+  <div mat-dialog-content class="mb-6">
+    <!-- Alert Header -->
+    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+      <div class="flex justify-between items-start mb-2">
+        <h3 class="font-semibold text-lg">{{alert.itemName}}</h3>
+        <div class="flex space-x-2">
+          <span class="px-2 py-1 rounded-full text-xs font-medium"
+                [ngClass]="getPriorityColor(alert.priority)">
+            {{alert.priority}}
+          </span>
+          <span class="px-2 py-1 rounded-full text-xs font-medium"
+                [ngClass]="getTypeColor(alert.alertType)">
+            {{alert.alertType.replace('_', ' ')}}
+          </span>
+        </div>
+      </div>
+      <div class="text-sm text-gray-600">
+        <div>Code: {{alert.itemCode}}</div>
+        <div>Alert ID: {{alert.id}}</div>
+      </div>
+    </div>
+
+    <!-- Stock Information -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div class="bg-white border rounded-lg p-4">
+        <h4 class="font-semibold text-gray-900 mb-2">Current Stock</h4>
+        <div class="text-2xl font-bold text-blue-600">{{alert.currentStock}}</div>
+        <div class="text-sm text-gray-600">units in inventory</div>
+      </div>
+      
+      <div class="bg-white border rounded-lg p-4">
+        <h4 class="font-semibold text-gray-900 mb-2">Reorder Point</h4>
+        <div class="text-2xl font-bold text-orange-600">{{alert.reorderPoint}}</div>
+        <div class="text-sm text-gray-600">minimum stock level</div>
+      </div>
+    </div>
+
+    <!-- Reorder Information -->
+    <div *ngIf="alert.suggestedOrderQuantity" class="bg-blue-50 p-4 rounded-lg mb-4">
+      <h4 class="font-semibold text-blue-900 mb-2">Reorder Suggestion</h4>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+        <div>
+          <span class="text-blue-700">Suggested Quantity:</span>
+          <div class="font-medium">{{alert.suggestedOrderQuantity}}</div>
+        </div>
+        <div *ngIf="alert.estimatedCost">
+          <span class="text-blue-700">Estimated Cost:</span>
+          <div class="font-medium">{{formatCurrency(alert.estimatedCost)}}</div>
+        </div>
+        <div *ngIf="alert.supplier">
+          <span class="text-blue-700">Supplier:</span>
+          <div class="font-medium">{{alert.supplier}}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert Timeline -->
+    <div class="bg-white border rounded-lg p-4 mb-4">
+      <h4 class="font-semibold text-gray-900 mb-2">Alert Timeline</h4>
+      <div class="space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600">Created:</span>
+          <span class="text-sm font-medium">{{formatDate(alert.createdAt)}}</span>
+        </div>
+        <div *ngIf="alert.acknowledged" class="flex justify-between items-center">
+          <span class="text-sm text-gray-600">Acknowledged:</span>
+          <span class="text-sm font-medium">{{formatDate(alert.acknowledgedAt!)}}</span>
+        </div>
+        <div *ngIf="alert.acknowledged" class="flex justify-between items-center">
+          <span class="text-sm text-gray-600">Acknowledged By:</span>
+          <span class="text-sm font-medium">{{alert.acknowledgedBy}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Information -->
+    <div class="bg-white border rounded-lg p-4">
+      <h4 class="font-semibold text-gray-900 mb-2">Status</h4>
+      <div class="flex items-center space-x-2">
+        <span class="px-2 py-1 rounded-full text-xs font-medium"
+              [ngClass]="alert.acknowledged ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'">
+          {{alert.acknowledged ? 'Acknowledged' : 'Pending'}}
+        </span>
+        <span class="text-sm text-gray-600">
+          {{alert.acknowledged ? 'This alert has been acknowledged and is being addressed.' : 'This alert is waiting for acknowledgment.'}}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div mat-dialog-actions class="flex justify-end">
+    <button mat-button (click)="onClose()">
+      Close
+    </button>
+  </div>
+</div>

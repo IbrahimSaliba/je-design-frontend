@@ -1,0 +1,92 @@
+<mat-progress-bar mode="determinate" class="absolute top-0 left-0 right-0 invisible" [ngClass]="{'!visible': isLoading}"></mat-progress-bar>
+
+<div class="flex min-h-screen bg-card relative overflow-hidden screen-bottom-left-gradient screen-bottom-right-gradient">
+  <!-- Container with gradient effects applied via SCSS -->
+  <div class="container flex min-h-screen mx-auto relative z-10" [@animate]="{value:'*',params:{y:'40px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+
+    <!-- Left Column -->
+    <div class="flex-1 flex flex-col items-center justify-center p-8">
+      <div class="flex items-center gap-2 mb-12">
+        <img src="assets/images/egret.svg" alt="Egret" class="h-10">
+        <span class="text-2xl bg-gradient-to-r from-violet-600 via-indigo-500 to-pink-400 inline-block text-transparent bg-clip-text font-bold">Egret</span>
+      </div>
+      <div class="w-full max-w-md">
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="">
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>First Name*</mat-label>
+              <input matInput type="text" formControlName="firstName" placeholder="John">
+              <mat-error *ngIf="signupForm.get('firstName')?.hasError('required')">First name is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Last Name*</mat-label>
+              <input matInput type="text" formControlName="lastName" placeholder="Doe">
+              <mat-error *ngIf="signupForm.get('lastName')?.hasError('required')">Last name is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Email*</mat-label>
+              <input matInput type="email" formControlName="email" placeholder="support@ui-lib.com">
+              <mat-error *ngIf="signupForm.get('email')?.hasError('required')">Email is required</mat-error>
+              <mat-error *ngIf="signupForm.get('email')?.hasError('email')">Please enter a valid email</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field class="w-full">
+              <mat-label>Password*</mat-label>
+              <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
+                placeholder="••••••••••">
+              <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+              <mat-error *ngIf="signupForm.get('password')?.hasError('required')">Password is required</mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-checkbox formControlName="agreed" color="primary">I agree to the terms and conditions</mat-checkbox>
+
+          <button mat-flat-button color="primary" type="submit" class="w-full py-2 my-4">
+            Sign Up
+          </button>
+
+          <div class="text-center">
+            <span class="text-secondary">Already have an account? </span>
+            <a routerLink="/sessions/signin" class="text-blue-500 hover:text-blue-600">Sign in</a>
+          </div>
+
+          <egret-divider text="OR" class="my-10"></egret-divider>
+
+          <div class="flex flex-col gap-4">
+            <button mat-stroked-button type="button" class="w-full !bg-card py-2 flex justify-center items-center gap-2">
+              <mat-icon svgIcon="eg_google" aria-hidden="false"></mat-icon>
+              <span>Sign up with Google</span>
+            </button>
+
+            <!-- <button mat-stroked-button type="button" class="w-full !bg-card py-2 flex justify-center items-center gap-2">
+              <mat-icon svgIcon="eg_meta" aria-hidden="false"></mat-icon>
+              <span>Sign up with Meta</span>
+            </button>
+
+            <button mat-stroked-button type="button" class="w-full !bg-card py-2 flex justify-center items-center gap-2">
+              <mat-icon svgIcon="eg_apple" aria-hidden="false"></mat-icon>
+              <span>Sign up with Apple</span>
+            </button> -->
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="hidden lg:flex w-1/2 p-8">
+      <div class="flex flex-col justify-center items-center max-w-lg mx-auto">
+        <img src="assets/images/illustrations/meditating_girl.svg" alt="Egret illustration" class="mb-8">
+      </div>
+    </div>
+  </div>
+</div>

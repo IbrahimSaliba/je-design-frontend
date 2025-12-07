@@ -1,0 +1,8 @@
+<div class="loading-overlay" *ngIf="isLoading" [class.blocking]="isBlocking">
+  <div class="loading-content">
+    <div class="spinner-container">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+    <div class="message" *ngIf="message">{{ message }}</div>
+  </div>
+</div>

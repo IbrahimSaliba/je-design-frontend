@@ -1,0 +1,27 @@
+<div class="flex flex-wrap">
+  <div class="w-full md:w-1/3">
+    <mat-card class="p-4">
+      <mat-card-subtitle class="!mb-2">Click this button to start a demo Tour.</mat-card-subtitle>
+      <button 
+        color="primary" 
+        mat-raised-button
+        (click)="startTour()">Start Tour</button>
+    </mat-card>
+  </div>
+  <div class="w-full md:w-1/3">
+    <mat-card class="p-4" id="areaOne">
+      <mat-card-title class="m-0">Define your steps</mat-card-title>
+      <mat-card-content class="!px-0">
+        <pre><code [egretHighlight]="tourStepsCode" class="tourStepsCode"></code></pre>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="w-full md:w-1/3">
+    <mat-card class="p-4" id="areaTwo">
+      <mat-card-title class="!mb-4">Initialize tour</mat-card-title>
+      <mat-card-content class="!px-0">
+        <pre><code [egretHighlight]="initTourCode" class="initTourCode"></code></pre>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

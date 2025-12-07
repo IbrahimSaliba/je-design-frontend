@@ -1,0 +1,117 @@
+<div class="new-entry-dialog">
+  <h2 mat-dialog-title class="flex items-center text-base sm:text-lg">
+    <mat-icon class="mr-2 sm:mr-3 text-lg sm:text-xl">{{getDialogIcon()}}</mat-icon>
+    <span class="truncate">{{getDialogTitle()}}</span>
+  </h2>
+
+  <mat-dialog-content class="mat-typography">
+    <form [formGroup]="entryForm" class="space-y-4">
+      <!-- Type Selection -->
+      <div class="mb-6" *ngIf="currentMode === 'new' && !data.hideTypeSelector">
+        <h4 class="text-base sm:text-lg font-semibold mb-3">Entry Type</h4>
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+          <button 
+            type="button" 
+            mat-raised-button 
+            [color]="selectedType === 'INCOME' ? 'primary' : 'basic'"
+            (click)="selectType('INCOME')"
+            class="flex-1 flex items-center justify-center py-3 sm:py-2">
+            <mat-icon class="mr-2 text-sm sm:text-base">trending_up</mat-icon>
+            <span class="text-sm sm:text-base">INCOME</span>
+          </button>
+          <button 
+            type="button" 
+            mat-raised-button 
+            [color]="selectedType === 'OUTCOME' ? 'primary' : 'basic'"
+            (click)="selectType('OUTCOME')"
+            class="flex-1 flex items-center justify-center py-3 sm:py-2">
+            <mat-icon class="mr-2 text-sm sm:text-base">trending_down</mat-icon>
+            <span class="text-sm sm:text-base">OUTCOME</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Expense Type Badge (when type selector is hidden) -->
+      <div class="mb-4 bg-orange-50 border border-orange-200 rounded-lg p-3" *ngIf="data.hideTypeSelector && currentMode === 'new'">
+        <div class="flex items-center">
+          <mat-icon class="text-orange-600 mr-2">trending_down</mat-icon>
+          <span class="text-sm font-medium text-orange-800">Expense Entry (Outgoing)</span>
+        </div>
+      </div>
+
+      <!-- Form Fields -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Amount -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Amount</mat-label>
+          <input matInput formControlName="amount" type="number" step="0.01" min="0.01">
+          <mat-icon matSuffix>attach_money</mat-icon>
+          <mat-error *ngIf="entryForm.get('amount')?.hasError('required')">
+            {{getFieldError('amount')}}
+          </mat-error>
+          <mat-error *ngIf="entryForm.get('amount')?.hasError('min')">
+            {{getFieldError('amount')}}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Status -->
+        <mat-form-field appearance="fill" class="w-full" *ngIf="!data.hideStatusField">
+          <mat-label>Payment Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="PENDING">PENDING - Not yet paid</mat-option>
+            <mat-option value="SETTLED">SETTLED - Payment completed</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>verified_user</mat-icon>
+          <mat-error *ngIf="entryForm.get('status')?.hasError('required')">
+            {{getFieldError('status')}}
+          </mat-error>
+          <mat-hint>Select PENDING if payment is not yet made</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <!-- Reason -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Reason</mat-label>
+        <textarea matInput formControlName="reason" rows="3"></textarea>
+        <mat-error *ngIf="entryForm.get('reason')?.hasError('required')">
+          {{getFieldError('reason')}}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Created Date (Readonly) -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Created Date</mat-label>
+          <input matInput [value]="entryForm.get('createdDate')?.value | date:'mediumDate'" readonly>
+          <mat-icon matSuffix>today</mat-icon>
+        </mat-form-field>
+
+        <!-- Settlement Date -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Settlement Date</mat-label>
+          <input matInput [matDatepicker]="settlementPicker" formControlName="settlementDate">
+          <mat-datepicker-toggle matSuffix [for]="settlementPicker"></mat-datepicker-toggle>
+          <mat-datepicker #settlementPicker></mat-datepicker>
+          <mat-error *ngIf="entryForm.get('settlementDate')?.hasError('required')">
+            {{getFieldError('settlementDate')}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="px-4 sm:px-6 py-4 flex-col sm:flex-row gap-2">
+    <button mat-button (click)="onCancel()" class="w-full sm:w-auto order-2 sm:order-1">
+      {{currentMode === 'view' ? 'Close' : 'Cancel'}}
+    </button>
+    <button 
+      *ngIf="currentMode !== 'view'"
+      mat-raised-button 
+      color="primary" 
+      (click)="onSave()" 
+      [disabled]="!entryForm.valid"
+      class="w-full sm:w-auto order-1 sm:order-2">
+      {{getSaveButtonText()}}
+    </button>
+  </mat-dialog-actions>
+</div>

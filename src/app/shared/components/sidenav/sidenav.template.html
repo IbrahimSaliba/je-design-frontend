@@ -1,0 +1,57 @@
+<div class="sidenav-hold bg-sidebar-bg" #sidenav>
+  <div class="icon-menu mb-4" *ngIf="hasIconTypeMenuItem">
+    <!-- Icon menu separator -->
+    <div class="mb-4 nav-item-sep flex flex-col justify-center items-center">
+      <mat-divider class="w-[240px]"></mat-divider>
+    </div>
+  </div>
+
+  <ul appDropdown class="sidenav">
+    <li *ngFor="let item of menuItems" appDropdownLink>
+      <!-- Item -->
+      <div *ngIf="!item.disabled && item.type !== 'separator' && item.type !== 'icon'" class="lvl1">
+        <!-- Link items -->
+        <a routerLink="/{{item.state}}" matRipple
+          *ngIf="item.type !== 'extLink' && item.type !== 'dropDown'" routerLinkActive="open">
+          <mat-icon *ngIf="item.icon" class="sidenav-mat-icon text-sidebar-text">{{item.icon}}</mat-icon>
+          <span class="item-name text-sidebar-text lvl1">{{item.name | translate}}</span>
+          <span class="flex-grow"></span>
+          <span class="menuitem-badge mat-bg-{{ badge.color }}" [ngStyle]="{background: badge.color}"
+            *ngFor="let badge of item.badges">{{ badge.value }}</span>
+        </a>
+        
+        <!-- External link items -->
+        <a [href]="item.state" matRipple *ngIf="item.type === 'extLink'" target="_blank">
+          <mat-icon *ngIf="item.icon" class="sidenav-mat-icon text-sidebar-text">{{item.icon}}</mat-icon>
+          <span class="item-name text-sidebar-text lvl1">{{item.name | translate}}</span>
+          <span class="flex-grow"></span>
+          <span class="menuitem-badge mat-bg-{{ badge.color }}" [ngStyle]="{background: badge.color}"
+            *ngFor="let badge of item.badges">{{ badge.value }}</span>
+        </a>
+
+        <!-- DropDown items -->
+        <a *ngIf="item.type === 'dropDown'" appDropdownToggle matRipple>
+          <mat-icon *ngIf="item.icon" class="sidenav-mat-icon text-sidebar-text">{{item.icon}}</mat-icon>
+          <span class="item-name text-sidebar-text lvl1">{{item.name | translate}}</span>
+          <span class="flex-grow"></span>
+          <span class="menuitem-badge mat-bg-{{ badge.color }}" [ngStyle]="{background: badge.color}"
+            *ngFor="let badge of item.badges">{{ badge.value }}</span>
+          <mat-icon class="menu-caret text-sidebar-text">keyboard_arrow_right</mat-icon>
+        </a>
+
+        <!-- Sub-menu items -->
+        <div *ngIf="item.type === 'dropDown' && item.sub" class="sub-menu">
+          <ul class="sidenav">
+            <li *ngFor="let subItem of item.sub" appDropdownLink>
+              <div *ngIf="!subItem.disabled" class="lvl2">
+                <a routerLink="/{{subItem.state}}" matRipple routerLinkActive="open">
+                  <span class="item-name text-sidebar-text lvl2">{{subItem.name | translate}}</span>
+                </a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

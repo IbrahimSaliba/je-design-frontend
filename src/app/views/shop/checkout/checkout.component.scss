@@ -1,0 +1,56 @@
+/* Custom radio button styling */
+::ng-deep .mat-radio-button.mat-radio-checked .mat-radio-outer-circle {
+  border-color: #0f174c !important;
+}
+
+::ng-deep .mat-radio-button.mat-radio-checked .mat-radio-inner-circle {
+  background-color: #0f174c !important;
+}
+
+::ng-deep .mat-radio-button .mat-radio-outer-circle {
+  border-color: #ccc;
+}
+
+::ng-deep .mat-radio-button .mat-radio-inner-circle {
+  background-color: transparent;
+}
+
+/* Override any default Material colors */
+::ng-deep .mat-radio-button.mat-radio-checked .mat-radio-label-content {
+  color: #0f174c !important;
+}
+
+/* Hover effect */
+::ng-deep .mat-radio-button:hover .mat-radio-outer-circle {
+  border-color: #0f174c;
+}
+
+/* Force override the default orange color */
+::ng-deep .mat-radio-button.mat-radio-checked .mat-radio-persistent-ripple {
+  background-color: #0f174c !important;
+}
+
+/* Additional override for any remaining orange colors */
+::ng-deep .mat-radio-button * {
+  --mdc-radio-selected-icon-color: #0f174c !important;
+  --mdc-radio-selected-focus-icon-color: #0f174c !important;
+  --mdc-radio-selected-hover-icon-color: #0f174c !important;
+  --mdc-radio-selected-pressed-icon-color: #0f174c !important;
+}
+
+/* Custom radio button classes */
+::ng-deep .custom-radio.mat-radio-checked .mat-radio-outer-circle {
+  border-color: #0f174c !important;
+}
+
+::ng-deep .custom-radio.mat-radio-checked .mat-radio-inner-circle {
+  background-color: #0f174c !important;
+}
+
+::ng-deep .custom-radio-checked .mat-radio-outer-circle {
+  border-color: #0f174c !important;
+}
+
+::ng-deep .custom-radio-checked .mat-radio-inner-circle {
+  background-color: #0f174c !important;
+}

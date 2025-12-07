@@ -1,0 +1,94 @@
+.audit-log-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filter-card,
+.table-card {
+  position: relative;
+}
+
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.table-container {
+  position: relative;
+  overflow: auto;
+}
+
+.table-container.loading {
+  pointer-events: none;
+  filter: grayscale(0.6);
+  opacity: 0.6;
+}
+
+.overlay-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+table {
+  width: 100%;
+  min-width: 960px;
+}
+
+.cell-main {
+  font-weight: 600;
+}
+
+.cell-sub {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.path-cell {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-code-success {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.status-code-error {
+  color: #c62828;
+  font-weight: 600;
+}
+
+mat-chip {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+@media (max-width: 960px) {
+  .filter-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  table {
+    min-width: 720px;
+  }
+}
+

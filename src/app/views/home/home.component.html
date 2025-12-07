@@ -1,0 +1,79 @@
+<div>
+  <!-- Header Navigation -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-[#222a45]">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between h-[60px]">
+      <!-- Logo -->
+      <div class="flex items-center">
+        <a href="#" class="flex items-center">
+          <span class="text-white font-bold text-xl">Egret</span>
+        </a>
+      </div>
+      
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center space-x-8">
+        <a routerLink="/material/autocomplete" class="text-gray-400 hover:text-white transition-colors duration-200">Components</a>
+        <a href="https://egret-angular-doc.vercel.app/" class="text-gray-400 hover:text-white transition-colors duration-200">Documentation</a>
+        <a routerLink="/dashboard/analytics" class="text-gray-400 hover:text-white transition-colors duration-200">Dashboard</a>
+      </nav>
+      
+      <!-- CTA Button -->
+      <div>
+        <a href="https://1.envato.market/JN1r7" class="">
+          <button mat-flat-button color="warn" class="!rounded-lg">
+            Purchase now
+          </button>
+        </a>
+      </div>
+    </div>
+  </header>
+  <div class="h-[60px]"></div>
+
+  <!-- Hero Section -->
+  <section class="home-section section-intro bg-[#222a45] text-white pt-16 relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- Background grid pattern -->
+    <div class="container relative z-10 px-4 py-16 text-center">
+      <div class="max-w-3xl mx-auto">
+        
+        <!-- Main heading -->
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-6" [@animate]="{ value: '*', params: { opacity: '0', y: '40px', delay: '200ms' } }">
+          100x Faster development with Egret
+        </h1>
+        
+        <!-- Subheading -->
+        <p class="text-xl md:text-2xl text-slate-400 mb-10" [@animate]="{ value: '*', params: { opacity: '0', y: '40px', delay: '250ms' } }">
+          Premium template designed to accelerate app development with a stunning design and powerful pre-built Material UI components.
+        </p>
+        
+        <!-- CTA Buttons -->
+        <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-12" [@animate]="{ value: '*', params: { opacity: '0', y: '40px', delay: '300ms' } }">
+          <button mat-flat-button color="primary" class="!px-5 !h-[44px] !rounded-lg" (click)="goToDashboard(mainVersion)">
+            Dashboard
+          </button>
+          <a routerLink="/material/autocomplete">
+            <button mat-stroked-button class="!text-white !px-5 !h-[44px] !rounded-lg">
+              Components
+            </button>
+          </a>
+        </div>
+        
+        <!-- Rating display -->
+        <div class="flex justify-center items-center mt-12 mb-20" [@animate]="{ value: '*', params: { opacity: '0', y: '40px', delay: '350ms' } }">
+          <div class="flex -space-x-2">
+            <img class="w-10 h-10 rounded-full border-2 border-white" src="assets/images/faces/10.jpg" alt="User">
+            <img class="w-10 h-10 rounded-full border-2 border-white" src="assets/images/faces/2.jpg" alt="User">
+            <img class="w-10 h-10 rounded-full border-2 border-white" src="assets/images/faces/3.jpg" alt="User">
+          </div>
+          <div class="ml-4 text-white/80 text-sm">
+            4.84/5 based on 110+ reviews
+          </div>
+        </div>
+
+        <div class="flex justify-center w-full relative">
+          <div class="rounded-t-lg overflow-hidden drop-shadow-2xl cursor-pointer" (click)="goToDashboard(mainVersion)" [@animate]="{ value: '*', params: { opacity: '0', y: '40px', delay: '400ms' } }">
+            <img class="" src="assets/images/screenshots/egret-dashboard.png" alt="Egret Angular Admin Dashboard">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

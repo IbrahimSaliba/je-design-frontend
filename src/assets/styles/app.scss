@@ -1,0 +1,28 @@
+/*
+ *
+ *   EGRET - Angular Material Design Admin Template
+ *
+ *
+*/
+@use 'tailwind';
+@use "scss/variables" as *;
+@use "scss/css-vars" as *;
+
+@use 'perfect-scrollbar/css/perfect-scrollbar.css';
+@use 'flag-icons/css/flag-icons.min.css';
+@use 'quill/dist/quill.core.css' as *;
+@use 'quill/dist/quill.snow.css' as *;
+@use 'driver.js/dist/driver.css';
+@use 'highlight.js/styles/github.css';
+@use '../../vendor/pace/pace-theme-min.css';
+
+@use 'angular-calendar/scss/angular-calendar.scss';
+@use "scss/mixins/mixins" as *;
+@use "scss/animations";
+@use "scss/typography";
+@use "scss/main/main";
+@use "scss/themes/init";
+@use "scss/components/components";
+@use "scss/components/form-fields";
+@use "scss/page-layouts";
+@use "scss/views/views";

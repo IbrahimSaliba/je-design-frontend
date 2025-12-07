@@ -1,0 +1,23 @@
+/* 
+* REQUIRED STYLES 
+*/
+@forward "../variables";
+@use "scaffolding";
+@use "layout";
+@use "header";
+@use "sidenav";
+@use "footer";
+
+/*
+* OTHER STYLES
+*/
+@use "breadcrumb"; // REQUIRED ONLY FOR BREADCRUMBS
+@use "notifications"; // REQUIRED ONLY FOR NOTIFICATIONS
+
+@use "sidebar"; // REQUIRED ONLY FOR SIDE NAVIGATION LAYOUT
+@use "header-side"; // REQUIRED ONLY FOR SIDE NAVIGATION LAYOUT
+
+@use "topnav"; // REQUIRED ONLY FOR TOP NAVIGATION LAYOUT
+@use "header-top"; // REQUIRED ONLY FOR TOP NAVIGATION LAYOUT
+
+

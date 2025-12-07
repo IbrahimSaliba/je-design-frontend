@@ -1,0 +1,354 @@
+<div class="p-4 md:p-6">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Expiry Alerts</h1>
+      <p class="text-sm md:text-base text-gray-600 mt-1">Track items approaching expiry or already expired</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="refreshData()" [disabled]="loading" class="w-full md:w-auto">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" *ngIf="statistics">
+    <!-- Expired Items -->
+    <mat-card class="bg-red-50 border-l-4 border-red-500">
+      <mat-card-content class="p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <p class="text-red-600 text-sm font-medium uppercase tracking-wide">EXPIRED ITEMS</p>
+            <p class="text-3xl md:text-4xl font-bold text-red-700 my-2">{{statistics.totalExpired}}</p>
+            <p class="text-red-600 text-sm">${{statistics.expiredValue | number:'1.2-2'}} at risk</p>
+          </div>
+          <div class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-red-100">
+            <mat-icon class="text-red-600" style="font-size: 40px; width: 40px; height: 40px;">error</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Critical (Within 7 days) -->
+    <mat-card class="bg-orange-50 border-l-4 border-orange-500">
+      <mat-card-content class="p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <p class="text-orange-600 text-sm font-medium uppercase tracking-wide">EXPIRING THIS WEEK</p>
+            <p class="text-3xl md:text-4xl font-bold text-orange-700 my-2">{{statistics.criticalExpiring}}</p>
+            <p class="text-orange-600 text-sm">${{statistics.criticalValue | number:'1.2-2'}} at risk</p>
+          </div>
+          <div class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-orange-100">
+            <mat-icon class="text-orange-600" style="font-size: 40px; width: 40px; height: 40px;">warning</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Warning (Within 30 days) -->
+    <mat-card class="bg-yellow-50 border-l-4 border-yellow-500">
+      <mat-card-content class="p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <p class="text-yellow-600 text-sm font-medium uppercase tracking-wide">EXPIRING THIS MONTH</p>
+            <p class="text-3xl md:text-4xl font-bold text-yellow-700 my-2">{{statistics.warningExpiring}}</p>
+            <p class="text-yellow-600 text-sm">Monitor closely</p>
+          </div>
+          <div class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-yellow-100">
+            <mat-icon class="text-yellow-600" style="font-size: 40px; width: 40px; height: 40px;">schedule</mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Filters -->
+  <div class="mb-4 flex flex-wrap gap-2">
+    <button mat-stroked-button 
+            [color]="filterType === 'all' ? 'primary' : ''" 
+            (click)="setFilter('all')"
+            class="flex-1 md:flex-none">
+      All ({{expiryAlerts.length}})
+    </button>
+    <button mat-stroked-button 
+            [color]="filterType === 'expired' ? 'warn' : ''" 
+            (click)="setFilter('expired')"
+            class="flex-1 md:flex-none">
+      <mat-icon class="text-red-600">error</mat-icon>
+      <span class="hidden sm:inline">Expired</span>
+    </button>
+    <button mat-stroked-button 
+            [color]="filterType === 'critical' ? 'accent' : ''" 
+            (click)="setFilter('critical')"
+            class="flex-1 md:flex-none">
+      <mat-icon class="text-orange-600">warning</mat-icon>
+      <span class="hidden sm:inline">Critical (≤7 days)</span>
+      <span class="sm:hidden">Critical</span>
+    </button>
+    <button mat-stroked-button 
+            [color]="filterType === 'warning' ? '' : ''" 
+            (click)="setFilter('warning')"
+            class="flex-1 md:flex-none">
+      <mat-icon class="text-yellow-600">schedule</mat-icon>
+      <span class="hidden sm:inline">Warning (≤30 days)</span>
+      <span class="sm:hidden">Warning</span>
+    </button>
+  </div>
+
+  <!-- Main Table -->
+  <mat-card>
+    <mat-card-content class="p-0">
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="flex justify-center items-center p-12">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage && !loading" class="p-6 text-center">
+        <mat-icon class="text-red-500 text-6xl">error_outline</mat-icon>
+        <p class="text-red-600 mt-2">{{errorMessage}}</p>
+        <button mat-raised-button color="primary" (click)="refreshData()" class="mt-4">
+          Try Again
+        </button>
+      </div>
+
+      <!-- Desktop/Tablet Table View -->
+      <div *ngIf="!loading && !errorMessage" class="overflow-x-auto hidden md:block">
+        <table mat-table [dataSource]="dataSource" matSort class="w-full">
+
+          <!-- Picture Column -->
+          <ng-container matColumnDef="picture">
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3">Image</th>
+            <td mat-cell *matCellDef="let alert" class="px-6 py-4">
+              <img [src]="alert.picture" 
+                   alt="{{alert.itemName}}" 
+                   class="w-12 h-12 rounded object-cover"
+                   *ngIf="alert.picture"
+                   (error)="$event.target.src='assets/images/placeholder-image.png'">
+              <mat-icon *ngIf="!alert.picture" class="text-gray-400 text-4xl">inventory</mat-icon>
+            </td>
+          </ng-container>
+
+          <!-- Item Code Column -->
+          <ng-container matColumnDef="itemCode">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-6 py-3">Code</th>
+            <td mat-cell *matCellDef="let alert" class="px-6 py-4">
+              <span class="font-mono text-sm">{{alert.itemCode}}</span>
+            </td>
+          </ng-container>
+
+          <!-- Item Name Column -->
+          <ng-container matColumnDef="itemName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-6 py-3">Item Name</th>
+            <td mat-cell *matCellDef="let alert" class="px-6 py-4">
+              <div class="font-medium">{{alert.itemName}}</div>
+              <div class="text-sm text-gray-500" *ngIf="alert.containerName">
+                📦 {{alert.containerName}}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Expiry Date Column -->
+          <ng-container matColumnDef="expiryDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-6 py-3">Expiry Date</th>
+            <td mat-cell *matCellDef="let alert" class="px-6 py-4">
+              <div class="text-sm">{{alert.expiryDate | date:'MMM d, yyyy'}}</div>
+              <div class="text-xs text-gray-500">{{alert.expiryDate | date:'h:mm a'}}</div>
+            </td>
+          </ng-container>
+
+          <!-- Days Until Expiry Column -->
+          <ng-container matColumnDef="daysUntilExpiry">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-6 py-3">Status</th>
+            <td mat-cell *matCellDef="let alert" class="px-6 py-4">
+              <div [class]="getDaysUntilExpiryClass(alert.daysUntilExpiry)">
+                <strong>{{getDaysUntilExpiryText(alert.daysUntilExpiry)}}</strong>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Current Stock Column -->
+          <ng-container matColumnDef="currentStock">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-6 py-3">Stock</th>
+            <td mat-cell *matCellDef="let alert" class="px-6 py-4">
+              <span class="font-semibold">{{alert.currentStock}} units</span>
+            </td>
+          </ng-container>
+
+          <!-- Total Value Column -->
+          <ng-container matColumnDef="totalValue">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-6 py-3">Value at Risk</th>
+            <td mat-cell *matCellDef="let alert" class="px-6 py-4">
+              <div class="font-bold text-green-600">${{alert.totalValue | number:'1.2-2'}}</div>
+              <div class="text-xs text-gray-500">${{alert.unitPrice | number:'1.2-2'}} /unit</div>
+            </td>
+          </ng-container>
+
+          <!-- Priority Column -->
+          <ng-container matColumnDef="priority">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-6 py-3">Priority</th>
+            <td mat-cell *matCellDef="let alert" class="px-6 py-4">
+              <span [class]="getPriorityBadgeClass(alert.priority)" 
+                    class="px-3 py-1 text-xs font-semibold rounded-full">
+                {{alert.priority}}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Recommended Action Column -->
+          <ng-container matColumnDef="recommendedAction">
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3">Action Needed</th>
+            <td mat-cell *matCellDef="let alert" class="px-6 py-4">
+              <span [class]="getRecommendedActionClass(alert.recommendedAction)">
+                {{getRecommendedActionText(alert.recommendedAction)}}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="px-6 py-3">Actions</th>
+            <td mat-cell *matCellDef="let alert" class="px-6 py-4">
+              <button mat-icon-button 
+                      color="warn" 
+                      matTooltip="Dispose Expired Item"
+                      (click)="openDisposeDialog(alert)"
+                      *ngIf="alert.daysUntilExpiry < 0">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+              <button mat-icon-button 
+                      matTooltip="View Item Details"
+                      (click)="viewItemDetails(alert)">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- No Data Row -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center py-8" [attr.colspan]="displayedColumns.length">
+              <mat-icon class="text-gray-300 text-6xl mb-2">event_busy</mat-icon>
+              <p class="text-gray-500 text-lg">No expiry alerts found</p>
+              <p class="text-gray-400 text-sm">Items with expiry dates will appear here</p>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Paginator -->
+        <mat-paginator 
+          [pageSizeOptions]="[10, 25, 50, 100]" 
+          [pageSize]="25"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+
+      <!-- Mobile Card View -->
+      <div *ngIf="!loading && !errorMessage" class="block md:hidden p-4">
+        <div *ngFor="let alert of dataSource.filteredData" class="mb-4 border rounded-lg p-4 bg-white shadow-sm">
+          <!-- Item Header -->
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-start gap-3 flex-1">
+              <img [src]="alert.picture" 
+                   alt="{{alert.itemName}}" 
+                   class="w-16 h-16 rounded object-cover"
+                   *ngIf="alert.picture"
+                   (error)="$event.target.src='assets/images/placeholder-image.png'">
+              <mat-icon *ngIf="!alert.picture" class="text-gray-400 text-5xl">inventory</mat-icon>
+              <div class="flex-1">
+                <h3 class="font-bold text-lg">{{alert.itemName}}</h3>
+                <p class="text-sm text-gray-600 font-mono">{{alert.itemCode}}</p>
+                <p class="text-xs text-gray-500" *ngIf="alert.containerName">📦 {{alert.containerName}}</p>
+              </div>
+            </div>
+            <span [class]="getPriorityBadgeClass(alert.priority)" 
+                  class="px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap">
+              {{alert.priority}}
+            </span>
+          </div>
+
+          <!-- Status Alert -->
+          <div class="mb-3 p-3 rounded-lg" 
+               [ngClass]="alert.daysUntilExpiry < 0 ? 'bg-red-50 border border-red-200' : 
+                          alert.daysUntilExpiry <= 3 ? 'bg-orange-50 border border-orange-200' :
+                          alert.daysUntilExpiry <= 7 ? 'bg-yellow-50 border border-yellow-200' : 
+                          'bg-blue-50 border border-blue-200'">
+            <div [class]="getDaysUntilExpiryClass(alert.daysUntilExpiry)" class="font-bold text-base">
+              {{getDaysUntilExpiryText(alert.daysUntilExpiry)}}
+            </div>
+            <div class="text-sm text-gray-600 mt-1">
+              Expiry: {{alert.expiryDate | date:'MMM d, yyyy h:mm a'}}
+            </div>
+          </div>
+
+          <!-- Details Grid -->
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <p class="text-xs text-gray-500">Stock</p>
+              <p class="font-bold">{{alert.currentStock}} units</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Unit Price</p>
+              <p class="font-bold">${{alert.unitPrice | number:'1.2-2'}}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Total Value</p>
+              <p class="font-bold text-green-600">${{alert.totalValue | number:'1.2-2'}}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Action Needed</p>
+              <p [class]="getRecommendedActionClass(alert.recommendedAction)" class="font-semibold text-sm">
+                {{getRecommendedActionText(alert.recommendedAction)}}
+              </p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex gap-2">
+            <button mat-raised-button 
+                    color="warn" 
+                    (click)="openDisposeDialog(alert)"
+                    *ngIf="alert.daysUntilExpiry < 0"
+                    class="flex-1">
+              <mat-icon>delete_forever</mat-icon>
+              Dispose
+            </button>
+            <button mat-stroked-button 
+                    (click)="viewItemDetails(alert)"
+                    class="flex-1">
+              <mat-icon>visibility</mat-icon>
+              View Details
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Pagination -->
+        <mat-paginator 
+          [pageSizeOptions]="[5, 10, 25]" 
+          [pageSize]="10"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Help Card -->
+  <mat-card class="mt-6 bg-blue-50">
+    <mat-card-content class="p-4">
+      <div class="flex flex-col sm:flex-row items-start gap-3">
+        <mat-icon class="text-blue-600">info</mat-icon>
+        <div class="flex-1">
+          <h3 class="font-semibold text-blue-900 mb-2 text-sm md:text-base">How to Manage Expired Items:</h3>
+          <ul class="text-xs md:text-sm text-blue-800 space-y-2">
+            <li>• <strong>Expired items (red):</strong> Go to Items → Click item → Adjust Stock → Select "Expired Disposal" → Set quantity to 0</li>
+            <li>• <strong>Expiring soon (orange/yellow):</strong> Consider discount sales or return to supplier</li>
+            <li>• <strong>Color coding:</strong> Red = Expired, Orange = ≤3 days, Yellow = ≤7 days, Blue = ≤30 days</li>
+          </ul>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

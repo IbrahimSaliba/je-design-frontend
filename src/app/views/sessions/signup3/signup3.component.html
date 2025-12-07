@@ -1,0 +1,64 @@
+<div [perfectScrollbar]="{}" class="flex min-h-screen bg-card justify-center items-center relative overflow-hidden screen-bottom-left-gradient screen-bottom-right-gradient">
+  
+  <div
+    class="bg-card relative z-10 shadow-lg flex flex-wrap flex-col md:flex-row justify-start w-full max-w-4xl rounded-lg overflow-hidden"
+    [@animate]="{value:'*',params:{y:'40px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+
+    <!-- Left Side content -->
+    <div class="bg-primary-50 flex flex-col justify-center items-center w-full md:w-2/5 p-8">
+      <img class="w-48 h-auto mb-6" src="assets/images/illustrations/meditating_girl.svg" alt="Posting photo illustration">
+      <h2 class="text-2xl font-medium text-primary-900 text-center mb-2">Join Us Today</h2>
+      <p class="text-sm text-secondary text-center">Create an account to get started</p>
+    </div>
+
+    <!-- Right side content -->
+    <div class="flex flex-col justify-center items-center w-full md:w-3/5 p-8">
+      <div class="w-full max-w-sm">
+        <h1 class="text-2xl font-bold mb-6">Sign Up</h1>
+        
+        <form [formGroup]="signupForm" class="space-y-4" (ngSubmit)="onSubmit()">
+          <mat-form-field class="w-full">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username" type="text" name="username" placeholder="johndoe" />
+            <mat-icon matPrefix class="mr-2 text-secondary">person</mat-icon>
+            <mat-error *ngIf="signupForm.get('username')?.invalid">Username is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" name="email" placeholder="your.email@example.com" />
+            <mat-icon matPrefix class="mr-2 text-secondary">email</mat-icon>
+            <mat-error *ngIf="signupForm.get('email')?.invalid">Please enter a valid email</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="w-full">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" name="password" />
+            <mat-icon matPrefix class="mr-2 text-secondary">lock</mat-icon>
+            <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()" tabindex="-1" class="text-secondary">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="signupForm.get('password')?.invalid">Password is required</mat-error>
+          </mat-form-field>
+
+          <div class="flex items-center w-full">
+            <mat-checkbox formControlName="agreed" color="primary" class="text-secondary">
+              I agree with the <a href="#" class="text-primary-600 hover:text-primary-800 font-medium">terms and conditions</a>
+            </mat-checkbox>
+          </div>
+
+          <button mat-flat-button color="primary" class="w-full py-2" type="submit" [disabled]="signupForm.invalid">
+            Sign Up
+          </button>
+
+          <div class="flex items-center justify-center mt-6 space-x-1 text-sm">
+            <span class="text-secondary">Already have an account?</span>
+            <a class="font-medium text-primary-600 hover:text-primary-800" routerLink="/sessions/signin3">
+              Sign In
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

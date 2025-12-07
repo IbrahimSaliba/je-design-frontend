@@ -1,0 +1,67 @@
+<div class="flex flex-wrap gap-6">
+  <div class="flex flex-col w-full xl:w-[calc(50%-12px)]">
+
+  </div>
+
+  <div class="flex flex-col w-full xl:w-[calc(50%-12px)]">
+    <mat-card class="default shadow-md mb-6">
+      <h3 class="mx-6 my-5 text-xl font-semibold">Support Tickets</h3>
+      <mat-card-content class="p-0">
+        <div class="flex flex-row items-center px-4 py-4 border-b border-divider hover:bg-hover transition-colors" *ngFor="let t of tickets">
+          <img class="mr-4 rtl:ml-4 w-10 h-10 rounded-full border-2 border-gray-100 shadow-sm" [src]="t.img" alt="">
+          <div class="flex w-full items-center">
+            <h6 class="m-0 mr-4 rtl:ml-4 font-medium">{{t.name}}</h6>
+            <span class="flex-grow"></span>
+            <div class="w-2/5 text-secondary truncate">{{t.text | excerpt:20 }}</div>
+            <span class="flex-grow"></span>
+            <small class="text-slate-500 mr-4 rtl:ml-4 ml-4 rtl:mr-4 rtl:ml-4 whitespace-nowrap">{{ t.date | relativeTime}}</small>
+          </div>
+          <mat-chip-listbox>
+            <mat-chip-option mat-sm-chip [color]="t.isOpen ? 'primary' : 'warn'" [selected]="t.isOpen" class="font-medium text-xs">
+              {{t.isOpen ? 'active' : 'closed'}}
+            </mat-chip-option>
+          </mat-chip-listbox>
+        </div>
+        <div class="text-center p-3">
+          <button mat-button class="full-width text-primary hover:bg-primary-50">View all tickets</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="default shadow-md">
+      <h3 class="mx-6 my-5 text-xl font-semibold">Assigned Tasks</h3>
+      <mat-card-content class="p-0">
+        <div class="mb-0">
+          <div class="flex items-center px-4 py-4 border-b border-divider hover:bg-hover transition-colors" *ngFor="let t of tasks">
+            <mat-checkbox class="mr-4 rtl:ml-4"></mat-checkbox>
+            <span class="">{{t.text}}</span>
+            <span class="flex-grow"></span>
+            <mat-chip mat-sm-chip [color]="t.status ? 'primary' : 'warn'" [selected]="t.status ? true : false" class="font-medium text-xs">
+              {{t.status ? 'completed' : 'pending'}}
+            </mat-chip>
+            <button mat-icon-button mat-sm-button [matMenuTriggerFor]="taskMenu" class="tasktype-action ml-4 rtl:mr-4 rtl:ml-4 text-slate-500">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #taskMenu="matMenu">
+              <button mat-menu-item>
+                <mat-icon>done</mat-icon>
+                <span>Completed</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+        <div class="text-center p-3">
+          <button mat-button class="full-width text-primary hover:bg-primary-50">View all tasks</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

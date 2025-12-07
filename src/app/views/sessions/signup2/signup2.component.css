@@ -1,0 +1,14 @@
+.page-wrap {
+    background-image: url('../../../../assets/images/backgrounds/signin.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.page-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(var(--color-primary), 0.8);
+}

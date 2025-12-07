@@ -1,0 +1,22 @@
+.divider-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: rgb(var(--fg-divider));
+  border: none;
+  margin: 0;
+}
+
+.divider-text {
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(var(--fg-hint));
+  text-transform: uppercase;
+} 

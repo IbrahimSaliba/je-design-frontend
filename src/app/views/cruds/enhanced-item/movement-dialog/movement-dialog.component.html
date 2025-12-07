@@ -1,0 +1,183 @@
+<div class="movement-dialog">
+  <!-- Header -->
+  <div class="dialog-header" [class]="'bg-' + getColor() + '-50 border-' + getColor() + '-200'">
+    <div class="flex items-center">
+      <div [class]="'bg-' + getColor() + '-100 text-' + getColor() + '-600 p-3 rounded-full mr-4'">
+        <mat-icon>{{getIcon()}}</mat-icon>
+      </div>
+      <div>
+        <h2 matDialogTitle class="text-xl font-bold text-gray-900">{{getTitle()}}</h2>
+        <p class="text-sm text-gray-600 mt-1">
+          {{data.isBulk ? 'Process bulk ' : ''}}Stock {{data.type}} movement{{data.isBulk ? 's' : ''}}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <mat-dialog-content class="p-6">
+    <form [formGroup]="form" class="space-y-6">
+      <!-- Bulk Item Selection -->
+      <div *ngIf="data.isBulk" class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-lg font-medium text-gray-900 mb-3">Selected Items</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div *ngFor="let item of selectedItems" class="flex items-center justify-between p-3 bg-white rounded-lg border">
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                <mat-icon class="text-blue-600 text-sm">warehouse</mat-icon>
+              </div>
+              <div>
+                <p class="font-medium text-gray-900">{{item.name}}</p>
+                <p class="text-sm text-gray-500">{{item.code}} | Stock: {{item.currentStock}}</p>
+              </div>
+            </div>
+            <div class="text-sm text-gray-500">
+              Current Value: ${{item.totalValue | number:'1.2-2'}}
+            </div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mt-2">
+          Total Items: {{selectedItems.length}} | Total Current Value: ${{selectedItems.reduce((sum, item) => sum + item.totalValue, 0) | number:'1.2-2'}}
+        </p>
+      </div>
+
+      <!-- Single Item Selection -->
+      <mat-form-field *ngIf="!data.isBulk && !data.item" appearance="outline" class="w-full">
+        <mat-label>Select Item</mat-label>
+        <mat-select formControlName="itemId" required>
+          <mat-option *ngFor="let item of data.items" [value]="item.id">
+            {{item.name}} ({{item.code}}) - Stock: {{item.currentStock}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="isFieldInvalid('itemId')">{{getFieldError('itemId')}}</mat-error>
+      </mat-form-field>
+
+      <!-- Selected Item Display (Single) -->
+      <div *ngIf="data.item || (!data.isBulk && form.get('itemId')?.value)" class="bg-blue-50 p-4 rounded-lg">
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+            <mat-icon class="text-blue-600">warehouse</mat-icon>
+          </div>
+          <div class="flex-grow">
+            <h4 class="font-medium text-gray-900">{{getSelectedItemName()}}</h4>
+            <p class="text-sm text-gray-600">{{getSelectedItemCode()}} | Current Stock: {{getCurrentStock()}}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm text-gray-600">Current Value</p>
+            <p class="font-bold text-green-600">${{getCurrentValue() | number:'1.2-2'}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Quantity -->
+        <mat-form-field appearance="outline">
+          <mat-label>Quantity</mat-label>
+          <input matInput 
+                 type="number" 
+                 formControlName="quantity" 
+                 [min]="0.01" 
+                 step="0.01"
+                 placeholder="Enter quantity">
+          <mat-icon matSuffix>inventory_2</mat-icon>
+          <mat-error *ngIf="isFieldInvalid('quantity')">{{getFieldError('quantity')}}</mat-error>
+        </mat-form-field>
+
+        <!-- Unit Price -->
+        <mat-form-field appearance="outline">
+          <mat-label>Unit Price</mat-label>
+          <input matInput 
+                 type="number" 
+                 formControlName="unitPrice" 
+                 [min]="0" 
+                 step="0.01"
+                 placeholder="Enter unit price">
+          <mat-icon matSuffix>attach_money</mat-icon>
+          <mat-error *ngIf="isFieldInvalid('unitPrice')">{{getFieldError('unitPrice')}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Calculation Preview -->
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h4 class="font-medium text-gray-900 mb-2">Movement Preview</h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="text-center">
+            <p class="text-sm text-gray-600">Movement Type</p>
+            <p [class]="'font-bold text-' + getColor() + '-600'">
+              {{data.type === 'IN' ? 'Stock In' : 'Stock Out'}}
+            </p>
+          </div>
+          <div class="text-center">
+            <p class="text-sm text-gray-600">Quantity</p>
+            <p class="font-bold text-gray-900">{{form.get('quantity')?.value || 0}}</p>
+          </div>
+          <div class="text-center">
+            <p class="text-sm text-gray-600">Total Value</p>
+            <p class="font-bold font-green-600">${{getTotalValue() | number:'1.2-2'}}</p>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="my-6"></mat-divider>
+
+      <!-- Related References -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Related Invoice (OUT movements) -->
+        <mat-form-field appearance="outline">
+          <mat-label>Related Invoice ID</mat-label>
+          <input matInput 
+                 formControlName="relatedInvoiceId"
+                 placeholder="UUID of related invoice">
+          <mat-icon matSuffix>receipt</mat-icon>
+          <mat-hint *ngIf="data.type === 'OUT'">Required for sales/out movements</mat-hint>
+          <mat-hint *ngIf="data.type === 'IN'">Optional for incoming stock</mat-hint>
+        </mat-form-field>
+
+        <!-- Related Container (IN movements) -->
+        <mat-form-field appearance="outline">
+          <mat-label>Related Container ID</mat-label>
+          <input matInput 
+                 formControlName="relatedContainerId"
+                 type="number"
+                 placeholder="Container ID">
+          <mat-icon matSuffix>local_shipping</mat-icon>
+          <mat-hint *ngIf="data.type === 'IN'">Enter container ID for shipment</mat-hint>
+          <mat-hint *ngIf="data.type === 'OUT'">Usually not required for outgoing</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <!-- Movement Date -->
+      <mat-form-field appearance="outline">
+        <mat-label>Movement Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="movementDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="isFieldInvalid('movementDate')">{{getFieldError('movementDate')}}</mat-error>
+      </mat-form-field>
+
+      <!-- Notes -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Notes</mat-label>
+        <textarea matInput 
+                  formControlName="notes"
+                  rows="3"
+                  placeholder="Additional notes about this movement..."></textarea>
+        <mat-icon matSuffix>note</mat-icon>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <mat-dialog-actions align="end" class="px-6 pb-6">
+    <button mat-button (click)="onCancel()" [disabled]="loading">
+      Cancel
+    </button>
+    <button mat-raised-button 
+            [color]="getColor()"
+            (click)="onSubmit()" 
+            [disabled]="form.invalid || loading">
+      <mat-spinner *ngIf="loading" diameter="20" class="mr-2"></mat-spinner>
+      <mat-icon *ngIf="!loading">{{getIcon()}}</mat-icon>
+      {{loading ? 'Processing...' : 'Create Movement'}}
+    </button>
+  </mat-dialog-actions>
+</div>

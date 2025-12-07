@@ -1,0 +1,166 @@
+<div class="min-h-screen sm:mx-8">
+  <div class="p-4">
+      <!-- Top Toolbar -->
+      <div class="flex flex-col md:flex-row items-center egret-card p-4 mb-6">
+        <div class="w-full md:w-64 mb-4 md:mb-0">
+          <form [formGroup]="filterForm" class="relative">
+            <input type="text" 
+                  name="searchProduct" 
+                  placeholder="Search product" 
+                  class="w-full h-10 px-4 py-2 bg-base border border-divider rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                  [formControl]="filterForm.controls['search']">
+            <mat-icon class="absolute right-3 top-2 text-slate-400">search</mat-icon>
+          </form>
+        </div>
+        
+        <!-- View change buttons and cart -->
+        <span class="flex-grow"></span>
+        <div class="hidden md:flex items-center space-x-2 mr-4">
+          <button mat-icon-button [color]="viewMode === 'list-view' ? 'primary' : ''" (click)="viewMode = 'list-view'" class="text-slate-600">
+            <mat-icon>format_list_bulleted</mat-icon>
+          </button>
+          <button mat-icon-button [color]="viewMode === 'grid-view' ? 'primary' : ''" (click)="viewMode = 'grid-view'" class="text-slate-600">
+            <mat-icon>apps</mat-icon>
+          </button>
+        </div>
+
+        <button mat-raised-button color="primary" routerLink="/shop/cart" class="py-1 px-4 flex items-center">
+          <mat-icon class="mr-2">shopping_cart</mat-icon> Cart ({{cartData.itemCount}})
+        </button>
+      </div>
+      
+      <!-- Products container -->
+      <div class="flex flex-wrap -mx-3" [ngClass]="{'flex-col': viewMode === 'list-view'}">
+        <!-- Product Box -->
+        <div 
+          [ngClass]="{'w-full': viewMode === 'list-view', 'w-full sm:w-1/2 lg:w-1/3 px-3': viewMode === 'grid-view'}" class="mb-6"
+          *ngFor="let product of products$ | async | paginate: { itemsPerPage: 10, currentPage: currentPage }; let i = index;"
+          [@animate]="{value:'*',params:{delay: (i*100)+'ms', y:'50px'}}">
+          
+          <div class="egret-card h-full transition-shadow !hover:shadow-lg relative"
+               [ngClass]="{'flex': viewMode === 'list-view'}">
+            <!-- Badge -->
+            <div *ngIf="product?.badge?.text" 
+                class="absolute top-4 left-4 z-10 h-12 w-12 rounded-full flex items-center justify-center transform -rotate-12 shadow-md" 
+                [ngStyle]="{background: product?.badge?.color || '#f44336'}">
+              <span class="text-xs font-medium text-center leading-tight">{{product?.badge?.text}}</span>
+            </div>
+            
+            <!-- Product Image -->
+            <div [ngClass]="{'w-1/3': viewMode === 'list-view'}" class="relative">
+              <div class="overflow-hidden cursor-pointer" [routerLink]="['/shop/products/', product._id]">
+                <img [src]="product.photo" alt="" [ngClass]="{'w-auto h-full': viewMode === 'list-view', 'w-full h-48': viewMode === 'grid-view'}" class="object-cover transition-all duration-300">
+              </div>
+            </div>
+            
+            <!-- Product Info -->
+            <div [ngClass]="{'w-2/3 pl-4': viewMode === 'list-view'}" class="p-4 flex flex-col">
+              <!-- Main Info -->
+              <div class="mb-auto">
+                <h3 class="text-lg font-bold hover:text-primary transition-colors cursor-pointer mb-3" 
+                    [routerLink]="['/shop/products/', product._id]">{{product.name}}</h3>
+                
+                <div class="space-y-2 mb-3">
+                  <p class="text-sm">
+                    <span class="font-semibold text-gray-700">Code:</span> 
+                    <span class="text-gray-600 ml-1">{{product?.code}}</span>
+                  </p>
+                  <p class="text-sm">
+                    <span class="font-semibold text-gray-700">Type:</span> 
+                    <span class="text-gray-600 ml-1">{{product?.type}}</span>
+                  </p>
+                  <p class="text-sm" *ngIf="product?.size">
+                    <span class="font-semibold text-gray-700">Size:</span> 
+                    <span class="text-gray-600 ml-1 uppercase">{{product?.size}}</span>
+                  </p>
+                  <p class="text-sm" *ngIf="product?.color">
+                    <span class="font-semibold text-gray-700">Color:</span> 
+                    <span class="inline-flex items-center ml-1">
+                      <span class="inline-block w-5 h-5 rounded-full border-2 border-gray-300 shadow-sm mr-2" 
+                            [style.background-color]="product?.color"></span>
+                      <span class="text-gray-600">{{product?.color}}</span>
+                    </span>
+                  </p>
+                  <p class="text-sm">
+                    <span class="font-semibold text-gray-700">Stock:</span> 
+                    <span class="text-gray-600 ml-1">{{product?.totalQuantity}} units</span>
+                  </p>
+                  <p class="text-sm">
+                    <span class="font-semibold text-gray-700">Pieces/Box:</span> 
+                    <span class="text-gray-600 ml-1">{{product?.piecesPerBox}}</span>
+                  </p>
+                </div>
+              </div>
+              
+              <!-- Price and Cart Button -->
+              <div class="mt-2">
+                <div class="flex items-center justify-between">
+                  <div class="price">
+                    <span class="text-2xl font-bold text-primary">{{product?.price?.sale | currency:'USD'}}</span>
+                  </div>
+                  <button 
+                    mat-icon-button 
+                    [color]="isOutOfStock(product) ? 'warn' : 'primary'" 
+                    (click)="addToCart(product)" 
+                    [disabled]="isOutOfStock(product)"
+                    [matTooltip]="isOutOfStock(product) ? 'Out of stock (All ' + product?.totalQuantity + ' in cart)' : 'Add to cart'"
+                    class="bg-primary-50">
+                    <mat-icon>{{ isOutOfStock(product) ? 'block' : 'add_shopping_cart' }}</mat-icon>
+                  </button>
+                </div>
+                <!-- Stock Warning -->
+                <div *ngIf="getCartQuantity(product) > 0" class="mt-2 text-xs">
+                  <span class="text-gray-600">In cart: </span>
+                  <span class="font-semibold" [class.text-orange-600]="getCartQuantity(product) >= product?.totalQuantity * 0.8" [class.text-green-600]="getCartQuantity(product) < product?.totalQuantity * 0.8">
+                    {{getCartQuantity(product)}} / {{product?.totalQuantity}}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Extended Info (List View) -->
+            <div *ngIf="viewMode === 'list-view'" class="w-1/4 border-l border-divider p-4 hidden lg:block">
+              <div class="space-y-3">
+                <div class="text-sm">
+                  <span class="font-semibold text-gray-700">Available Stock:</span>
+                  <div class="text-2xl font-bold text-green-600 mt-1">{{product?.totalQuantity}}</div>
+                  <span class="text-xs text-gray-500">units available</span>
+                </div>
+                <div class="text-sm border-t pt-3" *ngIf="product?.size">
+                  <span class="font-semibold text-gray-700">Size</span>
+                  <div class="text-lg font-medium text-gray-800 mt-1 uppercase">{{product?.size}}</div>
+                  <span class="text-xs text-gray-500">item size</span>
+                </div>
+                <div class="text-sm border-t pt-3">
+                  <span class="font-semibold text-gray-700">Box Size:</span>
+                  <div class="text-lg font-medium text-gray-800 mt-1">{{product?.piecesPerBox}}</div>
+                  <span class="text-xs text-gray-500">pieces per box</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="w-full my-8">
+          <div class="egret-card p-6">
+            <div class="flex flex-col items-center space-y-4">
+              <!-- Items Count Info -->
+              <div class="text-sm text-gray-600">
+                Showing <span class="font-semibold text-gray-900">{{getDisplayedItemsRange()}}</span> of 
+                <span class="font-semibold text-gray-900">{{getTotalItems()}}</span> products
+              </div>
+              
+              <!-- Pagination Controls -->
+              <pagination-controls 
+                (pageChange)="onPageChange($event)" 
+                class="custom-pagination"
+                previousLabel=""
+                nextLabel="">
+              </pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>

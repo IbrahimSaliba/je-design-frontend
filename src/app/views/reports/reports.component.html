@@ -1,0 +1,180 @@
+<div class="reports-page">
+  <mat-card class="reports-header">
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>summarize</mat-icon>
+      </div>
+      <mat-card-title>Reports Workspace</mat-card-title>
+      <mat-card-subtitle>
+        Generate operational and financial insights with configurable parameters. Only accessible to Super Admins and Admins.
+      </mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <div class="reports-content">
+    <mat-card class="reports-form-card">
+      <mat-card-title>Build a Report</mat-card-title>
+      <mat-card-content>
+        <form [formGroup]="reportForm" (ngSubmit)="download()" class="report-form">
+          <div class="form-row">
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Report</mat-label>
+              <mat-select formControlName="reportId" placeholder="Select a report to generate">
+                <mat-optgroup *ngFor="let group of reportDefinitions" [label]="group.category">
+                  <mat-option *ngFor="let report of group.definitions" [value]="report.id">
+                    {{ report.name }}
+                  </mat-option>
+                </mat-optgroup>
+              </mat-select>
+              <mat-error *ngIf="reportForm.get('reportId')?.hasError('required')">
+                Please choose a report
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Format</mat-label>
+              <mat-select formControlName="format">
+                <mat-option *ngFor="let option of availableFormats" [value]="option">
+                  {{ option | uppercase }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <mat-divider *ngIf="filteredParameters.length > 0"></mat-divider>
+
+          <div class="parameter-grid" formGroupName="params" *ngIf="activeReport">
+            <ng-container *ngFor="let param of filteredParameters">
+              <mat-form-field
+                *ngIf="param.type === 'text'"
+                appearance="fill"
+                class="full-width"
+              >
+                <mat-label>{{ param.label }}</mat-label>
+                <input matInput [formControlName]="param.key" [placeholder]="param.placeholder" />
+                <mat-hint *ngIf="param.hint">{{ param.hint }}</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field
+                *ngIf="param.type === 'select'"
+                appearance="fill"
+                class="full-width"
+              >
+                <mat-label>{{ param.label }}</mat-label>
+                <mat-select [formControlName]="param.key">
+                  <mat-option
+                    *ngFor="let option of param.options || []"
+                    [value]="option.value"
+                  >
+                    {{ option.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-hint *ngIf="param.hint">{{ param.hint }}</mat-hint>
+              </mat-form-field>
+
+              <div
+                *ngIf="param.type === 'date-range'"
+                class="date-range"
+              >
+                <mat-form-field appearance="fill">
+                  <mat-label>{{ param.label }} (From)</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="fromPicker"
+                    [formControlName]="param.startKey || param.key + 'Start'"
+                  />
+                  <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #fromPicker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                  <mat-label>{{ param.label }} (To)</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="toPicker"
+                    [formControlName]="param.endKey || param.key + 'End'"
+                  />
+                  <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #toPicker></mat-datepicker>
+                </mat-form-field>
+                <mat-hint *ngIf="param.hint">{{ param.hint }}</mat-hint>
+              </div>
+            </ng-container>
+          </div>
+
+          <mat-progress-bar
+            *ngIf="isLoading"
+            mode="indeterminate"
+            color="accent"
+          ></mat-progress-bar>
+
+          <div class="actions">
+            <button
+              mat-stroked-button
+              type="button"
+              color="primary"
+              (click)="resetParams()"
+              [disabled]="!activeReport || isLoading"
+            >
+              <mat-icon>restart_alt</mat-icon>
+              Reset
+            </button>
+
+            <button mat-flat-button color="primary" type="submit" [disabled]="isLoading">
+              <mat-icon>download</mat-icon>
+              Download
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="reports-catalog">
+      <mat-card-title>Available Reports</mat-card-title>
+      <mat-card-content class="catalog-content">
+        <div class="report-group" *ngFor="let group of reportDefinitions">
+          <div class="group-header">
+            <span class="group-title">{{ group.category }}</span>
+          </div>
+          <div class="group-items">
+            <div class="catalog-item" *ngFor="let definition of group.definitions">
+              <div class="item-icon">
+                <mat-icon>{{ definition.icon }}</mat-icon>
+              </div>
+              <div class="item-body">
+                <div class="item-header">
+                  <h4>{{ definition.name }}</h4>
+                  <button
+                    *ngIf="definition.calculationExplanation"
+                    mat-icon-button
+                    class="info-button"
+                    (click)="openExplanationDialog(definition)"
+                    matTooltip="View calculation details"
+                    aria-label="View calculation explanation"
+                  >
+                    <mat-icon>info</mat-icon>
+                  </button>
+                </div>
+                <p class="item-description">{{ definition.description }}</p>
+                <div class="chip-row">
+                  <mat-chip color="primary" selected>
+                    {{ definition.method }}
+                  </mat-chip>
+                  <mat-chip *ngIf="definition.parameters?.length" color="accent" selected>
+                    {{ definition.parameters.length }} params
+                  </mat-chip>
+                  <mat-chip *ngIf="definition.supportedFormats?.length" selected>
+                    Formats: {{ definition.supportedFormats.join(', ').toUpperCase() }}
+                  </mat-chip>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

@@ -1,0 +1,102 @@
+// Import Tailwind 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Custom Tailwind layer with additional utility classes that
+// complement Angular Material but using the same CSS variables
+
+@layer utilities {
+  // Background color utilities that match Material theme
+  .bg-base {
+    background-color: rgb(var(--bg-base));
+  }
+  .bg-card {
+    background-color: rgb(var(--bg-card));
+  }
+  .bg-hover {
+    background-color: rgba(var(--bg-hover));
+  }
+  .bg-dialog {
+    background-color: rgb(var(--bg-dialog));
+  }
+  .bg-divider {
+    background-color: rgba(var(--fg-divider));
+  }
+  .mat-bg-primary, .bg-primary {
+    background-color: rgb(var(--color-primary));
+  }
+  .mat-bg-accent, .bg-accent {
+    background-color: rgb(var(--color-accent));
+  }
+  .mat-bg-warn, .bg-warn {
+    background-color: rgb(var(--color-warn));
+  }
+  .mat-bg-success, .bg-success {
+    background-color: rgb(var(--color-success));
+  }
+  .mat-bg-info, .bg-info {
+    background-color: rgb(var(--color-info));
+  }
+  // Text color utilities that match Material theme
+  .text-base {
+    color: rgba(var(--fg-base));
+  }
+  .text-hint {
+    color: rgba(var(--fg-hint));
+  }
+
+  // Border color utilities
+  .border-divider {
+    border-color: rgba(var(--fg-divider));
+  }
+  
+  .mat-text-primary, .text-primary {
+    color: rgb(var(--color-primary));
+  }
+  .mat-text-success, .text-success {
+    color: rgba(var(--color-success));
+  }
+  .mat-text-accent, .text-accent {
+    color: rgb(var(--color-accent));
+  }
+  .mat-text-warn, .text-warn {
+    color: rgb(var(--color-warn));
+  }
+  .mat-text-info, .text-info {
+    color: rgb(var(--color-info));
+  }
+  // gradient
+  .screen-bottom-left-gradient {
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: fixed;
+      left: -25%;
+      bottom: -25%;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(16, 185, 129, 0.2) 25%, rgba(255, 255, 255, 0) 70%);
+      border-radius: 50%;
+      filter: blur(50px);
+      z-index: 0;
+    }
+  }
+  
+  .screen-bottom-right-gradient {
+    position: relative;
+    &::after {
+      content: '';
+      position: fixed;
+      right: -25%;
+      bottom: -25%;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(circle, rgb(245 7 226 / 10%) 0%, rgba(10, 198, 16, 0.1) 50%, rgba(255, 3, 3, 0.03) 70%);
+      border-radius: 50%;
+      filter: blur(40px);
+      z-index: 0;
+    }
+  }
+}

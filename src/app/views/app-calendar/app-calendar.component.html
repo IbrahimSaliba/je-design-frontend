@@ -1,0 +1,139 @@
+<div class="sm:mx-8">
+  <!-- Today's Events Notification -->
+  <div *ngIf="showTodayNotification" class="mb-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg shadow-sm" [@animate]="{value:'*',params:{delay:'100ms',y:'20px'}}">
+    <div class="flex items-start">
+      <mat-icon class="text-blue-600 mr-3 mt-0.5">event_available</mat-icon>
+      <div class="flex-grow">
+        <h3 class="text-lg font-semibold text-blue-900 mb-1">
+          You have {{todayEvents.length}} event{{todayEvents.length > 1 ? 's' : ''}} today
+        </h3>
+        <div class="space-y-2">
+          <div *ngFor="let event of todayEvents" class="flex items-center text-sm text-blue-800">
+            <mat-icon class="text-xs mr-2" [style.color]="event.primaryColor">circle</mat-icon>
+            <span class="font-medium">{{event.title}}</span>
+            <span class="mx-2 text-blue-400">•</span>
+            <span class="text-blue-600">
+              {{event.allDay ? 'All day' : (event.startDate | date:'shortTime')}}
+            </span>
+            <span *ngIf="event.location" class="mx-2 text-blue-400">•</span>
+            <span *ngIf="event.location" class="text-blue-600">
+              <mat-icon class="text-xs align-middle">place</mat-icon> {{event.location}}
+            </span>
+          </div>
+        </div>
+      </div>
+      <button mat-icon-button (click)="dismissTodayNotification()" class="text-blue-600" matTooltip="Dismiss notification">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="mb-4 flex items-center gap-2">
+    <button mat-raised-button class="m-2" color="accent" (click)="addEvent()">
+      <mat-icon class="mr-1">add</mat-icon>
+      Add Event
+    </button>
+    <button *ngIf="!showTodayNotification && todayEvents.length > 0" 
+            mat-stroked-button 
+            class="m-2" 
+            color="primary" 
+            (click)="showTodayNotificationAgain()"
+            matTooltip="Show today's events">
+      <mat-icon class="mr-1">notifications</mat-icon>
+      Today's Events ({{todayEvents.length}})
+    </button>
+  </div>
+  <mat-card class="p-0" [@animate]="{value:'*',params:{delay:'200ms',y:'40px'}}">
+    <mat-card-title class="mat-bg-primary">
+      <div [ngStyle]="{overflow: 'hidden'}" class="card-title-text calendar-title">
+        <!-- Arrow navigations -->
+        <div class="cal-top-col text-center">
+          <button
+          mat-icon-button
+          mwlCalendarPreviousView
+          [view]="view"
+          [(viewDate)]="viewDate">
+            <mat-icon class="text-white">chevron_left</mat-icon>
+          </button>
+          <button
+          mat-icon-button
+          mwlCalendarToday
+          [(viewDate)]="viewDate">
+            <mat-icon class="text-white">today</mat-icon>
+          </button>
+          <button
+          mat-icon-button
+          mwlCalendarNextView
+          [view]="view"
+          [(viewDate)]="viewDate">
+          <mat-icon class="text-white">chevron_right</mat-icon>
+          </button>
+        </div>
+  
+        <!-- Date title -->
+        <div class="cal-top-col text-center">
+          <h5 class="m-0 text-white" [style.lineHeight]="'40px'">{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h5>
+        </div>
+  
+        <!-- Month, day, week view toggle buttons -->
+        <div class="cal-top-col text-center">
+          <button
+          mat-icon-button
+          matTooltip="Month View"
+          (click)="view = 'month'"
+          [class.active]="view === 'month'">
+            <mat-icon class="text-white">view_comfy</mat-icon>
+          </button>
+          <button
+          mat-icon-button
+          matTooltip="Week View"
+          (click)="view = 'week'"
+          [class.active]="view === 'week'">
+            <mat-icon class="text-white">view_week</mat-icon>
+          </button>
+          <button
+          mat-icon-button
+          matTooltip="Day View"
+          (click)="view = 'day'"
+          [class.active]="view === 'day'">
+            <mat-icon class="text-white">view_day</mat-icon>
+          </button>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+    </mat-card-title>
+  
+    <!-- Calendar -->
+    <mat-card-content class="p-0">
+      <div [ngSwitch]="view">
+        <mwl-calendar-month-view
+          *ngSwitchCase="'month'"
+          [viewDate]="viewDate"
+          [events]="events"
+          [refresh]="refresh"
+          [activeDayIsOpen]="activeDayIsOpen"
+          (dayClicked)="dayClicked($event.day)"
+          (eventClicked)="handleEvent('edit', $event.event)"
+          (eventTimesChanged)="eventTimesChanged($event)">
+        </mwl-calendar-month-view>
+        <mwl-calendar-week-view
+          *ngSwitchCase="'week'"
+          [viewDate]="viewDate"
+          [events]="events"
+          [refresh]="refresh"
+          (eventClicked)="handleEvent('edit', $event.event)"
+          (eventTimesChanged)="eventTimesChanged($event)">
+        </mwl-calendar-week-view>
+        <mwl-calendar-day-view
+          *ngSwitchCase="'day'"
+          [viewDate]="viewDate"
+          [events]="events"
+          [refresh]="refresh"
+          (eventClicked)="handleEvent('edit', $event.event)"
+          (eventTimesChanged)="eventTimesChanged($event)">
+        </mwl-calendar-day-view>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

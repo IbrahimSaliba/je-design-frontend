@@ -1,0 +1,20 @@
+<div class="session-expired-dialog">
+  <div class="dialog-header">
+    <mat-icon class="warning-icon">warning</mat-icon>
+    <h2 mat-dialog-title>Session Expired</h2>
+  </div>
+  
+  <div mat-dialog-content class="dialog-content">
+    <p>{{ data.message }}</p>
+    <div class="countdown-container" *ngIf="countdown > 0">
+      <p class="countdown-text">Redirecting to sign in page in {{ countdown }} seconds...</p>
+      <mat-progress-bar mode="determinate" [value]="progressValue"></mat-progress-bar>
+    </div>
+  </div>
+  
+  <div mat-dialog-actions class="dialog-actions">
+    <button mat-raised-button color="primary" (click)="signInNow()">
+      Sign In Now
+    </button>
+  </div>
+</div>

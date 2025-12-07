@@ -1,0 +1,272 @@
+<div class="stock-adjustment-dialog">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="flex items-center flex-1">
+      <mat-icon class="mr-3">inventory</mat-icon>
+      <div class="flex-1">
+        <h2>Adjust Stock</h2>
+        <p>{{item.name}} ({{item.code}})</p>
+      </div>
+    </div>
+    <button mat-icon-button (click)="cancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Current Stock Display -->
+  <div class="p-4 bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-indigo-200 rounded-xl mb-5 current-stock-card">
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <p class="text-xs text-indigo-600 font-bold mb-2 uppercase tracking-wide">Current Stock</p>
+        <div class="flex items-baseline">
+          <p class="text-2xl font-bold text-indigo-900">{{item.total_quantity || 0}}</p>
+          <span class="text-sm font-medium text-indigo-600 ml-2">units</span>
+        </div>
+        <p class="text-xs text-gray-600 mt-1" *ngIf="minStock > 0">Min: {{minStock}} units</p>
+      </div>
+      <div class="text-right flex flex-col justify-center">
+        <p class="text-xs text-gray-600 font-bold mb-2 uppercase tracking-wide">Current Status</p>
+        <mat-chip [ngClass]="{
+          'bg-green-100': item.status === 'IN_STOCK',
+          'bg-orange-100': item.status === 'LOW_STOCK',
+          'bg-red-100': item.status === 'OUT_OF_STOCK'
+        }">
+          {{item.status?.replace('_', ' ')}}
+        </mat-chip>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock Alert Warnings (Real-time) -->
+  <div class="mb-5" *ngIf="quantityChange !== 0">
+    <!-- OUT OF STOCK ALERT -->
+    <div *ngIf="willBeOutOfStock" class="p-4 bg-gradient-to-r from-red-50 to-red-100 border-2 border-red-400 rounded-xl mb-3 stock-alert-card animate-pulse">
+      <div class="flex items-start">
+        <mat-icon class="text-red-600 mr-3 flex-shrink-0" style="font-size: 32px; width: 32px; height: 32px;">error</mat-icon>
+        <div class="flex-1">
+          <h3 class="text-red-900 font-bold text-sm mb-2 uppercase tracking-wide flex items-center">
+            <span class="mr-2">🚨</span>
+            Critical: Out of Stock Warning
+          </h3>
+          <p class="text-red-800 text-sm mb-2">
+            This adjustment will cause <strong>OUT OF STOCK</strong> status!
+          </p>
+          <div class="bg-white bg-opacity-70 rounded-lg p-3 mt-2">
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <span class="text-gray-600">After Adjustment:</span>
+                <span class="font-bold text-red-700 ml-1">{{predictedStock}} units</span>
+              </div>
+              <div>
+                <span class="text-gray-600">Minimum Required:</span>
+                <span class="font-bold text-red-700 ml-1">{{minStock}} units</span>
+              </div>
+              <div class="col-span-2">
+                <span class="text-gray-600">Predicted Status:</span>
+                <mat-chip class="ml-2 bg-red-200 text-red-900 font-bold">{{predictedStatus.replace('_', ' ')}}</mat-chip>
+              </div>
+            </div>
+          </div>
+          <p class="text-red-700 text-xs mt-2 font-semibold">
+            ⚠️ This will trigger stock alerts and may affect sales!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOW STOCK ALERT -->
+    <div *ngIf="willBeLowStock && !willBeOutOfStock" class="p-4 bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-400 rounded-xl mb-3 stock-alert-card">
+      <div class="flex items-start">
+        <mat-icon class="text-orange-600 mr-3 flex-shrink-0" style="font-size: 32px; width: 32px; height: 32px;">warning</mat-icon>
+        <div class="flex-1">
+          <h3 class="text-orange-900 font-bold text-sm mb-2 uppercase tracking-wide flex items-center">
+            <span class="mr-2">⚠️</span>
+            Low Stock Warning
+          </h3>
+          <p class="text-orange-800 text-sm mb-2">
+            This adjustment will cause <strong>LOW STOCK</strong> status!
+          </p>
+          <div class="bg-white bg-opacity-70 rounded-lg p-3 mt-2">
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <span class="text-gray-600">After Adjustment:</span>
+                <span class="font-bold text-orange-700 ml-1">{{predictedStock}} units</span>
+              </div>
+              <div>
+                <span class="text-gray-600">Remaining Buffer:</span>
+                <span class="font-bold text-orange-700 ml-1">{{predictedStock - minStock}} units</span>
+              </div>
+              <div class="col-span-2">
+                <span class="text-gray-600">Predicted Status:</span>
+                <mat-chip class="ml-2 bg-orange-200 text-orange-900 font-bold">{{predictedStatus.replace('_', ' ')}}</mat-chip>
+              </div>
+            </div>
+          </div>
+          <p class="text-orange-700 text-xs mt-2 font-semibold">
+            This will trigger low stock notifications.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATUS CHANGE INFO -->
+    <div *ngIf="statusWillChange && !willBeLowStock && !willBeOutOfStock" class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-xl mb-3 stock-alert-card">
+      <div class="flex items-start">
+        <mat-icon class="text-blue-600 mr-3 flex-shrink-0" style="font-size: 28px; width: 28px; height: 28px;">info</mat-icon>
+        <div class="flex-1">
+          <h3 class="text-blue-900 font-bold text-sm mb-2 uppercase tracking-wide flex items-center">
+            <span class="mr-2">ℹ️</span>
+            Status Change Notice
+          </h3>
+          <div class="bg-white bg-opacity-70 rounded-lg p-3 mt-2">
+            <div class="flex items-center justify-between text-sm">
+              <div>
+                <span class="text-gray-600">Current:</span>
+                <mat-chip class="ml-2" [ngClass]="getStatusBgColor(item.status)">
+                  {{item.status?.replace('_', ' ')}}
+                </mat-chip>
+              </div>
+              <mat-icon class="text-blue-600 mx-2">arrow_forward</mat-icon>
+              <div>
+                <span class="text-gray-600">After:</span>
+                <mat-chip class="ml-2" [ngClass]="getStatusBgColor(predictedStatus)">
+                  {{predictedStatus.replace('_', ' ')}}
+                </mat-chip>
+              </div>
+            </div>
+            <div class="mt-2 text-xs text-gray-600">
+              <span>After Adjustment: </span>
+              <span class="font-bold text-blue-700">{{predictedStock}} units</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Adjustment Form -->
+  <form [formGroup]="adjustmentForm" (ngSubmit)="submit()">
+    
+    <!-- New Quantity & Change Indicator Combined -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>New Quantity</mat-label>
+        <input matInput type="number" formControlName="newQuantity" min="0" step="1">
+        <mat-icon matSuffix>straighten</mat-icon>
+        <mat-hint *ngIf="predictedStock !== item.total_quantity">
+          Predicted: <strong [ngClass]="getStatusColor(predictedStatus)">{{predictedStock}} units</strong>
+          <span class="ml-2">({{predictedStatus.replace('_', ' ')}})</span>
+        </mat-hint>
+        <mat-error *ngIf="adjustmentForm.get('newQuantity')?.hasError('required')">
+          Required
+        </mat-error>
+        <mat-error *ngIf="adjustmentForm.get('newQuantity')?.hasError('min')">
+          Cannot be negative
+        </mat-error>
+      </mat-form-field>
+      
+      <!-- Change Indicator (Redesigned) -->
+      <div class="p-4 rounded-xl flex flex-col justify-center change-indicator" [ngClass]="{
+        'bg-green-50': quantityChange > 0,
+        'bg-red-50': quantityChange < 0,
+        'bg-gray-50': quantityChange === 0
+      }">
+        <div class="flex items-center justify-between mb-1">
+          <mat-icon [ngClass]="getChangeColor()">{{getChangeIcon()}}</mat-icon>
+          <span class="text-xl font-bold" [ngClass]="getChangeColor()">
+            {{quantityChange > 0 ? '+' : ''}}{{quantityChange}}
+          </span>
+        </div>
+        <p class="text-xs font-bold uppercase tracking-wide text-center" [ngClass]="getChangeColor()">
+          {{quantityChange > 0 ? 'Increase' : quantityChange < 0 ? 'Decrease' : 'No change'}}
+        </p>
+        <!-- Show predicted status badge -->
+        <div class="mt-2 text-center" *ngIf="quantityChange !== 0">
+          <mat-chip class="text-xs" [ngClass]="getStatusBgColor(predictedStatus)">
+            → {{predictedStatus.replace('_', ' ')}}
+          </mat-chip>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reason Selection -->
+    <mat-form-field appearance="fill" class="w-full mb-4">
+      <mat-label>Adjustment Reason</mat-label>
+      <mat-select formControlName="reason">
+        <mat-option *ngFor="let reason of adjustmentReasons" [value]="reason.value">
+          <div class="flex items-center">
+            <mat-icon class="mr-2 text-sm">{{reason.icon}}</mat-icon>
+            {{reason.label}}
+          </div>
+        </mat-option>
+      </mat-select>
+      <mat-icon matSuffix>category</mat-icon>
+      <mat-error *ngIf="adjustmentForm.get('reason')?.hasError('required')">
+        Reason is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Unit Cost & Notes Row -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+      <!-- Unit Cost (Only for Purchase) -->
+      <mat-form-field appearance="fill" class="w-full" *ngIf="isReasonPurchase()">
+        <mat-label>Unit Cost</mat-label>
+        <input matInput type="number" formControlName="unitCost" step="0.01" min="0.01">
+        <span matPrefix>$ &nbsp;</span>
+        <mat-error *ngIf="adjustmentForm.get('unitCost')?.hasError('required')">
+          Required
+        </mat-error>
+      </mat-form-field>
+      
+      <!-- Notes (full width if no unit cost) -->
+      <mat-form-field appearance="fill" class="w-full" [ngClass]="{'md:col-span-2': !isReasonPurchase()}">
+        <mat-label>Notes</mat-label>
+        <textarea matInput formControlName="notes" rows="2"></textarea>
+        <mat-icon matSuffix>note</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Impact Summary (Enhanced) -->
+    <div class="p-4 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-2 border-indigo-200 rounded-xl mb-5 impact-summary" *ngIf="quantityChange !== 0">
+      <p class="text-xs font-bold text-indigo-900 mb-3 uppercase tracking-wide flex items-center">
+        <mat-icon class="mr-2 text-sm">info</mat-icon>
+        What Will Happen
+      </p>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="text-center p-3 bg-white rounded-lg border-2 border-blue-200 shadow-sm hover-card">
+          <mat-icon class="text-blue-600 mb-2">inventory_2</mat-icon>
+          <p class="text-xs font-bold text-gray-800 mb-1">Movement</p>
+          <p class="text-sm font-bold mt-1" [ngClass]="{
+            'text-green-600': quantityChange > 0,
+            'text-red-600': quantityChange < 0
+          }">{{quantityChange > 0 ? 'IN' : 'OUT'}}</p>
+        </div>
+        <div class="text-center p-3 bg-white rounded-lg border-2 border-green-200 shadow-sm hover-card">
+          <mat-icon class="text-green-600 mb-2">account_balance</mat-icon>
+          <p class="text-xs font-bold text-gray-800 mb-1">Accounting</p>
+          <p class="text-sm text-green-700 font-bold mt-1">{{quantityChange < 0 ? 'Expense' : (isReasonPurchase() ? 'Purchase' : 'Income')}}</p>
+        </div>
+        <div class="text-center p-3 bg-white rounded-lg border-2 border-purple-200 shadow-sm hover-card">
+          <mat-icon class="text-purple-600 mb-2">history</mat-icon>
+          <p class="text-xs font-bold text-gray-800 mb-1">Audit</p>
+          <p class="text-sm text-purple-600 font-bold mt-1">Tracked</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col-reverse md:flex-row justify-end gap-3 pt-4 mt-2 border-t-2 border-gray-200">
+      <button mat-stroked-button type="button" (click)="cancel()" [disabled]="loading" class="w-full md:w-auto order-2 md:order-1">
+        <mat-icon>close</mat-icon>
+        <span class="ml-2">Cancel</span>
+      </button>
+      <button mat-flat-button color="primary" type="submit" 
+              [disabled]="adjustmentForm.invalid || quantityChange === 0 || loading"
+              class="w-full md:w-auto order-1 md:order-2" style="color:white;">
+        <mat-icon>{{loading ? 'hourglass_empty' : 'check_circle'}}</mat-icon>
+        <span class="ml-2">{{loading ? 'Processing...' : 'Confirm Adjustment'}}</span>
+      </button>
+    </div>
+  </form>
+</div>
+

@@ -1,0 +1,34 @@
+.ngx-pagination {
+  li {
+    &.current {
+      background-color: transparent;
+      a, > span {
+        background-color: rgb(var(--color-primary));
+      }
+    }
+    a, > span {
+      height: 36px;
+      // display: flex;
+      // align-items: center;
+      // justify-content: center;
+      border-radius: 4px;
+    }
+    a {
+      &:hover {
+        background-color: rgb(var(--bg-hover));
+      }
+    }
+    
+  }
+  li:not(.pagination-previous):not(.pagination-next) {
+    border-radius: 50%;;
+    a, > span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      width: 36px;
+    }
+  }
+
+}

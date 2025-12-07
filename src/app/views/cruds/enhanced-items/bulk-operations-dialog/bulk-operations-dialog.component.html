@@ -1,0 +1,147 @@
+<div class="bulk-operations-dialog p-6">
+  <h2 mat-dialog-title class="text-xl font-bold mb-4">Bulk Operations</h2>
+  
+  <div mat-dialog-content class="mb-6">
+    <!-- Selected Items Summary -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+      <h3 class="font-semibold text-blue-900 mb-2">{{getSelectedItemsSummary()}}</h3>
+      <div class="text-sm text-blue-700">
+        <div class="max-h-32 overflow-y-auto">
+          <ul class="list-disc list-inside space-y-1">
+            <li *ngFor="let name of getSelectedItemsNames()">{{name}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Operations Form -->
+    <form [formGroup]="bulkForm" (ngSubmit)="onSubmit()">
+      <div class="space-y-4">
+        <!-- Operation Type -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Select Operation *</mat-label>
+          <mat-select formControlName="operation" (selectionChange)="onOperationChange()">
+            <mat-option *ngFor="let operation of operationTypes" [value]="operation.value">
+              {{operation.label}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="bulkForm.get('operation')?.hasError('required')">
+            Please select an operation
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Status Update -->
+        <div *ngIf="bulkForm.get('operation')?.value === 'update_status'" class="space-y-4">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>New Status *</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+                {{status.label}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="bulkForm.get('status')?.hasError('required')">
+              Please select a status
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Category Update -->
+        <div *ngIf="bulkForm.get('operation')?.value === 'update_category'" class="space-y-4">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>New Category *</mat-label>
+            <input matInput formControlName="category" placeholder="Enter category name">
+            <mat-error *ngIf="bulkForm.get('category')?.hasError('required')">
+              Please enter a category
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Supplier Update -->
+        <div *ngIf="bulkForm.get('operation')?.value === 'update_supplier'" class="space-y-4">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>New Supplier *</mat-label>
+            <input matInput formControlName="supplier" placeholder="Enter supplier name">
+            <mat-error *ngIf="bulkForm.get('supplier')?.hasError('required')">
+              Please enter a supplier
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Pricing Adjustment -->
+        <div *ngIf="bulkForm.get('operation')?.value === 'adjust_pricing'" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Adjustment Type</mat-label>
+              <mat-select formControlName="priceAdjustmentType">
+                <mat-option value="percentage">Percentage</mat-option>
+                <mat-option value="fixed">Fixed Amount</mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Adjustment Value *</mat-label>
+              <input matInput type="number" formControlName="priceAdjustmentValue" 
+                     [placeholder]="bulkForm.get('priceAdjustmentType')?.value === 'percentage' ? 'Enter percentage (e.g., 10 for 10%)' : 'Enter fixed amount'">
+              <mat-hint *ngIf="bulkForm.get('priceAdjustmentType')?.value === 'percentage'">
+                Positive values increase price, negative values decrease price
+              </mat-hint>
+              <mat-error *ngIf="bulkForm.get('priceAdjustmentValue')?.hasError('required')">
+                Please enter an adjustment value
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Tags Update -->
+        <div *ngIf="bulkForm.get('operation')?.value === 'update_tags'" class="space-y-4">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Tags to Add *</mat-label>
+            <input matInput formControlName="tags" placeholder="Enter tags (comma-separated)">
+            <mat-hint>These tags will be added to all selected items</mat-hint>
+            <mat-error *ngIf="bulkForm.get('tags')?.hasError('required')">
+              Please enter tags
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Delete Confirmation -->
+        <div *ngIf="bulkForm.get('operation')?.value === 'delete_items'" class="space-y-4">
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <h4 class="font-semibold text-red-900 mb-2">⚠️ Warning: Delete Items</h4>
+            <p class="text-red-700 text-sm mb-4">
+              This action will permanently delete {{selectedItems.length}} items. This cannot be undone.
+            </p>
+            <mat-checkbox formControlName="confirmDelete" class="text-red-700">
+              I understand that this action cannot be undone
+            </mat-checkbox>
+          </div>
+        </div>
+
+        <!-- Export Information -->
+        <div *ngIf="bulkForm.get('operation')?.value === 'export_selected'" class="space-y-4">
+          <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+            <h4 class="font-semibold text-green-900 mb-2">📊 Export Selected Items</h4>
+            <p class="text-green-700 text-sm">
+              This will export {{selectedItems.length}} items to a CSV file with all their details.
+            </p>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <mat-dialog-actions class="flex justify-end space-x-2">
+    <button type="button" mat-button (click)="onCancel()">
+      Cancel
+    </button>
+    <button type="button" 
+            mat-raised-button 
+            color="primary" 
+            (click)="onSubmit()"
+            [disabled]="!bulkForm.valid || loading">
+      <mat-icon *ngIf="loading" class="animate-spin">refresh</mat-icon>
+      <span *ngIf="!loading">Execute Operation</span>
+      <span *ngIf="loading">Processing...</span>
+    </button>
+  </mat-dialog-actions>
+</div>

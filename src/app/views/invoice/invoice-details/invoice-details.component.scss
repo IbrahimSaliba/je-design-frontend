@@ -1,0 +1,86 @@
+// Compact form fields for invoice items table
+::ng-deep .mat-mdc-form-field {
+  &.compact-field {
+    .mat-mdc-text-field-wrapper {
+      height: 32px !important;
+    }
+    
+    .mat-mdc-form-field-infix {
+      min-height: 32px !important;
+      padding: 4px 0 !important;
+    }
+    
+    .mat-mdc-input-element {
+      height: 24px !important;
+      font-size: 12px !important;
+    }
+    
+    .mat-mdc-form-field-label {
+      font-size: 11px !important;
+      transform: translateY(-60%) scale(0.75) !important;
+      transform-origin: 0 0 !important;
+    }
+    
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none !important;
+    }
+    
+    // Fix the outline to remove the split bar
+    .mdc-notched-outline {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-top: 1px solid rgba(0, 0, 0, 0.38) !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.38) !important;
+        border-left: 1px solid rgba(0, 0, 0, 0.38) !important;
+        border-right: 1px solid rgba(0, 0, 0, 0.38) !important;
+      }
+      
+      .mdc-notched-outline__leading {
+        border-left: 1px solid rgba(0, 0, 0, 0.38) !important;
+        border-right: none !important;
+      }
+      
+      .mdc-notched-outline__trailing {
+        border-right: 1px solid rgba(0, 0, 0, 0.38) !important;
+        border-left: none !important;
+      }
+      
+      .mdc-notched-outline__notch {
+        border-left: none !important;
+        border-right: none !important;
+      }
+    }
+    
+    // When focused
+    &.mat-focused .mdc-notched-outline {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: var(--mdc-theme-primary) !important;
+        border-width: 2px !important;
+      }
+    }
+  }
+}
+
+// Force all table row elements to have consistent height
+.invoice-table-row {
+  .col-span-1 {
+    min-height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+// Modal positioning to avoid sidebar collision
+.modal-content-area {
+  margin-left: 16rem;
+  max-width: calc(100vw - 20rem);
+  
+  @media (max-width: 640px) {
+    margin-left: 0;
+    max-width: calc(100vw - 2rem);
+  }
+}

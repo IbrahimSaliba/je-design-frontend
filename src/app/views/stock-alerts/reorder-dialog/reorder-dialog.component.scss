@@ -1,0 +1,36 @@
+// Reorder Dialog Styles
+.reorder-dialog {
+  .item-info-card {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+  }
+
+  .cost-summary-card {
+    background-color: #e3f2fd;
+    border: 1px solid #bbdefb;
+  }
+
+  .form-field {
+    margin-bottom: 1rem;
+  }
+
+  .loading-spinner {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 600px) {
+    .dialog-content {
+      padding: 1rem;
+    }
+    
+    .grid-cols-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+}

@@ -1,0 +1,181 @@
+<div class="accounting-dashboard p-6">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Accounting Dashboard</h1>
+    <p class="text-gray-600">Comprehensive financial overview and management</p>
+  </div>
+
+  <!-- Key Financial Metrics -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <!-- Net Income -->
+    <mat-card class="metric-card shadow-lg hover:shadow-xl transition-all duration-300">
+      <mat-card-content class="p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600 mb-1">Net Income</p>
+            <h3 class="text-3xl font-bold" [class]="netIncome >= 0 ? 'text-green-600' : 'text-red-600'">
+              {{formatCurrency(netIncome)}}
+            </h3>
+            <p class="text-xs mt-1" [ngClass]="getNetIncomeChangeClass()">
+              <mat-icon class="text-xs align-middle mr-1">{{netIncomeTrendIcon}}</mat-icon>
+              {{netIncomeChangeLabel}} from last month
+            </p>
+          </div>
+          <div class="p-3 rounded-full" [class]="netIncome >= 0 ? 'bg-green-100' : 'bg-red-100'">
+            <mat-icon class="text-2xl" [class]="netIncome >= 0 ? 'text-green-600' : 'text-red-600'">
+              {{netIncome >= 0 ? 'attach_money' : 'money_off'}}
+            </mat-icon>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Secondary Metrics -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <mat-card class="metric-card-small">
+      <mat-card-content class="p-4 text-center">
+        <div class="text-2xl font-bold text-gray-900">{{totalInvoices}}</div>
+        <div class="text-sm text-gray-600">Total Invoices</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card-small">
+      <mat-card-content class="p-4 text-center">
+        <div class="text-2xl font-bold text-red-600">{{pendingInvoices}}</div>
+        <div class="text-sm text-gray-600">Pending Invoices</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card-small">
+      <mat-card-content class="p-4 text-center">
+        <div class="text-2xl font-bold text-gray-900">{{totalExpensesCount}}</div>
+        <div class="text-sm text-gray-600">Total Expenses</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card-small">
+      <mat-card-content class="p-4 text-center">
+        <div class="text-2xl font-bold text-yellow-600">{{pendingExpenses}}</div>
+        <div class="text-sm text-gray-600">Pending Expenses</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="grid grid-cols-1 gap-6 mb-8">
+    <!-- Revenue vs Expenses Chart -->
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>Revenue vs Expenses</mat-card-title>
+        <mat-card-subtitle>Monthly comparison</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="chart-container" style="height: 300px;">
+          <canvas baseChart
+                  [data]="revenueChartData"
+                  [options]="chartOptions"
+                  type="line">
+          </canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Recent Activities -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Recent Journal Entries -->
+    <mat-card class="activity-card">
+      <mat-card-header>
+        <mat-card-title>Recent Journal Entries</mat-card-title>
+        <mat-card-subtitle>Latest accounting entries</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="space-y-3">
+          <div *ngFor="let entry of recentEntries" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div>
+              <div class="font-medium text-gray-900">{{entry.entryNumber}}</div>
+              <div class="text-sm text-gray-600">{{entry.description}}</div>
+              <div class="text-xs text-gray-500">Posted: {{formatDate(entry.date)}}</div>
+              <div class="text-xs text-gray-500" *ngIf="entry.referenceDate">
+                Effective: {{formatDate(entry.referenceDate)}}
+                <span *ngIf="entry.referenceSource">({{entry.referenceSource}})</span>
+              </div>
+            </div>
+            <div class="text-right space-y-1">
+              <div class="font-medium" [ngClass]="isCreditEntry(entry) ? 'text-green-600' : 'text-red-600'">
+                {{formatCurrency(getEntryAmount(entry))}}
+              </div>
+              <div class="text-xs text-gray-500">
+                {{isCreditEntry(entry) ? 'Credit' : 'Debit'}}
+              </div>
+              <div class="text-xs" [ngClass]="entry.isPosted ? 'text-green-600' : 'text-yellow-600'">
+                {{entry.isPosted ? 'Posted' : 'Draft'}}
+              </div>
+            </div>
+          </div>
+          <div *ngIf="recentEntries.length === 0" class="text-center text-gray-500 py-4">
+            No recent entries
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Recent Invoices -->
+    <mat-card class="activity-card">
+      <mat-card-header>
+        <mat-card-title>Recent Invoices</mat-card-title>
+        <mat-card-subtitle>Latest customer invoices</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="space-y-3">
+          <div *ngFor="let invoice of recentInvoices" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div>
+              <div class="font-medium text-gray-900">{{invoice.invoiceNumber}}</div>
+              <div class="text-sm text-gray-600">{{invoice.customerName}}</div>
+              <div class="text-xs text-gray-500">{{formatDate(invoice.date)}}</div>
+            </div>
+            <div class="text-right">
+              <div class="font-medium text-gray-900">{{formatCurrency(invoice.totalAmount)}}</div>
+              <div class="text-xs px-2 py-1 rounded-full" [class]="getStatusBadgeColor(invoice.status)">
+                {{invoice.status}}
+              </div>
+            </div>
+          </div>
+          <div *ngIf="recentInvoices.length === 0" class="text-center text-gray-500 py-4">
+            No recent invoices
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Recent Expenses -->
+    <mat-card class="activity-card">
+      <mat-card-header>
+        <mat-card-title>Recent Expenses</mat-card-title>
+        <mat-card-subtitle>Latest expense entries</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="space-y-3">
+          <div *ngFor="let expense of recentExpenses" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div>
+              <div class="font-medium text-gray-900">{{expense.expenseNumber}}</div>
+              <div class="text-sm text-gray-600">{{expense.description}}</div>
+              <div class="text-xs text-gray-500">{{formatDate(expense.date)}}</div>
+            </div>
+            <div class="text-right">
+              <div class="font-medium text-gray-900">{{formatCurrency(expense.totalAmount)}}</div>
+              <div class="text-xs px-2 py-1 rounded-full" [class]="getStatusBadgeColor(expense.status)">
+                {{expense.status}}
+              </div>
+            </div>
+          </div>
+          <div *ngIf="recentExpenses.length === 0" class="text-center text-gray-500 py-4">
+            No recent expenses
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

@@ -1,0 +1,91 @@
+<h2 mat-dialog-title>Audit Log Details</h2>
+
+<mat-dialog-content class="details-content">
+  <section>
+    <h3>Request Context</h3>
+    <div class="details-grid">
+      <div>
+        <span class="label">Timestamp</span>
+        <span class="value">{{ data.createdAt | date:'medium' }}</span>
+      </div>
+      <div>
+        <span class="label">User</span>
+        <span class="value">{{ data.username || '—' }}</span>
+      </div>
+      <div>
+        <span class="label">Role</span>
+        <span class="value">{{ data.userRole || '—' }}</span>
+      </div>
+      <div>
+        <span class="label">Action</span>
+        <span class="value">{{ data.action || '—' }}</span>
+      </div>
+      <div>
+        <span class="label">Resource</span>
+        <span class="value">{{ data.resourceType || '—' }}</span>
+      </div>
+      <div>
+        <span class="label">Resource ID</span>
+        <span class="value">{{ data.resourceId || '—' }}</span>
+      </div>
+      <div>
+        <span class="label">HTTP Method</span>
+        <span class="value">{{ data.httpMethod || '—' }}</span>
+      </div>
+      <div>
+        <span class="label">Path</span>
+        <span class="value monospace">{{ data.requestPath || '—' }}</span>
+      </div>
+      <div>
+        <span class="label">Response Code</span>
+        <span class="value">{{ data.responseCode || '—' }}</span>
+      </div>
+      <div>
+        <span class="label">Status</span>
+        <span class="value">
+          <mat-chip [color]="data.success ? 'primary' : 'warn'" selected>
+            {{ data.success ? 'SUCCESS' : 'FAILED' }}
+          </mat-chip>
+        </span>
+      </div>
+      <div>
+        <span class="label">Correlation ID</span>
+        <span class="value monospace">{{ data.correlationId || '—' }}</span>
+      </div>
+      <div>
+        <span class="label">IP Address</span>
+        <span class="value monospace">{{ data.ipAddress || '—' }}</span>
+      </div>
+      <div class="full-width">
+        <span class="label">User Agent</span>
+        <span class="value monospace">{{ data.userAgent || '—' }}</span>
+      </div>
+      <div class="full-width" *ngIf="data.errorMessage">
+        <span class="label">Error Message</span>
+        <span class="value error">{{ data.errorMessage }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <mat-tab-group>
+      <mat-tab label="Request Payload">
+        <pre *ngIf="formattedRequest; else noRequest">{{ formattedRequest }}</pre>
+        <ng-template #noRequest>
+          <p class="placeholder">No request payload captured.</p>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Response Payload">
+        <pre *ngIf="formattedResponse; else noResponse">{{ formattedResponse }}</pre>
+        <ng-template #noResponse>
+          <p class="placeholder">No response payload captured.</p>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </section>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Close</button>
+</mat-dialog-actions>
+

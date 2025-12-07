@@ -1,0 +1,712 @@
+.distribution-map-container {
+  padding: 24px;
+  background: #f8fafc;
+  min-height: calc(100vh - 100px);
+
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
+}
+
+// Header Section
+.map-header {
+  margin-bottom: 24px;
+  padding: 0;
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+
+    .breadcrumb-item {
+      color: #6b7280;
+      text-transform: uppercase;
+    }
+
+    .breadcrumb-separator {
+      margin: 0 8px;
+      color: #9ca3af;
+    }
+  }
+
+  .page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+    }
+  }
+
+  .page-subtitle {
+    margin: 0;
+    color: #6b7280;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+    }
+  }
+}
+
+// Filters Section
+.filters-section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  .filters-wrapper {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  .filter-field {
+    flex: 1;
+    min-width: 200px;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      min-width: auto;
+    }
+
+    // Clean up Material form field appearance
+    ::ng-deep {
+      .mat-mdc-form-field-focus-overlay {
+        background-color: transparent;
+      }
+
+      .mat-mdc-text-field-wrapper {
+        background-color: #f9fafb;
+        border-radius: 8px;
+      }
+
+      .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+        background-color: #f9fafb;
+      }
+
+      .mat-mdc-form-field-flex {
+        align-items: center;
+      }
+
+      .mat-mdc-select-value {
+        color: #1f2937;
+        font-weight: 500;
+      }
+
+      .mat-mdc-form-field-icon-suffix {
+        color: #667eea;
+      }
+
+      // Remove the weird notch/outline
+      .mdc-notched-outline {
+        display: none;
+      }
+
+      // Style the underline
+      .mdc-line-ripple {
+        display: none;
+      }
+
+      .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
+    }
+  }
+
+  .clear-btn {
+    height: 56px;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+}
+
+// Loading State
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  .loading-text {
+    margin-top: 16px;
+    color: #6b7280;
+    font-size: 16px;
+  }
+}
+
+// Loading Overlay (for filter changes)
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(1px);
+  pointer-events: none;
+  
+  mat-spinner {
+    pointer-events: auto;
+  }
+}
+
+// Error State
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  .error-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #ef4444;
+    margin-bottom: 16px;
+  }
+
+  .error-text {
+    color: #6b7280;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+// Main Content
+.main-content {
+  position: relative; // For loading overlay positioning
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 24px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Map Section
+.map-section {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  min-height: 600px;
+
+  @media (max-width: 768px) {
+    min-height: 400px;
+  }
+}
+
+.leaflet-map {
+  height: 600px !important;
+  width: 100% !important;
+  border-radius: 12px;
+  z-index: 1;
+  position: relative;
+
+  @media (max-width: 768px) {
+    height: 400px !important;
+  }
+
+  // Ensure Leaflet container is properly sized
+  ::ng-deep .leaflet-container {
+    height: 100% !important;
+    width: 100% !important;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// No Results Overlay
+.no-results-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  text-align: center;
+  max-width: 400px;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #9ca3af;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .clear-link {
+    color: #667eea;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+      color: #764ba2;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 24px;
+    max-width: 90%;
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+    }
+
+    h3 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+}
+
+// Map Legend
+.map-legend {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+
+  h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #4b5563;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .legend-marker {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      margin-right: 8px;
+      border: 2px solid white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+      &.active {
+        background: #10b981;
+      }
+
+      &.pending {
+        background: #f59e0b;
+      }
+
+      &.inactive {
+        background: #ef4444;
+      }
+    }
+  }
+}
+
+// Statistics Section
+.statistics-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// Summary Cards
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+
+    &.success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    &.primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    }
+
+    &.warning {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .stat-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .stat-label {
+      font-size: 12px;
+      color: #6b7280;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1f2937;
+      line-height: 1.2;
+    }
+
+    .stat-value-small {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2937;
+      line-height: 1.2;
+    }
+
+    .stat-sublabel {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+  }
+}
+
+// Distribution Chart
+.distribution-chart {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  .chart-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 20px 0;
+  }
+
+  .chart-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .chart-bar-item {
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 14px;
+
+      .bar-name {
+        font-weight: 500;
+        color: #374151;
+      }
+
+      .bar-count {
+        color: #6b7280;
+        font-weight: 600;
+      }
+    }
+
+    .bar-container {
+      position: relative;
+      height: 32px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      overflow: hidden;
+
+      .bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 8px;
+        transition: width 0.5s ease;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 12px;
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+
+        &::after {
+          content: attr(data-percentage);
+        }
+      }
+    }
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9ca3af;
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+}
+
+// Top Municipalities
+.top-municipalities {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  .chart-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 16px 0;
+  }
+
+  .municipality-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .municipality-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #f3f4f6;
+    }
+
+    .rank {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .mun-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      .mun-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .mun-location {
+        font-size: 12px;
+        color: #6b7280;
+      }
+    }
+
+    .mun-count {
+      font-size: 16px;
+      font-weight: 700;
+      color: #667eea;
+    }
+  }
+}
+
+// Warning Card
+.warning-card {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  mat-icon {
+    color: #f59e0b;
+    flex-shrink: 0;
+  }
+
+  .warning-content {
+    flex: 1;
+    color: #92400e;
+    font-size: 14px;
+    line-height: 1.5;
+
+    strong {
+      font-weight: 600;
+    }
+
+    small {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+  }
+}
+
+// Leaflet Marker Cluster Custom Styles
+::ng-deep {
+  .marker-cluster {
+    background-color: rgba(59, 130, 246, 0.6);
+    border-radius: 50%;
+    
+    div {
+      background-color: rgba(59, 130, 246, 0.8);
+      border-radius: 50%;
+      color: white;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .marker-cluster-medium {
+    background-color: rgba(245, 158, 11, 0.6);
+    
+    div {
+      background-color: rgba(245, 158, 11, 0.8);
+    }
+  }
+
+  .marker-cluster-large {
+    background-color: rgba(239, 68, 68, 0.6);
+    
+    div {
+      background-color: rgba(239, 68, 68, 0.8);
+    }
+  }
+
+  // Custom marker
+  .custom-marker {
+    background: transparent;
+    border: none;
+  }
+
+  // Popup styling
+  .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .leaflet-popup-content {
+    margin: 16px;
+  }
+}
+

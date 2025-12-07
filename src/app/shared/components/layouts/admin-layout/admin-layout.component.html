@@ -1,0 +1,9 @@
+<mat-progress-bar mode="indeterminate" class="!absolute top-0 left-0 right-0 z-[1000] invisible" [ngClass]="{'!visible': isModuleLoading}"></mat-progress-bar>
+
+<!-- Render either horizontal or vertical layout based on navigationPos -->
+<app-horizontal-layout *ngIf="layoutConf.navigationPos === 'top'"></app-horizontal-layout>
+<app-vertical-layout *ngIf="layoutConf.navigationPos === 'side'"></app-vertical-layout>
+
+<!-- Only for demo purpose -->
+<!-- Remove this from your production version -->
+<app-customizer></app-customizer> 

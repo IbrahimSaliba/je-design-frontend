@@ -1,0 +1,135 @@
+// Settlements Component Professional Styling
+
+// Enhanced form fields
+mat-form-field {
+  .mat-mdc-text-field-wrapper {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+    
+    &:hover {
+      border-color: #3b82f6 !important;
+      background: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1) !important;
+    }
+    
+    &.mdc-text-field--focused {
+      border-color: #3b82f6 !important;
+      background: #ffffff !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+  }
+}
+
+// Card enhancements
+mat-card {
+  border-radius: 16px !important;
+  
+  mat-card-header {
+    border-radius: 16px 16px 0 0 !important;
+  }
+}
+
+// Table enhancements
+.mat-mdc-table {
+  border-radius: 12px !important;
+  
+  .mat-mdc-header-row {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    
+    .mat-mdc-header-cell {
+      font-weight: 600 !important;
+      color: #495057 !important;
+      border-bottom: 2px solid #dee2e6 !important;
+    }
+  }
+  
+  .mat-mdc-row {
+    transition: all 0.2s ease !important;
+    
+    &:hover {
+      background-color: #f8f9fa !important;
+      transform: scale(1.01);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+  }
+  
+  .mat-mdc-cell {
+    border-bottom: 1px solid #e9ecef !important;
+  }
+}
+
+// Button enhancements
+.mat-mdc-raised-button {
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+  }
+}
+
+.mat-mdc-stroked-button {
+  border-radius: 10px !important;
+  border-width: 2px !important;
+  font-weight: 600 !important;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.mat-mdc-flat-button {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  
+  &:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+  }
+}
+
+// Chip enhancements
+mat-chip {
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+}
+
+// Page title
+h1 {
+  background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Invoice details card animation
+.bg-gradient-to-r {
+  transition: all 0.3s ease !important;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .mat-mdc-table {
+    font-size: 14px !important;
+    
+    .mat-mdc-cell,
+    .mat-mdc-header-cell {
+      padding: 8px !important;
+    }
+  }
+}
+

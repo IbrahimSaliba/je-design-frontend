@@ -1,0 +1,160 @@
+.handle {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    z-index: 1;
+}
+#app-customizer {
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  z-index: 1000;
+  width: 350px;
+  max-width: calc(100% - 60px);
+  .title {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  .mat-card {
+    .mat-card-title {
+      background: #eeeeee;
+      border-radius: 4px 4px 0 0;
+      .card-title-text {
+        font-size: .875rem;
+      }
+      .card-control {
+        position: relative;
+        top: -4px;
+      }
+    }
+    .mat-card-content {
+      padding: 1rem 1.5rem;
+    }
+  }
+  .colors {
+    padding: 1rem 0 .5rem;
+  }
+  .color {
+    position: relative;
+    display: inline-block;
+    margin: 8px;
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.14),
+                0 2px 2px 0 rgba(0,0,0,.12),
+                0 1px 5px 0 rgba(0,0,0,.2);
+    transition: all .3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 5px -2px rgba(0,0,0,.14),
+                  0 7px 10px 1px rgba(0,0,0,.12),
+                  0 2px 16px 1px rgba(0,0,0,.2);
+    }
+    
+    .active-icon {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      color: white;
+      transform: translateX(-50%);
+    }
+    
+    .theme-name {
+      opacity: 0.9;
+      transition: opacity .2s ease;
+    }
+    
+    &:hover .theme-name {
+      opacity: 1;
+    }
+  }
+
+  .mat-radio-group {
+    width: 100%;
+    .mat-radio-button {
+      display: block;
+      margin-bottom: 10px;
+    }
+  }
+
+  .photos {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -4px;
+  }
+  .photo {
+    display: flex;
+    width: calc(100% / 3);
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+  .photo img {
+    height: 88px;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.14), 0px 2px 2px 0px rgba(0, 0, 0, 0.12), 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+  }
+  .photo.active {
+    transform: scale(0.9);
+  }
+}
+.pos-rel {
+  position: relative;
+  z-index: 99;
+  .olay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+    z-index: 100;
+  }
+}
+
+.colors {
+  display: flex;
+  flex-wrap: wrap;
+  .color {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    display: inline-block;
+    border-radius: 50%;
+    margin: 8px;
+    text-align: center;
+    box-shadow: 0 4px 20px 1px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.03);
+    cursor: pointer;
+    .active-icon {
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin: auto;
+      top: 6px;
+    }
+  }
+}
+
+.border-bottom {
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+.spin {
+  animation: spin 2s infinite linear;
+}
+
+@keyframes spin {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(359deg);}
+}
+
+// [dir="rtl"] {
+//   .handle {}
+//   #app-customizer {
+//     right: auto;
+//     left: 0;
+//   }
+// }

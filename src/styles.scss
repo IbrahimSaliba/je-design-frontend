@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Global radio button styling override */
+.mat-radio-button.mat-radio-checked .mat-radio-outer-circle {
+  border-color: #0f174c !important;
+}
+
+.mat-radio-button.mat-radio-checked .mat-radio-inner-circle {
+  background-color: #0f174c !important;
+}
+
+.mat-radio-button.mat-radio-checked .mat-radio-persistent-ripple {
+  background-color: #0f174c !important;
+}
+
+.mat-radio-button {
+  --mdc-radio-selected-icon-color: #0f174c !important;
+  --mdc-radio-selected-focus-icon-color: #0f174c !important;
+  --mdc-radio-selected-hover-icon-color: #0f174c !important;
+  --mdc-radio-selected-pressed-icon-color: #0f174c !important;
+}
+
+.mat-radio-button.mat-radio-checked {
+  --mdc-radio-selected-icon-color: #0f174c !important;
+  --mdc-radio-selected-focus-icon-color: #0f174c !important;
+  --mdc-radio-selected-hover-icon-color: #0f174c !important;
+  --mdc-radio-selected-pressed-icon-color: #0f174c !important;
+}

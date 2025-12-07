@@ -1,0 +1,162 @@
+// Bulk Operations Dialog Styles
+.bulk-operations-dialog {
+  .selected-items-summary {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    
+    .summary-title {
+      font-weight: 600;
+      color: #1e40af;
+      margin-bottom: 0.5rem;
+    }
+    
+    .items-list {
+      max-height: 8rem;
+      overflow-y: auto;
+      
+      .item-name {
+        font-size: 0.875rem;
+        color: #1e40af;
+        margin-bottom: 0.25rem;
+      }
+    }
+  }
+
+  .operation-section {
+    margin-bottom: 1.5rem;
+    
+    .section-title {
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .warning-section {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 1rem;
+    
+    .warning-title {
+      font-weight: 600;
+      color: #dc2626;
+      margin-bottom: 0.5rem;
+    }
+    
+    .warning-text {
+      color: #dc2626;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .info-section {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 1rem;
+    
+    .info-title {
+      font-weight: 600;
+      color: #166534;
+      margin-bottom: 0.5rem;
+    }
+    
+    .info-text {
+      color: #166534;
+      font-size: 0.875rem;
+    }
+  }
+
+  .form-section {
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid #e5e7eb;
+    
+    .mat-button, .mat-raised-button {
+      min-width: 120px;
+    }
+  }
+
+  .loading-spinner {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-grid-2 {
+      grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+      
+      .mat-button, .mat-raised-button {
+        width: 100%;
+      }
+    }
+  }
+
+  // Dark theme support
+  .dark-theme {
+    .selected-items-summary {
+      background-color: #1e3a8a;
+      border-color: #3b82f6;
+      
+      .summary-title {
+        color: #93c5fd;
+      }
+      
+      .item-name {
+        color: #93c5fd;
+      }
+    }
+    
+    .warning-section {
+      background-color: #7f1d1d;
+      border-color: #dc2626;
+      
+      .warning-title, .warning-text {
+        color: #fca5a5;
+      }
+    }
+    
+    .info-section {
+      background-color: #14532d;
+      border-color: #22c55e;
+      
+      .info-title, .info-text {
+        color: #86efac;
+      }
+    }
+  }
+}

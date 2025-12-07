@@ -1,0 +1,201 @@
+// Expiry Alerts Component - Fully Responsive Styles
+
+.mat-mdc-table {
+  width: 100%;
+  background: white;
+  min-width: 800px; // Prevent table from squishing too much
+}
+
+.mat-mdc-row:hover {
+  background-color: #f5f5f5;
+  transition: background-color 0.2s ease;
+}
+
+// Loading spinner
+mat-spinner {
+  margin: 0 auto;
+}
+
+// ===================================
+// STATISTICS CARDS ICONS
+// ===================================
+
+// Icon container in cards
+.rounded-full {
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+// Material icons in cards
+mat-icon {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+// Fix icon sizing in statistics cards
+mat-card-content {
+  .flex {
+    .rounded-full {
+      mat-icon {
+        line-height: 1;
+      }
+    }
+  }
+}
+
+// Custom styles for table cells
+.mat-mdc-cell {
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+.mat-mdc-header-cell {
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #424242;
+  font-size: 13px;
+}
+
+// Statistics cards responsiveness
+.grid {
+  display: grid;
+}
+
+// Help card responsiveness
+.flex {
+  display: flex;
+}
+
+// ===================================
+// RESPONSIVE BREAKPOINTS
+// ===================================
+
+// Mobile (< 640px)
+@media (max-width: 639px) {
+  .mat-mdc-cell,
+  .mat-mdc-header-cell {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  // Stack filter buttons vertically on very small screens
+  .flex.flex-wrap.gap-2 {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+
+  // Smaller text in cards
+  .text-3xl {
+    font-size: 1.875rem !important;
+  }
+
+  .text-5xl {
+    font-size: 2.5rem !important;
+  }
+}
+
+// Tablet (640px - 1024px)
+@media (min-width: 640px) and (max-width: 1024px) {
+  .mat-mdc-cell,
+  .mat-mdc-header-cell {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  // Adjust font sizes for tablets
+  h1 {
+    font-size: 1.75rem !important;
+  }
+}
+
+// Desktop (> 1024px)
+@media (min-width: 1025px) {
+  .mat-mdc-cell {
+    padding: 14px 20px;
+  }
+
+  .mat-mdc-header-cell {
+    padding: 14px 20px;
+  }
+}
+
+// ===================================
+// MOBILE CARD VIEW STYLES
+// ===================================
+
+.border {
+  border-width: 1px;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+// Mobile card hover effect
+@media (max-width: 768px) {
+  .border.rounded-lg.p-4:active {
+    background-color: #f9fafb;
+    transform: scale(0.99);
+    transition: all 0.1s ease;
+  }
+}
+
+// ===================================
+// SCROLLABLE CONTAINER
+// ===================================
+
+.overflow-x-auto {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
+  
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+// ===================================
+// ACCESSIBILITY
+// ===================================
+
+// Focus states for keyboard navigation
+button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+// Touch-friendly button sizes on mobile
+@media (max-width: 768px) {
+  button[mat-icon-button],
+  button[mat-raised-button],
+  button[mat-stroked-button] {
+    min-height: 44px; // iOS touch target size
+    min-width: 44px;
+  }
+}
+

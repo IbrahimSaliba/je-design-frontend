@@ -1,0 +1,343 @@
+@use 'sass:map';
+@use "sass:color";
+@use 'sass:string';
+
+@use '@angular/material' as mat;
+
+@use "../variables" as *;
+@use "../color-tokens" as colors;
+@use 'egret.theme' as *;
+
+@include mat.elevation-classes();
+@include mat.app-background();
+
+// @debug $font-family-base;
+
+// Define typography using the centralized font variables from _variables.scss
+// This ensures that Angular Material uses the same font family as the rest of the app
+$egret-typography: mat.m2-define-typography-config(
+    $font-family: $font-family-base,
+    $headline-1: mat.m2-define-typography-level(1.875rem, 2.25rem, 800, $font-family-base),
+    $headline-2: mat.m2-define-typography-level(1.25rem, 1.75rem, 700, $font-family-base),
+    $headline-3: mat.m2-define-typography-level(1.125rem, 1.75rem, 600, $font-family-base),
+    $headline-4: mat.m2-define-typography-level(0.875rem, 1.25rem, 600, $font-family-base),
+    $headline-5: mat.m2-define-typography-level(0.875rem, 1.5rem, 500, $font-family-base),
+    $headline-6: mat.m2-define-typography-level(0.875rem, 1.5rem, 500, $font-family-base),
+    $subtitle-1: mat.m2-define-typography-level(1rem, 1.75rem, 500, $font-family-base),
+    $subtitle-2: mat.m2-define-typography-level(0.875rem, 1.25rem, 600, $font-family-base),
+    $body-1: mat.m2-define-typography-level(0.875rem, 1.5rem, 500, $font-family-base),
+    $body-2: mat.m2-define-typography-level(0.875rem, 1.5rem, 500, $font-family-base),
+    $caption: mat.m2-define-typography-level(0.75rem, 1rem, 500, $font-family-base),
+    $button: mat.m2-define-typography-level(0.875rem, 0.875rem, 500, $font-family-base),
+    $overline: mat.m2-define-typography-level(0.75rem, 2rem, 500, $font-family-base)
+);
+
+/* Create style without colors */
+@include mat.all-component-themes((color: null,
+    density: 0,
+    typography: $egret-typography,
+  ));
+
+@include mat.typography-hierarchy($egret-typography);
+
+// Define static colors for Material theme generation from our centralized color tokens
+// These are used internally by Angular Material, but will be overridden by CSS variables at runtime
+$static-primary-light: map.get(colors.$light-theme-colors, color-primary);  // Use semantic primary color
+$static-accent-light: map.get(colors.$light-theme-colors, color-accent);   // Use semantic accent color
+$static-warn-light: map.get(colors.$light-theme-colors, color-warn);     // Use semantic warn color
+
+$static-primary-dark: map.get(colors.$dark-theme-colors, color-primary);  // Use semantic primary color
+$static-accent-dark: map.get(colors.$dark-theme-colors, color-accent);   // Use semantic accent color
+$static-warn-dark: map.get(colors.$dark-theme-colors, color-warn);     // Use semantic warn color
+
+// Generate static primary palette for Angular Material
+$static-primary-light-palette: (
+  50: color.adjust($static-primary-light, $lightness: 40%),
+  100: color.adjust($static-primary-light, $lightness: 30%),
+  200: color.adjust($static-primary-light, $lightness: 20%),
+  300: color.adjust($static-primary-light, $lightness: 10%),
+  400: color.adjust($static-primary-light, $lightness: 5%),
+  500: $static-primary-light,
+  600: color.adjust($static-primary-light, $lightness: -5%),
+  700: color.adjust($static-primary-light, $lightness: -10%),
+  800: color.adjust($static-primary-light, $lightness: -20%),
+  900: color.adjust($static-primary-light, $lightness: -30%),
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+// Generate static accent palette
+$static-accent-light-palette: (
+  50: color.adjust($static-accent-light, $lightness: 40%),
+  100: color.adjust($static-accent-light, $lightness: 30%),
+  200: color.adjust($static-accent-light, $lightness: 20%),
+  300: color.adjust($static-accent-light, $lightness: 10%),
+  400: color.adjust($static-accent-light, $lightness: 5%),
+  500: $static-accent-light,
+  600: color.adjust($static-accent-light, $lightness: -5%),
+  700: color.adjust($static-accent-light, $lightness: -10%),
+  800: color.adjust($static-accent-light, $lightness: -20%),
+  900: color.adjust($static-accent-light, $lightness: -30%),
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+// Generate static warn palette
+$static-warn-light-palette: (
+  50: color.adjust($static-warn-light, $lightness: 40%),
+  100: color.adjust($static-warn-light, $lightness: 30%),
+  200: color.adjust($static-warn-light, $lightness: 20%),
+  300: color.adjust($static-warn-light, $lightness: 10%),
+  400: color.adjust($static-warn-light, $lightness: 5%),
+  500: $static-warn-light,
+  600: color.adjust($static-warn-light, $lightness: -5%),
+  700: color.adjust($static-warn-light, $lightness: -10%),
+  800: color.adjust($static-warn-light, $lightness: -20%),
+  900: color.adjust($static-warn-light, $lightness: -30%),
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+// Dark theme palettes
+$static-primary-dark-palette: (
+  50: color.adjust($static-primary-dark, $lightness: 40%),
+  100: color.adjust($static-primary-dark, $lightness: 30%),
+  200: color.adjust($static-primary-dark, $lightness: 20%),
+  300: color.adjust($static-primary-dark, $lightness: 10%),
+  400: color.adjust($static-primary-dark, $lightness: 5%),
+  500: $static-primary-dark,
+  600: color.adjust($static-primary-dark, $lightness: -5%),
+  700: color.adjust($static-primary-dark, $lightness: -10%),
+  800: color.adjust($static-primary-dark, $lightness: -20%),
+  900: color.adjust($static-primary-dark, $lightness: -30%),
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+$static-accent-dark-palette: (
+  50: color.adjust($static-accent-dark, $lightness: 40%),
+  100: color.adjust($static-accent-dark, $lightness: 30%),
+  200: color.adjust($static-accent-dark, $lightness: 20%),
+  300: color.adjust($static-accent-dark, $lightness: 10%),
+  400: color.adjust($static-accent-dark, $lightness: 5%),
+  500: $static-accent-dark,
+  600: color.adjust($static-accent-dark, $lightness: -5%),
+  700: color.adjust($static-accent-dark, $lightness: -10%),
+  800: color.adjust($static-accent-dark, $lightness: -20%),
+  900: color.adjust($static-accent-dark, $lightness: -30%),
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+$static-warn-dark-palette: (
+  50: color.adjust($static-warn-dark, $lightness: 40%),
+  100: color.adjust($static-warn-dark, $lightness: 30%),
+  200: color.adjust($static-warn-dark, $lightness: 20%),
+  300: color.adjust($static-warn-dark, $lightness: 10%),
+  400: color.adjust($static-warn-dark, $lightness: 5%),
+  500: $static-warn-dark,
+  600: color.adjust($static-warn-dark, $lightness: -5%),
+  700: color.adjust($static-warn-dark, $lightness: -10%),
+  800: color.adjust($static-warn-dark, $lightness: -20%),
+  900: color.adjust($static-warn-dark, $lightness: -30%),
+  contrast: (
+    50: rgba(0, 0, 0, 0.87),
+    100: rgba(0, 0, 0, 0.87),
+    200: rgba(0, 0, 0, 0.87),
+    300: rgba(0, 0, 0, 0.87),
+    400: rgba(0, 0, 0, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+
+// Define color palettes for Angular Material using the static colors
+$default-light-theme-primary: mat.m2-define-palette($static-primary-light-palette);
+$default-light-theme-accent: mat.m2-define-palette($static-accent-light-palette);
+$default-light-theme-warn: mat.m2-define-palette($static-warn-light-palette);
+
+$default-dark-theme-primary: mat.m2-define-palette($static-primary-dark-palette);
+$default-dark-theme-accent: mat.m2-define-palette($static-accent-dark-palette);
+$default-dark-theme-warn: mat.m2-define-palette($static-warn-dark-palette);
+
+/* Create Light theme */
+.egret-navy {  
+  // Background colors - static values for SCSS compilation
+  $light-background: #fafafa;
+  $light-bg-darker-5: color.adjust($light-background, $lightness: -5%);
+  $light-bg-darker-10: color.adjust($light-background, $lightness: -10%);
+  $light-bg-darker-20: color.adjust($light-background, $lightness: -20%);
+  $light-bg-darker-30: color.adjust($light-background, $lightness: -30%);
+  $light-bg-lighter-5: #ffffff;
+
+  $light-theme: (color: (primary: $default-light-theme-primary,
+      accent: $default-light-theme-accent,
+      warn: $default-light-theme-warn,
+      is-dark: false,
+      foreground: (base: map.get(colors.$slate, 950),
+        divider: map.get(colors.$light-theme-colors, fg-divider),
+        dividers: map.get(colors.$light-theme-colors, fg-divider),
+        disabled: map.get(colors.$light-theme-colors, fg-disabled),
+        disabled-button: map.get(colors.$light-theme-colors, fg-disabled),
+        disabled-text: map.get(colors.$light-theme-colors, fg-disabled),
+        elevation: map.get(colors.$slate, 950),
+        secondary-text: map.get(colors.$light-theme-colors, fg-secondary),
+        hint-text: map.get(colors.$light-theme-colors, fg-hint),
+        accent-text: map.get(colors.$light-theme-colors, fg-secondary),
+        icon: map.get(colors.$light-theme-colors, fg-secondary),
+        icons: map.get(colors.$light-theme-colors, fg-secondary),
+        text: map.get(colors.$light-theme-colors, fg-base),
+        slider-min: map.get(colors.$light-theme-colors, fg-base),
+        slider-off: map.get(colors.$light-theme-colors, fg-hint),
+        slider-off-active: map.get(colors.$light-theme-colors, fg-hint),
+      ),
+      background: (background: $light-background,
+        status-bar: map.get(colors.$light-theme-colors, bg-base),
+        app-bar: map.get(colors.$light-theme-colors, bg-base),
+        hover: map.get(colors.$light-theme-colors, bg-hover),
+        card: map.get(colors.$light-theme-colors, bg-card),
+        dialog: map.get(colors.$light-theme-colors, bg-dialog),
+        tooltip: map.get(colors.$slate, 950),
+        disabled-button: map.get(colors.$light-theme-colors, bg-disabled),
+        raised-button: map.get(colors.$light-theme-colors, bg-card),
+        focused-button: map.get(colors.$light-theme-colors, bg-base),
+        selected-button: map.get(colors.$light-theme-colors, bg-hover),
+        selected-disabled-button: map.get(colors.$light-theme-colors, bg-disabled),
+        disabled-button-toggle: map.get(colors.$light-theme-colors, bg-hover),
+        unselected-chip: map.get(colors.$light-theme-colors, bg-hover),
+        disabled-list-option: map.get(colors.$light-theme-colors, bg-hover),
+      ),
+    ),
+  );
+
+  // Apply CSS variables to override static SCSS compilation values
+  background-color: rgb(var(--bg-base));
+
+  @include mat.all-component-colors($light-theme);
+  
+}
+
+/* Create Dark theme */
+.egret-navy-dark {
+  // Foreground Elements - static values for SCSS compilation
+  $light-text: rgba(255, 255, 255, 0.87);
+  $light-accent-text: rgba(255, 255, 255, 0.54);
+
+  // Background config - static values for SCSS compilation
+  $dark-background: map.get(colors.$slate, 950);
+  $dark-bg-lighter-5: map.get(colors.$slate, 900);
+  $dark-bg-lighter-10: color.adjust($dark-background, $lightness: 10%);
+  $dark-bg-lighter-20: color.adjust($dark-background, $lightness: 20%);
+  $dark-bg-lighter-30: color.adjust($dark-background, $lightness: 30%);
+  $light-bg-alpha-4: rgba(255, 255, 255, 0.04);
+  $light-bg-alpha-12: rgba(255, 255, 255, 0.12);
+
+  $dark-theme: (color: (primary: $default-dark-theme-primary,
+      accent: $default-dark-theme-accent,
+      warn: $default-dark-theme-warn,
+      is-dark: true,
+      foreground: (base: $light-text,
+        divider: map.get(colors.$slate, 700),
+        dividers: map.get(colors.$slate, 700),
+        disabled: rgba(white, 0.5),
+        disabled-button: rgba($light-text, 0.3),
+        disabled-text: rgba(white, 0.5),
+        elevation: map.get(colors.$slate, 950),
+        hint-text: rgba(white, 0.5),
+        secondary-text: $light-accent-text,
+        accent-text: $light-accent-text,
+        icon: $light-text,
+        icons: $light-text,
+        text: $light-text,
+        slider-min: white,
+        slider-off: rgba(white, 0.3),
+        slider-off-active: rgba(white, 0.3),
+      ),
+      background: (background: $dark-background,
+        status-bar: map.get(colors.$slate, 900),
+        app-bar: map.get(colors.$slate, 900),
+        hover: $light-bg-alpha-4,
+        card: map.get(colors.$slate, 900),
+        dialog: map.get(colors.$slate, 900),
+        tooltip: map.get(colors.$slate, 950),
+        disabled-button: map.get(colors.$dark-theme-colors, bg-disabled),
+        raised-button: map.get(colors.$slate, 900),
+        focused-button: $light-bg-alpha-12,
+        selected-button: $dark-bg-lighter-20,
+        selected-disabled-button: $dark-bg-lighter-30,
+        disabled-button-toggle: map.get(colors.$slate, 950),
+        unselected-chip: $dark-bg-lighter-20,
+        disabled-list-option: map.get(colors.$slate, 950),
+      ),
+    ),
+  );
+
+  // Apply CSS variables to override static SCSS compilation values
+  background-color: rgb(var(--bg-base));
+  // Apply CSS variables for dark theme
+  color: rgba(var(--fg-base));
+
+  @include mat.all-component-colors($dark-theme);
+  
+  .mat-mdc-card, 
+  .mat-mdc-dialog-container,
+  .mat-app-background,
+  mat-drawer-container {
+    background-color: rgb(var(--bg-card));
+    color: rgba(var(--fg-base));
+  }
+}

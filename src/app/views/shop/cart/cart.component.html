@@ -1,0 +1,148 @@
+<div class="container mx-auto px-4 !py-6 max-w-7xl">
+  <!-- Page Title & Navigation -->
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-2xl font-bold">Your Shopping Cart</h1>
+    <button 
+      mat-button 
+      routerLink="/shop" 
+      class="text-secondary hover:text-primary-600 transition-colors"
+    >
+      <mat-icon>chevron_left</mat-icon>
+      <span class="ml-1 hidden sm:inline-block">Continue Shopping</span>
+    </button>
+  </div>
+
+  <!-- Cart Items Table -->
+  <div class="mb-8" *ngIf="cart.length" [@animate]="{value:'*',params:{delay: '100ms', x:'-50px'}}">
+    <div class="overflow-x-auto egret-card">
+      <table class="w-full min-w-full">
+        <thead class="bg-base border-b border-divider">
+          <tr>
+            <th class="px-6 py-4 text-xs font-medium text-secondary uppercase tracking-wider text-center">Remove</th>
+            <th class="px-6 py-4 text-xs font-medium text-secondary uppercase tracking-wider text-center">Image</th>
+            <th class="px-6 py-4 text-xs font-medium text-secondary uppercase tracking-wider text-left">Product</th>
+            <th class="px-6 py-4 text-xs font-medium text-secondary uppercase tracking-wider text-right">Price</th>
+            <th class="px-6 py-4 text-xs font-medium text-secondary uppercase tracking-wider text-center">Quantity</th>
+            <th class="px-6 py-4 text-xs font-medium text-secondary uppercase tracking-wider text-right">Total</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          <tr *ngFor="let item of cart" class="hover:bg-base border-divider transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+              <button 
+                mat-icon-button 
+                color="warn" 
+                (click)="removeProduct(item)" 
+                class="hover:bg-red-50 transition-colors"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+              <div class="flex items-center justify-center">
+                <img 
+                  class="h-16 w-16 rounded-md object-cover shadow-sm cursor-pointer"
+                  [src]="item.product.photo" 
+                  [routerLink]="['/shop/products', item.product._id]"
+                  alt="Product thumbnail"
+                >
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium hover:text-primary-600 cursor-pointer transition-colors"
+                   [routerLink]="['/shop/products', item.product._id]">
+                {{item.product.name}}
+              </div>
+              <div class="text-xs text-secondary mt-1" *ngIf="item.product.category">
+                Category: {{item.product.category}}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              {{item.product.price.sale | currency}}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+              <input 
+                class="w-16 px-2 py-1 text-center bg-base border border-divider rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" 
+                min="1" 
+                type="number" 
+                (change)="onQuantityChange()" 
+                [(ngModel)]="item.data.quantity"
+              >
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              {{item.product.price.sale * item.data.quantity | currency}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Order Summary & Checkout -->
+  <div class="flex flex-col md:flex-row gap-8" *ngIf="cart.length" [@animate]="{value:'*',params:{delay: '100ms', x:'50px'}}">
+    <div class="flex-grow">
+      <!-- Coupon code or additional features could go here -->
+    </div>
+    
+    <div class="w-full md:w-1/3 lg:w-1/4">
+      <div class="egret-card rounded-lg shadow-md p-6">
+        <h2 class="text-lg font-semiboldmb-4">Order Summary</h2>
+        
+        <div class="space-y-3 mb-6">
+          <div class="flex justify-between items-center">
+            <span class="text-secondary">Subtotal</span>
+            <span class="font-medium">${{subTotal}}</span>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <span class="text-secondary">VAT</span>
+            <span class="font-medium">{{vat}}%</span>
+          </div>
+          
+          <div class="border-t border-divider pt-3 mt-3">
+            <div class="flex justify-between items-center">
+              <span class="font-semibold">Total</span>
+              <span class="font-bold">${{total}}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex flex-col space-y-3">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            routerLink="/shop/checkout" 
+            class="py-2 px-4 shadow-md"
+          >
+            Proceed to Checkout
+          </button>
+          
+          <button 
+            mat-stroked-button 
+            routerLink="/shop" 
+            class="py-2"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty Cart State -->
+  <div *ngIf="!cart.length" [@animate]="{value:'*',params:{delay: '100ms', y:'-50px'}}">
+    <div class="flex flex-col items-center justify-center egret-card rounded-lg shadow-md p-10 text-center">
+      <mat-icon class="text-hint text-6xl mb-4 !h-[64px] !w-[64px]">shopping_cart</mat-icon>
+      <h2 class="text-xl font-semibold mb-2">Your cart is empty</h2>
+      <p class="text-secondary mb-6">Looks like you haven't added any products to your cart yet.</p>
+      <button 
+        mat-flat-button 
+        color="primary" 
+        routerLink="/shop" 
+        class="py-2 px-6"
+      >
+        Browse Products
+      </button>
+    </div>
+  </div>
+</div>

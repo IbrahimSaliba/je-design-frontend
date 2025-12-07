@@ -1,0 +1,55 @@
+<mat-progress-bar mode="determinate" class="absolute top-0 left-0 right-0 invisible" [ngClass]="{'!visible': isLoading}"></mat-progress-bar>
+
+<div class="flex min-h-screen bg-card relative overflow-hidden screen-bottom-left-gradient screen-bottom-right-gradient">
+  <!-- Container with gradient effects applied via SCSS -->
+  <div class="container flex min-h-screen mx-auto relative z-10" [@animate]="{value:'*',params:{y:'40px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+
+    <!-- Left Column -->
+    <div class="flex-1 flex flex-col items-center justify-center p-8">
+      <div class="flex items-center justify-center mb-12">
+        <span class="text-3xl font-bold text-black tracking-wider">JE DESIGN</span>
+      </div>
+      <div class="w-full max-w-md">        
+        <p *ngIf="errorMsg" class="text-center mb-4 text-red-500"><small>{{errorMsg}}</small></p>
+        
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <div>
+            <mat-form-field appearance="fill" class="w-full">
+              <mat-label>Username or Email*</mat-label>
+              <input matInput type="text" formControlName="email">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="signupForm.get('email')?.hasError('required')">Username or email is required</mat-error>
+              <mat-error *ngIf="signupForm.get('email')?.hasError('email')">Please enter a valid email address</mat-error>
+              <mat-error *ngIf="signupForm.get('email')?.hasError('username')">Username must be 3-30 characters (letters, numbers, underscore, hyphen only)</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field appearance="fill" class="w-full">
+              <mat-label>Password*</mat-label>
+              <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+              <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+              <mat-error *ngIf="signupForm.get('password')?.hasError('required')">Password is required</mat-error>
+            </mat-form-field>
+            <p class="mt-2"><a [routerLink]="'/sessions/forgot-password'" class="text-primary hover:text-blue-600 transition-colors">Reset password</a></p>
+          </div>
+
+          <button mat-flat-button color="primary" type="submit" class="w-full py-2 my-4" [disabled]="signupForm.invalid">
+            Sign In
+          </button>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="hidden lg:flex w-1/2 p-8">
+      <div class="flex flex-col justify-center items-center max-w-lg mx-auto">
+        
+        <img src="assets/logo2-removed.png" alt="Logo" class="mb-8">
+      </div>
+    </div>
+  </div>
+</div>

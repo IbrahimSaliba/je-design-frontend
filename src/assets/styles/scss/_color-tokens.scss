@@ -1,0 +1,120 @@
+/**
+ * CENTRAL COLOR TOKENS
+ */
+
+@use 'sass:map';
+@use 'sass:color';
+@use 'sass:meta';
+@use "variables" as *;
+// ==========================================================================
+// BASE COLOR PALETTE
+// ==========================================================================
+$navy-blue: #0f174c;
+$blue-default: #0081ff; 
+$green: #22C55E; 
+$indigo: #3F51B5;
+$indigo-dark: #14162E;
+// Orange palette
+$accent-orange: #ff8a48; // Default accent color
+$accent-pink: #E91E63; // Pink variant
+
+// Red palette
+$warn-red: #ff3d57; // Default warning color
+$warn-deep-red: #F44336; // Deep red variant
+
+// ==========================================================================
+// NEUTRAL COLORS - LIGHT THEME
+// ==========================================================================
+
+$slate: (
+  50: #f9fafb,
+  100: #f3f4f7,
+  200: #e5e7eb,
+  300: #d1d5db,
+  400: #9ca3af,
+  500: #6b7280,
+  600: #4b5563,
+  700: #374151,
+  800: #1f2937,
+  900: #111827,
+  950: #030712
+);
+
+
+// ==========================================================================
+// SEMANTIC COLORS - LIGHT THEME
+// ==========================================================================
+
+$light-theme-colors: (
+  color-primary: $navy-blue,
+  color-accent: $navy-blue,
+  color-warn: $warn-red,
+  color-success: $green,
+  color-info: $indigo,
+
+  // Background colors
+  bg-base: map.get($slate, 50),
+  // #fafafa - Main background
+  bg-card: #ffffff,
+  // Card background
+  bg-dialog: #ffffff,
+  // Dialog background
+  bg-hover: map.get($slate, 100),
+  // Hover state
+  bg-disabled: map.get($slate, 200),
+  // Disabled state
+
+  // Foreground colors
+  fg-base: map.get($slate, 800),
+  // Main text
+  fg-secondary: map.get($slate, 600),
+  // Secondary text
+  fg-disabled: map.get($slate, 500),
+  // Disabled text
+  fg-hint: map.get($slate, 500),
+  // Hint text
+  fg-divider: map.get($slate, 200),
+  fg-divider-light: map.get($slate, 100),
+  // Dividers
+
+  // Shadow
+  shadow-card: $shadow-card-light
+);
+
+// ==========================================================================
+// SEMANTIC COLORS - DARK THEME
+// ==========================================================================
+
+$dark-theme-colors: (
+  color-primary: $indigo,
+  color-accent: $navy-blue,
+  color-warn: $warn-red,
+  color-success: $green,
+  color-info: $indigo,
+
+  // Background colors
+  bg-base: map.get($slate, 950),
+  // #1a2038 - Main background
+  bg-card: map.get($slate, 900),
+  // #262a47 - Card background
+  bg-dialog: map.get($slate, 900),
+  // #262a47 - Dialog background
+  bg-hover: map.get($slate, 950),
+  // Hover state
+  bg-disabled: map.get($slate, 800),
+  // Foreground colors
+  fg-base: map.get($slate, 100),
+  // Main text
+  fg-secondary: map.get($slate, 500),
+  // Secondary text
+  fg-disabled: map.get($slate, 300),
+  // Disabled text
+  fg-hint: map.get($slate, 600),
+  // Hint text
+  fg-divider: map.get($slate, 700),
+  fg-divider-light: map.get($slate, 800),
+  // Dividers
+
+  // Shadow
+  shadow-card: $shadow-card-dark
+);

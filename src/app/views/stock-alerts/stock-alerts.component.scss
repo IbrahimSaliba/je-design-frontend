@@ -1,0 +1,125 @@
+// Stock Alerts Component Styles
+.stock-alerts {
+  .statistics-card {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .reorder-suggestion-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .alert-table {
+    .alert-row {
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+
+  .priority-badge {
+    &.high {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+    
+    &.medium {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+    
+    &.low {
+      background-color: #d1fae5;
+      color: #059669;
+    }
+  }
+
+  .type-badge {
+    &.out-of-stock {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+    
+    &.low-stock {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+    
+    &.reorder-required {
+      background-color: #dbeafe;
+      color: #2563eb;
+    }
+  }
+
+  .urgency-badge {
+    &.critical {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+    
+    &.high {
+      background-color: #fed7aa;
+      color: #ea580c;
+    }
+    
+    &.medium {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+    
+    &.low {
+      background-color: #d1fae5;
+      color: #059669;
+    }
+  }
+
+  .status-badge {
+    &.acknowledged {
+      background-color: #d1fae5;
+      color: #059669;
+    }
+    
+    &.pending {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .statistics-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .filters-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .reorder-suggestions-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  // Dark theme support
+  .dark-theme {
+    .alert-row:hover {
+      background-color: #374151;
+    }
+    
+    .reorder-suggestion-card:hover {
+      background-color: #374151;
+    }
+  }
+}

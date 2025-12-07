@@ -1,0 +1,34 @@
+// OTP Component Styles
+.otp-input {
+  transition: all 0.2s ease-in-out;
+  
+  &:focus {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+}
+
+// Animation for the container
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.otp-container {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+// Responsive design for mobile
+@media (max-width: 640px) {
+  .otp-input {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+  }
+}

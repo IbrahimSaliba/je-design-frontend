@@ -1,0 +1,445 @@
+.inventory-movements-container {
+  // KPI Cards
+  .kpi-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    &.border-orange-300 {
+      border-left-color: #fb923c;
+    }
+  }
+
+  // Chart Cards
+  .chart-card {
+    min-height: 300px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  // Filters Card
+  .filters-card {
+    .mat-form-field {
+      width: 100%;
+    }
+  }
+
+  // Table Card
+  .movements-table-card {
+    .mat-table {
+      width: 100%;
+      
+      th {
+        font-weight: 600;
+        background-color: #f9fafb;
+      }
+
+      tr:hover {
+        background-color: #f8fafc;
+      }
+
+      .stock-value {
+        color: #059669;
+        font-weight: 600;
+      }
+
+      .stock-warning {
+        color: #d97706;
+        font-weight: 600;
+      }
+
+      .stock-danger {
+        color: #dc2626;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // Item Cards for Grid View
+  .item-card {
+    transition: all 0.3s ease;
+    height: 100%;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .mat-card-header {
+      padding-bottom: 0.5rem;
+    }
+
+    .mat-card-content {
+      padding-top: 0.5rem;
+    }
+  }
+
+  // Timeline Card
+  .timeline-card {
+    .timeline-item {
+      position: relative;
+      
+      &:before {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 40px;
+        height: 100%;
+        width: 2px;
+        background-color: #e5e7eb;
+      }
+
+      &:last-child:before {
+        display: none;
+      }
+    }
+  }
+
+  // Bulk Operations Bar
+  .bulk-operations-bar {
+    backdrop-filter: blur(8px);
+    background-color: rgba(239, 246, 255, 0.95);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    z-index: 1000;
+  }
+
+  // Responsive Design
+  @media (max-width: 768px) {
+    padding: 1rem;
+    
+    .kpi-card,
+    .chart-card {
+      min-height: auto;
+    }
+    
+    .item-card {
+      margin-bottom: 1rem;
+    }
+
+    // Mobile movement cards
+    .movement-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      background-color: white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+
+      &:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .movement-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+
+        .item-info {
+          display: flex;
+          align-items: center;
+
+          .item-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+
+            mat-icon {
+              color: #6b7280;
+              font-size: 1.25rem;
+            }
+          }
+
+          .item-details {
+            .item-name {
+              font-size: 0.875rem;
+              font-weight: 500;
+              color: #111827;
+              margin-bottom: 0.125rem;
+            }
+
+            .item-code {
+              font-size: 0.75rem;
+              color: #6b7280;
+            }
+          }
+        }
+
+        .movement-type {
+          padding: 0.25rem 0.5rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 500;
+
+          &.in {
+            background-color: #dcfce7;
+            color: #166534;
+          }
+
+          &.out {
+            background-color: #fee2e2;
+            color: #991b1b;
+          }
+        }
+      }
+
+      .movement-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        font-size: 0.875rem;
+
+        .detail-item {
+          .label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+          }
+
+          .value {
+            font-weight: 500;
+            color: #111827;
+
+            &.quantity-in {
+              color: #059669;
+            }
+
+            &.quantity-out {
+              color: #dc2626;
+            }
+
+            &.price-in {
+              color: #059669;
+            }
+
+            &.price-out {
+              color: #dc2626;
+            }
+          }
+
+          .date {
+            font-size: 0.75rem;
+            color: #6b7280;
+          }
+        }
+      }
+    }
+
+    // Mobile pagination adjustments
+    .mat-paginator {
+      .mat-paginator-container {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.5rem;
+
+        .mat-paginator-page-size {
+          order: 2;
+          margin-bottom: 0.5rem;
+        }
+
+        .mat-paginator-range-actions {
+          order: 1;
+          justify-content: center;
+        }
+      }
+    }
+  }
+
+  // Status Badges
+  .status-badge {
+    &.low-stock {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fbbf24;
+    }
+
+    &.out-of-stock {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #f87171;
+    }
+
+    &.in-stock {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #34d399;
+    }
+  }
+
+  // Movement Type Indicators
+  .movement-indicator {
+    &.in-movement {
+      background-color: #10b981;
+      color: white;
+    }
+
+    &.out-movement {
+      background-color: #ef4444;
+      color: white;
+    }
+  }
+
+  // Loading States
+  .loading-placeholder {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200%
+      0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  // Custom Scrollbar
+  .custom-scrollbar {
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+  }
+
+  // Animation Classes
+  .fade-in {
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  .slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // Dark mode support
+  @media (prefers-color-scheme: dark) {
+    .movements-table-card {
+      background-color: #1f2937;
+      
+      .mat-table {
+        th {
+          background-color: #374151;
+          color: #f9fafb;
+        }
+
+        td {
+          color: #f9fafb;
+        }
+      }
+    }
+
+    .item-card {
+      background-color: #1f2937;
+      color: #f9fafb;
+    }
+  }
+
+  // Snackbar styling
+  ::ng-deep {
+    .success-snackbar {
+      background-color: #10b981 !important;
+      color: white !important;
+    }
+
+    .error-snackbar {
+      background-color: #ef4444 !important;
+      color: white !important;
+    }
+
+    .warning-snackbar {
+      background-color: #f59e0b !important;
+      color: white !important;
+    }
+  }
+
+  // Loading animation improvements
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: .5;
+    }
+  }
+
+  // Hover effects for interactive elements
+  .interactive-hover {
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  // Focus states for accessibility
+  .focus-visible {
+    &:focus-visible {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+  }
+
+  // Spinning animation for refresh icon
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

@@ -1,0 +1,17 @@
+<div class="page-layout overflow-hidden pb-8">
+  <div class="header-bg bg-primary"></div>
+  <div class="content">
+    <div class="content-header flex flex-wrap justify-center items-center mb-4">
+      <div class="search-box flex items-center egret-card flex-grow">
+        <button mat-icon-button><mat-icon>search</mat-icon></button>
+        <input class="bg-card" type="text" (keyup)="updateSearchTerm(serachTerm.value)" placeholder="Search for a task" #serachTerm />
+      </div>
+    </div>
+
+    <div class="content-body">
+      <div class="egret-card flex flex-col h-screen" [perfectScrollbar]>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>

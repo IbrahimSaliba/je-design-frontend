@@ -1,0 +1,205 @@
+<div class="distribution-map-container">
+  <!-- Header -->
+  <div class="map-header">
+    <div class="breadcrumb">
+      <span class="breadcrumb-item">UTILITIES</span>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-item">Client Distribution Map</span>
+    </div>
+    <h1 class="page-title">Client Distribution Map</h1>
+    <p class="page-subtitle">Comprehensive geographic distribution and market analysis</p>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-wrapper">
+      <!-- Governorate Filter -->
+      <mat-form-field appearance="fill" class="filter-field">
+        <mat-label>Filter by Governorate</mat-label>
+        <mat-select [(ngModel)]="selectedGovernorate" (selectionChange)="onFilterChange()">
+          <mat-option value="">All Governorates</mat-option>
+          <mat-option *ngFor="let gov of governorates" [value]="gov.governorate">
+            {{gov.governorate}} ({{gov.governorateAr}})
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>public</mat-icon>
+      </mat-form-field>
+
+      <!-- Status Filter -->
+      <mat-form-field appearance="fill" class="filter-field">
+        <mat-label>Filter by Status</mat-label>
+        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onFilterChange()">
+          <mat-option value="">All Statuses</mat-option>
+          <mat-option value="ACTIVE">Active</mat-option>
+          <mat-option value="PENDING">Pending</mat-option>
+          <mat-option value="INACTIVE">Inactive</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>filter_list</mat-icon>
+      </mat-form-field>
+
+      <!-- Clear Filters Button -->
+      <button mat-raised-button color="accent" (click)="clearFilters()" class="clear-btn">
+        <mat-icon>clear_all</mat-icon>
+        Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State (only show on initial load, not on filter changes) -->
+  <div *ngIf="isLoading && !map" class="loading-container">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p class="loading-text">Loading distribution data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading && !map" class="error-container">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p class="error-text">{{error}}</p>
+    <button mat-raised-button color="primary" (click)="loadData()">
+      <mat-icon>refresh</mat-icon>
+      Retry
+    </button>
+  </div>
+
+  <!-- Main Content (always show once map is initialized) -->
+  <div *ngIf="map || (!isLoading && !error)" class="main-content">
+    
+    <!-- Loading Overlay (for filter changes when map exists) -->
+    <div *ngIf="isLoading && map" class="loading-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+    <!-- Map Container -->
+    <div class="map-section">
+      <div id="distribution-map" class="leaflet-map"></div>
+      
+      <!-- No Results Overlay (only show when 0 clients with location) -->
+      <div *ngIf="statistics && statistics.clientsWithLocation === 0" class="no-results-overlay">
+        <mat-icon>location_off</mat-icon>
+        <h3>No Clients Found</h3>
+        <p *ngIf="selectedGovernorate || selectedStatus">
+          No clients match the selected filters.
+          <br>Try adjusting your filters or <a (click)="clearFilters()" class="clear-link">clear all filters</a>.
+        </p>
+        <p *ngIf="!selectedGovernorate && !selectedStatus">
+          No clients have location data assigned yet.
+        </p>
+      </div>
+      
+      <!-- Map Legend -->
+      <div class="map-legend">
+        <h4>Client Status</h4>
+        <div class="legend-item">
+          <span class="legend-marker active"></span>
+          <span>Active</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-marker pending"></span>
+          <span>Pending</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-marker inactive"></span>
+          <span>Inactive</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="statistics-section">
+      <!-- Summary Cards -->
+      <div class="summary-cards">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <mat-icon>groups</mat-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Total Clients</span>
+            <span class="stat-value">{{statistics?.totalClients || 0}}</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon success">
+            <mat-icon>location_on</mat-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">With Location</span>
+            <span class="stat-value">{{statistics?.clientsWithLocation || 0}}</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon primary">
+            <mat-icon>apartment</mat-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Municipalities</span>
+            <span class="stat-value">{{statistics?.totalMunicipalities || 0}}</span>
+          </div>
+        </div>
+
+        <div class="stat-card" *ngIf="statistics?.topRegionName">
+          <div class="stat-icon warning">
+            <mat-icon>emoji_events</mat-icon>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Top Region</span>
+            <span class="stat-value-small">{{statistics.topRegionName}}</span>
+            <span class="stat-sublabel">({{statistics.topRegionCount}} clients)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Distribution Chart -->
+      <div class="distribution-chart">
+        <h3 class="chart-title">Distribution by Governorate</h3>
+        
+        <div *ngIf="getGovernorateStats().length > 0" class="chart-bars">
+          <div *ngFor="let stat of getGovernorateStats()" class="chart-bar-item">
+            <div class="bar-label">
+              <span class="bar-name">{{stat.name}}</span>
+              <span class="bar-count">{{stat.count}} clients</span>
+            </div>
+            <div class="bar-container">
+              <div 
+                class="bar-fill" 
+                [style.width.%]="getPercentage(stat.count)"
+                [attr.data-percentage]="getPercentage(stat.count) + '%'">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="getGovernorateStats().length === 0" class="no-data">
+          <mat-icon>info</mat-icon>
+          <p>No data available for selected filters</p>
+        </div>
+      </div>
+
+      <!-- Top Municipalities -->
+      <div class="top-municipalities" *ngIf="statistics?.topMunicipalities && statistics.topMunicipalities.length > 0">
+        <h3 class="chart-title">Top 10 Municipalities</h3>
+        <div class="municipality-list">
+          <div *ngFor="let mun of statistics.topMunicipalities; let i = index" class="municipality-item">
+            <span class="rank">{{i + 1}}</span>
+            <div class="mun-info">
+              <span class="mun-name">{{mun.municipalityName}}</span>
+              <span class="mun-location">{{mun.district}}, {{mun.governorate}}</span>
+            </div>
+            <span class="mun-count">{{mun.clientCount}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clients Without Location -->
+      <div class="warning-card" *ngIf="statistics && statistics.clientsWithoutLocation > 0">
+        <mat-icon>warning</mat-icon>
+        <div class="warning-content">
+          <strong>{{statistics.clientsWithoutLocation}} clients</strong> don't have location data assigned.
+          <br>
+          <small>Update their municipality info to see them on the map.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

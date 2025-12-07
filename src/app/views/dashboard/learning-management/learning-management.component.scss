@@ -1,0 +1,30 @@
+// // Custom styles for ApexCharts
+// :host ::ng-deep {
+//   // Style for legend markers
+//   .apexcharts-legend-marker {
+//     border-radius: 4px !important;
+//   }
+
+//   // Style for legend text
+//   .apexcharts-legend-text {
+//     color: var(--fg-secondary) !important;
+//     font-size: 0.875rem !important;
+//     font-weight: 500 !important;
+//     padding-left: 4px !important;
+//   }
+
+//   // Style for bar chart
+//   .apexcharts-bar-series {
+//     .apexcharts-bar-area {
+//       // Ensure border radius is applied correctly
+//       &:first-child {
+//         border-top-left-radius: 10px !important;
+//         border-top-right-radius: 10px !important;
+//       }
+//       &:last-child {
+//         border-bottom-left-radius: 10px !important;
+//         border-bottom-right-radius: 10px !important;
+//       }
+//     }
+//   }
+// }

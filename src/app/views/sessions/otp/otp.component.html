@@ -1,0 +1,85 @@
+<mat-progress-bar mode="determinate" class="absolute top-0 left-0 right-0 invisible" [ngClass]="{'!visible': isLoading}"></mat-progress-bar>
+
+<div class="flex min-h-screen bg-card relative overflow-hidden screen-bottom-left-gradient screen-bottom-right-gradient">
+  <!-- Container with gradient effects applied via SCSS -->
+  <div class="container flex min-h-screen mx-auto relative z-10" [@animate]="{value:'*',params:{y:'40px',opacity:'0',delay:'100ms', duration: '400ms'}}">
+
+    <!-- Left Column -->
+    <div class="flex-1 flex flex-col items-center justify-center p-8">
+      <div class="flex items-center justify-center mb-12">
+        <span class="text-3xl font-bold text-black tracking-wider">JE DESIGN</span>
+      </div>
+      <div class="w-full max-w-md">        
+        <div class="mb-6">
+          <h1 class="text-2xl font-semibold">Two-Factor Authentication</h1>
+          <p class="text-secondary">Enter the 4-digit code sent to your email</p>
+          <p class="text-secondary" *ngIf="username">for <strong>{{ username }}</strong></p>
+        </div>
+        
+        <p *ngIf="errorMsg" class="text-center mb-4 text-red-500"><small>{{errorMsg}}</small></p>
+        
+        <form [formGroup]="otpForm" (ngSubmit)="onSubmit()" class="">
+          <div class="flex justify-center gap-4 mb-8">
+            <input
+              id="digit1"
+              type="text"
+              maxlength="1"
+              class="otp-input w-16 h-16 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200"
+              (input)="onInput($event, 1)"
+              (keydown)="onKeyDown($event, 1)"
+              formControlName="digit1">
+            
+            <input
+              id="digit2"
+              type="text"
+              maxlength="1"
+              class="otp-input w-16 h-16 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200"
+              (input)="onInput($event, 2)"
+              (keydown)="onKeyDown($event, 2)"
+              formControlName="digit2">
+            
+            <input
+              id="digit3"
+              type="text"
+              maxlength="1"
+              class="otp-input w-16 h-16 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200"
+              (input)="onInput($event, 3)"
+              (keydown)="onKeyDown($event, 3)"
+              formControlName="digit3">
+            
+            <input
+              id="digit4"
+              type="text"
+              maxlength="1"
+              class="otp-input w-16 h-16 text-center text-2xl font-bold border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200"
+              (input)="onInput($event, 4)"
+              (keydown)="onKeyDown($event, 4)"
+              formControlName="digit4">
+          </div>
+
+          <button mat-flat-button color="primary" type="submit" class="w-full py-2 my-4" [disabled]="otpForm.invalid || isLoading">
+            <span *ngIf="!isLoading">Verify Code</span>
+            <span *ngIf="isLoading">Verifying...</span>
+          </button>
+
+          <div class="text-center">
+            <span class="text-secondary">Didn't receive the code? </span>
+            <button type="button" (click)="resendOtp()" 
+                    [disabled]="isLoading" 
+                    class="text-blue-500 hover:text-blue-600 underline disabled:text-gray-400 disabled:cursor-not-allowed">
+              <span *ngIf="!isLoading">Resend</span>
+              <span *ngIf="isLoading">Sending...</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="hidden lg:flex w-1/2 p-8">
+      <div class="flex flex-col justify-center items-center max-w-lg mx-auto">
+        <img src="assets/logo2-removed.png" alt="Logo" class="mb-8">
+      </div>
+    </div>
+  </div>
+</div>

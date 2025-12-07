@@ -1,0 +1,215 @@
+<div class="user-dialog">
+  <h2 mat-dialog-title class="flex items-center">
+    <mat-icon class="mr-3">{{getDialogIcon()}}</mat-icon>
+    {{getDialogTitle()}}
+  </h2>
+
+  <mat-dialog-content class="mat-typography">
+    <form [formGroup]="userForm" class="space-y-4">
+      <!-- User Photo Section -->
+      <div *ngIf="data.mode === 'new'" class="mb-6">
+        <h5 class="text-lg font-semibold mb-4">Profile Photo</h5>
+        <div class="flex items-center space-x-4">
+          <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
+            <img *ngIf="profilePhoto" [src]="profilePhoto" alt="Profile Photo" class="w-full h-full object-cover">
+            <mat-icon *ngIf="!profilePhoto" class="text-gray-400 text-3xl">person</mat-icon>
+          </div>
+          <div class="flex-1">
+            <input type="file" #fileInput (change)="onPhotoSelected($event)" accept="image/*" class="hidden">
+            <button type="button" mat-raised-button color="primary" (click)="fileInput.click()" class="mb-2">
+              <mat-icon class="mr-2">upload</mat-icon>
+              Upload Photo
+            </button>
+            <p class="text-sm text-gray-600">JPG, PNG or GIF. Max size 2MB.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Photo Display (Edit/View Mode) -->
+      <div *ngIf="data.mode !== 'new'" class="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
+        <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center flex-shrink-0">
+          <img [src]="data.user.photo" alt="User Photo" class="w-full h-full object-cover">
+        </div>
+        <div class="flex-1 text-center sm:text-left">
+          <h3 class="text-lg sm:text-xl font-semibold">{{getDisplayName()}}</h3>
+          <p class="text-sm sm:text-base text-gray-600">Member since {{data.user.registered | date:'mediumDate'}}</p>
+        </div>
+      </div>
+
+      <!-- Form Fields in Logical Order -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Username -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Username*</mat-label>
+          <input matInput formControlName="username" [readonly]="data.mode === 'edit'">
+          <mat-icon matSuffix>account_circle</mat-icon>
+          <mat-error *ngIf="userForm.get('username')?.hasError('required')">
+            Username is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password (New users only) -->
+        <mat-form-field appearance="fill" class="w-full" *ngIf="data.mode === 'new'">
+          <mat-label>Password*</mat-label>
+          <input matInput formControlName="password" type="password">
+          <mat-icon matSuffix>lock</mat-icon>
+          <mat-error *ngIf="userForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">
+            Password must be at least 3 characters
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Email (takes full width if in edit mode) -->
+        <mat-form-field appearance="fill" class="w-full" [class.sm:col-span-2]="data.mode !== 'new'">
+          <mat-label>Email*</mat-label>
+          <input matInput formControlName="email" type="email">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+            Please enter a valid email address
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- First Name -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>First Name*</mat-label>
+          <input matInput formControlName="first_name">
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error *ngIf="userForm.get('first_name')?.hasError('required')">
+            First name is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Last Name -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Last Name*</mat-label>
+          <input matInput formControlName="last_name">
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error *ngIf="userForm.get('last_name')?.hasError('required')">
+            Last name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Role -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Role*</mat-label>
+          <mat-select formControlName="roleId">
+            <mat-option [value]="1">SUPER_ADMIN</mat-option>
+            <mat-option [value]="2">ADMIN</mat-option>
+            <mat-option [value]="3">VENDOR</mat-option>
+            <mat-option [value]="4">ACCOUNTANT</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>admin_panel_settings</mat-icon>
+          <mat-error *ngIf="userForm.get('roleId')?.hasError('required')">
+            Role is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- User Status -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>User Status*</mat-label>
+          <mat-select formControlName="user_status">
+            <mat-option value="ACTIVE">Active</mat-option>
+            <mat-option value="INACTIVE">Inactive</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>verified_user</mat-icon>
+          <mat-error *ngIf="userForm.get('user_status')?.hasError('required')">
+            User status is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Two-Factor Authentication -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Two-Factor Authentication*</mat-label>
+          <mat-select formControlName="two_factor_auth">
+            <mat-option value="Y">Enabled</mat-option>
+            <mat-option value="N">Disabled</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>security</mat-icon>
+          <mat-error *ngIf="userForm.get('two_factor_auth')?.hasError('required')">
+            2FA setting is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Language -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Language*</mat-label>
+          <mat-select formControlName="language">
+            <mat-option value="ENGLISH">English</mat-option>
+            <mat-option value="SPANISH">Spanish</mat-option>
+            <mat-option value="FRENCH">French</mat-option>
+            <mat-option value="GERMAN">German</mat-option>
+            <mat-option value="ARABIC">Arabic</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>language</mat-icon>
+          <mat-error *ngIf="userForm.get('language')?.hasError('required')">
+            Language is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Phone Number -->
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Phone Number</mat-label>
+          <input matInput formControlName="phone" type="tel">
+          <mat-icon matSuffix>phone</mat-icon>
+        </mat-form-field>
+
+        <!-- Last Login (Readonly, Edit/View mode only) -->
+        <mat-form-field appearance="fill" class="w-full" *ngIf="data.mode !== 'new'">
+          <mat-label>Last Login</mat-label>
+          <input matInput formControlName="last_login" readonly>
+          <mat-icon matSuffix>schedule</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Bio -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Bio / Description</mat-label>
+        <textarea matInput formControlName="bio" rows="2"></textarea>
+        <mat-icon matSuffix>description</mat-icon>
+      </mat-form-field>
+
+      <!-- Address -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Address</mat-label>
+        <textarea matInput formControlName="address" rows="2"></textarea>
+        <mat-icon matSuffix>location_on</mat-icon>
+      </mat-form-field>
+
+      <!-- Registration Date (Readonly) -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Registration Date</mat-label>
+        <input matInput formControlName="registered" readonly>
+        <mat-icon matSuffix>date_range</mat-icon>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="px-4 sm:px-6 py-4 flex-col sm:flex-row gap-2">
+    <button mat-button (click)="onCancel()" [disabled]="saving" class="w-full sm:w-auto order-2 sm:order-1">
+      {{isEditMode ? 'Cancel' : 'Close'}}
+    </button>
+    <button 
+      *ngIf="isEditMode" 
+      mat-raised-button 
+      color="primary" 
+      (click)="onSave()" 
+      [disabled]="!userForm.valid || saving"
+      class="w-full sm:w-auto order-1 sm:order-2">
+      <mat-icon *ngIf="saving" class="mr-2 animate-spin">refresh</mat-icon>
+      {{saving ? 'Saving...' : getSaveButtonText()}}
+    </button>
+  </mat-dialog-actions>
+</div>

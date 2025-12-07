@@ -1,0 +1,154 @@
+.movement-dialog {
+  min-width: 600px;
+  max-width: 800px;
+
+  @media (max-width: 768px) {
+    min-width: 90vw;
+    max-width: 95vw;
+  }
+
+  .dialog-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid;
+    margin-bottom: 0;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  // Form styling
+  mat-form-field {
+    width: 100%;
+  }
+
+  // Action button styling
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding: 1rem;
+  }
+
+  // Item selection grid
+  .item-selection-grid {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  // Movement preview
+  .movement-preview {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    .preview-column {
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .preview-value {
+      display: block;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+  }
+
+  // Status indicators
+  .status-indicator {
+    &.high-stock {
+      color: #059669;
+    }
+
+    &.low-stock {
+      color: #d97706;
+    }
+
+    &.out-of-stock {
+      color: #dc2626;
+    }
+  }
+
+  // Loading states
+  .loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: #6b7280;
+  }
+
+  // Responsive design
+  .responsive-grid {
+    grid-template-columns: 1fr;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  // Animation for form validation
+  .form-error {
+    animation: shake 0.3s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  // Custom checkbox styling
+  .mat-checkbox-checked .mat-checkbox-background {
+    background-color: #3b82f6 !important;
+  }
+
+  // Custom datepicker styling
+  .mat-datepicker-toggle {
+    color: #6b7280;
+  }
+
+  .mat-datepicker-toggle-active {
+    color: #3b82f6;
+  }
+
+  // Input focus styling
+  .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+    color: #3b82f6 !important;
+  }
+
+  // Button styling
+  .mat-raised-button {
+    &.green {
+      background-color: #10b981;
+      color: white;
+
+      &:hover {
+        background-color: #059669;
+      }
+
+      &:disabled {
+        background-color: #d1fae5;
+        color: #6b7280;
+      }
+    }
+
+    &.red {
+      background-color: #ef4444;
+      color: white;
+
+      &:hover {
+        background-color: #dc2626;
+      }
+
+      &:disabled {
+        background-color: #fee2e2;
+        color: #6b7280;
+      }
+    }
+  }
+}

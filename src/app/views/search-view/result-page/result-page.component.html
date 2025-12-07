@@ -1,0 +1,11 @@
+<div class="m-4">
+  <h2 class="mt-0">Search result for "{{ searchService.searchTerm$ | async }}"</h2>
+</div>
+
+<div class="elevation-1 m-4 rounded-md">
+  <div *ngFor="let item of countries$ | async" class="flex justify-start p-4">
+    <div class="mr-4">{{item.flag}}</div>
+    <div class="mr-4">{{item.name.common}}</div>
+    <div class="text-secondary">{{item.name.official}}</div>
+  </div>
+</div>

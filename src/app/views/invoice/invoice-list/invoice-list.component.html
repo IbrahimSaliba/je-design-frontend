@@ -1,0 +1,270 @@
+<div class="container">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-4 mb-4">
+    <h2 class="text-xl sm:text-2xl font-bold">{{pageTitle}}</h2>
+    <button mat-flat-button color="primary" [routerLink]="['/invoice/add']" routerLinkActive="router-link-active"
+      class="w-full sm:w-auto">
+      <mat-icon class="mr-1">add</mat-icon>
+      {{currentRoute === 'invoices' ? 'Add Invoice' : currentRoute === 'invoice-items' ? 'Add Invoice Item' : 'Add Invoice'}}
+    </button>
+  </div>
+
+  <!-- Filter Section -->
+  <div *ngIf="currentRoute === 'invoices'" class="egret-card p-3 md:p-4 mb-4">
+    <form [formGroup]="filterForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
+      <!-- Search -->
+      <mat-form-field appearance="fill" class="w-full sm:col-span-2 lg:col-span-1">
+        <mat-label>Search Invoices</mat-label>
+        <input matInput formControlName="search">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Status Filter -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="">All Statuses</mat-option>
+          <mat-option value="PENDING">Pending</mat-option>
+          <mat-option value="DEPT">Dept</mat-option>
+          <mat-option value="PAID">Paid</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Date From -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Date From</mat-label>
+        <input matInput [matDatepicker]="dateFromPicker" formControlName="dateFrom">
+        <mat-datepicker-toggle matSuffix [for]="dateFromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #dateFromPicker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- Date To -->
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Date To</mat-label>
+        <input matInput [matDatepicker]="dateToPicker" formControlName="dateTo">
+        <mat-datepicker-toggle matSuffix [for]="dateToPicker"></mat-datepicker-toggle>
+        <mat-datepicker #dateToPicker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- Sort By -->
+      <div class="flex items-center gap-2 sm:col-span-2 lg:col-span-1">
+        <mat-form-field appearance="fill" class="flex-1">
+          <mat-label>Sort By</mat-label>
+          <mat-select formControlName="sortBy">
+            <mat-option value="Descending">Newest First</mat-option>
+            <mat-option value="Ascending">Oldest First</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-icon-button color="warn" (click)="clearFilters()" matTooltip="Clear Filters" class="flex-shrink-0">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+  <!-- Desktop Table View -->
+  <div class="hidden md:block">
+    <table mat-table [dataSource]="invoiceList" class="egret-card w-full">
+      <!-- Invoice No Column -->
+      <ng-container matColumnDef="{{ itemTableColumn[0] }}">
+        <th mat-header-cell *matHeaderCellDef class="font-semibold">
+          {{ itemTableColumn[0] }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="font-medium">
+          {{ element.invoiceNumber || element.orderNo || 'N/A' }}
+        </td>
+      </ng-container>
+
+      <!-- Client Name Column -->
+      <ng-container matColumnDef="{{ itemTableColumn[1] }}">
+        <th mat-header-cell *matHeaderCellDef class="font-semibold">
+          {{ itemTableColumn[1] }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="font-medium text-gray-700">
+          {{ element.clientName || 'N/A' }}
+        </td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="{{ itemTableColumn[2] }}">
+        <th mat-header-cell *matHeaderCellDef class="font-semibold">
+          {{ itemTableColumn[2] }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ formatDate(element.invoiceDate || element.date) }}
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="{{ itemTableColumn[3] }}">
+        <th mat-header-cell *matHeaderCellDef class="font-semibold">
+          {{ itemTableColumn[3] }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-chip [color]="getStatusColor(element.status)" [selected]="true">
+            {{ element.status | titlecase }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <!-- Subtotal Column -->
+      <ng-container matColumnDef="{{ itemTableColumn[4] }}">
+        <th mat-header-cell *matHeaderCellDef class="font-semibold text-right">
+          {{ itemTableColumn[4] }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right font-medium text-blue-600">
+          ${{ calculateSubtotal(element) | number:'1.2-2' }}
+        </td>
+      </ng-container>
+
+      <!-- Discount Column -->
+      <ng-container matColumnDef="{{ itemTableColumn[5] }}">
+        <th mat-header-cell *matHeaderCellDef class="font-semibold text-right">
+          {{ itemTableColumn[5] }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right font-medium text-orange-600">
+          -${{ (element.discountAmount || element.discounts || 0) | number:'1.2-2' }}
+        </td>
+      </ng-container>
+
+      <!-- Free Items Column -->
+      <ng-container matColumnDef="{{ itemTableColumn[6] }}">
+        <th mat-header-cell *matHeaderCellDef class="font-semibold text-right">
+          {{ itemTableColumn[6] }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right font-medium text-green-600">
+          ${{ calculateVAT(element) | number:'1.2-2' }}
+        </td>
+      </ng-container>
+
+      <!-- Grand Total Column -->
+      <ng-container matColumnDef="{{ itemTableColumn[7] }}">
+        <th mat-header-cell *matHeaderCellDef class="font-semibold text-right">
+          {{ itemTableColumn[7] }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right font-bold text-primary-600">
+          ${{ calculateGrandTotal(element) | number:'1.2-2' }}
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="{{ itemTableColumn[8] }}">
+        <th mat-header-cell *matHeaderCellDef class="font-semibold text-center">
+          {{ itemTableColumn[8] }}
+        </th>
+        <td mat-cell *matCellDef="let row" class="text-center">
+          <button mat-icon-button 
+                  routerLink="/invoice/{{ row.invoiceId || row.id }}" 
+                  routerLinkActive="router-link-active"
+                  color="primary"
+                  matTooltip="View Invoice">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button 
+                  (click)="deleteInvoiceById(row.invoiceId || row.id)" 
+                  color="warn"
+                  matTooltip="Delete Invoice">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="itemTableColumn" class="bg-gray-50"></tr>
+      <tr mat-row *matRowDef="let row; columns: itemTableColumn" class="hover:bg-gray-50"></tr>
+    </table>
+  </div>
+
+  <!-- Mobile Card View -->
+  <div class="block md:hidden">
+    <div *ngFor="let invoice of invoiceList" class="egret-card mb-4 p-4">
+      <!-- Header: Invoice Number and Status -->
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <p class="text-sm text-gray-500">Invoice No.</p>
+          <p class="font-bold text-lg">{{ invoice.invoiceNumber || invoice.orderNo || 'N/A' }}</p>
+        </div>
+        <mat-chip [color]="getStatusColor(invoice.status)" [selected]="true" class="ml-2">
+          {{ invoice.status | titlecase }}
+        </mat-chip>
+      </div>
+
+      <!-- Client Name -->
+      <div class="mb-3 pb-3 border-b border-gray-200">
+        <p class="text-sm text-gray-500">Client</p>
+        <p class="font-semibold text-gray-800">{{ invoice.clientName || 'N/A' }}</p>
+      </div>
+
+      <!-- Date -->
+      <div class="mb-3">
+        <p class="text-sm text-gray-500">Date</p>
+        <p class="font-medium">{{ formatDate(invoice.invoiceDate || invoice.date) }}</p>
+      </div>
+
+      <!-- Financial Details -->
+      <div class="grid grid-cols-2 gap-3 mb-3 pb-3 border-b border-gray-200">
+        <div>
+          <p class="text-xs text-gray-500">Subtotal</p>
+          <p class="font-semibold text-blue-600">${{ calculateSubtotal(invoice) | number:'1.2-2' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Discount</p>
+          <p class="font-semibold text-orange-600">-${{ (invoice.discountAmount || invoice.discounts || 0) | number:'1.2-2' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Free Items</p>
+          <p class="font-semibold text-green-600">${{ calculateVAT(invoice) | number:'1.2-2' }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-500">Remaining Balance</p>
+          <p class="font-bold text-lg text-primary-600">${{ calculateGrandTotal(invoice) | number:'1.2-2' }}</p>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-2">
+        <button mat-raised-button 
+                color="primary"
+                routerLink="/invoice/{{ invoice.invoiceId || invoice.id }}" 
+                class="flex-1">
+          <mat-icon class="mr-1">visibility</mat-icon>
+          View
+        </button>
+        <button mat-raised-button 
+                color="warn"
+                (click)="deleteInvoiceById(invoice.invoiceId || invoice.id)"
+                class="flex-1">
+          <mat-icon class="mr-1">delete</mat-icon>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="egret-card p-12 text-center">
+    <mat-spinner diameter="50" class="mx-auto mb-4"></mat-spinner>
+    <p class="text-gray-600">Loading invoices...</p>
+  </div>
+  
+  <!-- Empty State -->
+  <div *ngIf="!loading && (!invoiceList || invoiceList.length === 0)" 
+       class="egret-card p-12 text-center">
+    <mat-icon class="text-6xl text-gray-400 mb-4">receipt_long</mat-icon>
+    <h3 class="text-lg font-medium text-gray-600 mb-2">No invoices found</h3>
+    <p class="text-gray-500 mb-4">Get started by creating your first invoice.</p>
+    <button mat-flat-button color="primary" routerLink="/invoice/add">
+      <mat-icon class="mr-2">add</mat-icon>
+      Create Invoice
+    </button>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="currentRoute === 'invoices' && !loading && invoiceList.length > 0" class="mt-4">
+    <mat-paginator 
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="currentPage"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
