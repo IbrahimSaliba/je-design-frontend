@@ -26,8 +26,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: egret-angular/package-lock.json
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('egret-angular/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         working-directory: egret-angular
@@ -46,6 +52,12 @@ jobs:
       - name: Build
         working-directory: egret-angular
         run: npm run build -- --configuration production --base-href "${{ steps.base-href.outputs.base_href }}"
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+
+      - name: Add .nojekyll file
+        working-directory: egret-angular
+        run: touch ./dist/browser/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
