@@ -31,12 +31,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('egret-angular/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        working-directory: egret-angular
         run: npm ci
 
       - name: Set base href
@@ -50,13 +49,11 @@ jobs:
           fi
 
       - name: Build
-        working-directory: egret-angular
         run: npm run build -- --configuration production --base-href "${{ steps.base-href.outputs.base_href }}"
         env:
           NODE_OPTIONS: --max_old_space_size=4096
 
       - name: Add .nojekyll file
-        working-directory: egret-angular
         run: touch ./dist/browser/.nojekyll
 
       - name: Setup Pages
@@ -65,7 +62,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: egret-angular/dist/browser
+          path: ./dist/browser
 
   deploy:
     environment:
