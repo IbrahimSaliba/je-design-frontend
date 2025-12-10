@@ -1,4 +1,6 @@
 export const config = {
+  // API URL - defaults to localhost for development
+  // For production, this will be overridden by environment.prod.ts
   apiUrl: 'http://localhost:8080',
   themeLocalStorageKey: 'egret-theme-id',
   authRoles: {
